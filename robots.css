@@ -48,6 +48,11 @@
 .size50 .robot.minirobot { width: 9px; height: 9px; line-height: 9px; border-radius: 3px; }
 .size50 .trace { max-width: calc(100% - 50px + 1px); max-height: calc(100% - 50px + 1px); }
 
+.size35 .cell { width: 35px; height: 35px; }
+.size35 .robot { font-size: 17.5px; width: 28px; height: 28px; border-radius: 14px; line-height: 28px; }
+.size35 .robot.minirobot { width: 9px; height: 9px; line-height: 9px; border-radius: 3px; }
+.size35 .trace { max-width: calc(100% - 35px + 1px); max-height: calc(100% - 35px + 1px); }
+
 .buttons { text-align: center; margin: 0.2em auto; padding: 0.4em;
 	display: flex; justify-content: space-around; max-width: 480px;}
 .buttons > * { width: fit-content; line-height: 36px; border: 1px solid transparent; }
