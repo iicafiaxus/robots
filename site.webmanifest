@@ -2,6 +2,7 @@
     "name": "ハイパーロボット練習所",
     "short_name": "Robots",
     "description": "すきま時間にロボットの練習をしましょう！",
+    "start_url": "./",
     "icons": [
         {
             "src": "favicon/android-chrome-192x192.png",
