@@ -1,7 +1,7 @@
 {
-    "name": "Pocket Robot Trainer",
+    "name": "ハイパーロボット練習所 / Pocket Robot Trainer",
     "short_name": "Robots",
-    "description": "Improve your robot skills using pockets of time.",
+    "description": "すきま時間にロボットの練習をしましょう / Improve your robot skills using pockets of time",
     "icons": [
         {
             "src": "favicon/android-chrome-192x192.png",
