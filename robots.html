@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<html lang="ja">
+	<head>
+		<title>ハイパーロボット練習所</title>
+		<meta name="viewport" content="width=480,initial-scale=1">
+		<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+   		<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+		<link rel="stylesheet" href="robots.css">
+		<script src="robotsolve.js"></script>
+	</head>
+	<body>
+		<div id="root"></div>
+
+		<script type="text/jsx">
+		window.addEventListener("load", function(){
+			let params = {
+				small: {
+					width: 8, height: 8, scale: 1.2, size: 50,
+					hasCenterWall: false,
+					cornerCount: 5, widthSideCount: 1, heightSideCount: 1
+				},
+				medium: {
+					width: 8, height: 12, scale: 1.2, size: 50,
+					hasCenterWall: true,
+					cornerCount: 7, widthSideCount: 1, heightSideCount: 2
+				},
+				large: {
+					width: 10, height: 14, scale: 1.0, size: 40,
+					hasCenterWall: true,
+					cornerCount: 13, widthSideCount: 2, heightSideCount: 2
+				}
+			}
+			const root = ReactDOM.createRoot(document.getElementById("root"));
+			root.render(<Game params={params} paramName={"medium"} />);
+		});
+		</script>
+
+		<script type="text/javascript">
+			let save = function(key, value){
+				localStorage.setItem("robots_" + key, "" + value);
+			}
+			let load = function(key){
+				return localStorage.getItem("robots_" + key);
+			}
+		</script>
+
+		<script type="text/jsx">
+
+			let Cell = function(props){
+				return <div
+					className={
+						"cell" + 
+						(props.isShade ? " shade" : "")
+					}
+					style={{
+						gridRow: (props.x || 0) + 1,
+						gridColumn: (props.y || 0) + 1
+					}}
+				>	
+					{ props.wallX ? <WallX /> : null }
+					{ props.wallXBack ? <WallXBack /> : null }
+					{ props.wallY ? <WallY /> : null }
+					{ props.wallYBack ? <WallYBack /> : null }
+					{ props.isGoal ? <Goal /> : null }
+				</div>
+			}
+
+			let Robot = function(props){
+				return <div
+					className={"robot" + (props.isMain ? " main" : "")}
+					style={{
+						gridRow: (props.x || 0) + 1,
+						gridColumn: (props.y || 0) + 1,
+						top: props.dx * 6 + "px",
+						left: props.dy * 6 + "px"
+					}}
+				>
+					{props.number ? ["", "A", "B", "C", "D", "E", "F", "G", "H"][props.number] : null }
+				</div>	
+			}
+
+			let MiniRobot = function(props){
+				return <div
+					className={"robot minirobot" + (props.isMain ? " main" : "")}
+					style={{
+						gridRow: (props.x || 0) + 1,
+						gridColumn: (props.y || 0) + 1,
+						top: props.dx * 6 + "px",
+						left: props.dy * 6 + "px"
+					}}
+				>
+				</div>
+			}
+
+			let TraceLine = function(props){
+				let dx = props.dx || 0, dy = props.dy || 0;
+				let dsx = props.dsx || 0, dtx = props.dtx || 0;
+				let dsy = props.dsy || 0, dty = props.dty || 0;
+				let dx1, dx2, dy1, dy2;
+				if(props.sx < props.tx || props.sx == props.tx && dsx < dtx)
+					dx1 = dsx, dx2 = dtx; else dx1 = dtx, dx2 = dsx;
+				if(props.sy < props.ty || props.sy == props.ty && dsy < dty)
+					dy1 = dsy, dy2 = dty; else dy1 = dty, dy2 = dsy;
+				let x1 = Math.min(props.sx, props.tx), x2 = Math.max(props.sx, props.tx);
+				let y1 = Math.min(props.sy, props.ty), y2 = Math.max(props.sy, props.ty);
+				let xoff = dx2 - dx1, yoff = dy2 - dy1;
+				return <div
+					className={"trace" + (props.i == "0" ? " main" : "")}
+					style={{
+						gridRow: (x1 + 1) + " / " + (x2 + 2),
+						gridColumn: (y1 + 1) + " / " + (y2 + 2),
+						top: (dx + dx1 + (xoff > 0 ? xoff / 2 : 0)) * 6 + "px",
+						left: (dy + dy1 + (yoff > 0 ? yoff / 2 : 0)) * 6 + "px",
+						paddingBottom: xoff > 0 ? xoff * 6 + "px" : "0",
+						paddingRight: yoff > 0 ? yoff * 6 + "px" : "0",
+						clipPath: "inset( -1px " + (yoff < 0 ? -yoff * 6 + "px" : "-1px") + " " +
+							(xoff < 0 ? -xoff * 6 + "px" : "-1px") + " -1px)"
+					}}
+				></div>
+			}
+
+			let Board = function(props){
+				let height = props.height || 16
+				let width = props.width || 16
+
+				let toKey = (x, y) => x + "/" + y;
+
+				let cellProps = [];
+				let cellPropDic = {};
+				for(let i = 0; i < height; i ++){
+					for(let j = 0; j < width; j ++){
+						let key = toKey(i, j);
+						let cellProp = {
+							isGoal: false,
+							x: i,
+							y: j,
+							key: key
+						};
+						if(i == 0) cellProp.wallXBack = true;
+						if(i == height - 1) cellProp.wallX = true;
+						if(j == 0) cellProp.wallYBack = true;
+						if(j == width - 1) cellProp.wallY = true;
+						cellProps.push(cellProp);
+						cellPropDic[key] = cellProp;
+					}
+				}
+				for(let wall of props.walls || []){
+					let x = wall.x, y = wall.y;
+					if(wall.type == 1 || wall.type == 2){
+						cellPropDic[toKey(x, y)].wallXBack = true;
+						if(x > 0) cellPropDic[toKey(x - 1, y)].wallX = true;
+					}
+					if(wall.type == 3 || wall.type == 4){
+						cellPropDic[toKey(x, y)].wallX = true;
+						if(x < height - 1) cellPropDic[toKey(x + 1, y)].wallXBack = true;
+					}
+					if(wall.type == 1 || wall.type == 3){
+						cellPropDic[toKey(x, y)].wallYBack = true;
+						if(y > 0) cellPropDic[toKey(x, y - 1)].wallY = true;
+					}
+					if(wall.type == 2 || wall.type == 4){
+						cellPropDic[toKey(x, y)].wallY = true;
+						if(y < width - 1) cellPropDic[toKey(x, y + 1)].wallYBack = true;
+					}
+					if(wall.isGoal) cellPropDic[toKey(x, y)].isGoal = true;
+					if(wall.isShade) cellPropDic[toKey(x, y)].isShade = true;
+				}
+
+				let robotProps = props.robots || [];
+				let nRobot = robotProps.length;
+
+				let lines = props.lines || [];
+				let lineRows = [], lineColumns = [];
+				let lineRoutes = [];
+				for(let x = 0; x < height; x ++) lineRows[x] = [];
+				for(let y = 0; y < width; y ++) lineColumns[y] = [];
+				for(let i = 0; i < nRobot; i ++) lineRoutes[i] = [];
+				for(let line of lines){
+					if(line.sx == line.tx) lineRows[line.sx].push(line), line.isWidthSide = true;
+					if(line.sy == line.ty) lineColumns[line.sy].push(line), line.isHeightSide = true;
+					lineRoutes[line.iRobot].push(line);
+					line.x1 = Math.min(line.sx, line.tx), line.x2 = Math.max(line.sx, line.tx);
+					line.y1 = Math.min(line.sy, line.ty), line.y2 = Math.max(line.sy, line.ty);
+				}
+
+				let minilines = [];
+				let minirobots = [];
+
+				for(let lineRow of lineRows){
+					let i = 0, n = 1, sublines = [];
+					let max = -1;
+					for(let line of lineRow.sort((a, b) => a.y1 - b.y1)){
+						if(max <= line.y1) i = 0, n = 0, sublines = [];
+						line.iRowTrack = i;
+						i += 1, n += 1, sublines.push(line);
+						for(let l of sublines) l.nRowTrack = n;
+						max = Math.max(max, line.y2);
+					}
+				}
+				for(let lineColumn of lineColumns){
+					let i = 0, n = 1, sublines = [];
+					let max = -1;
+					for(let line of lineColumn.sort((a, b) => a.x1 - b.x1)){
+						if(max <= line.x1) i = 0, n = 0, sublines = [];
+						line.iColumnTrack = i;
+						i += 1, n += 1, sublines.push(line);
+						for(let l of sublines) l.nColumnTrack = n;
+						max = Math.max(max, line.x2);
+					}
+				}
+				for(let line of lines){
+					line.dx = line.iRowTrack - (line.nRowTrack - 1) / 2;
+					line.dy = line.iColumnTrack - (line.nColumnTrack - 1) / 2;
+				}
+				for(let lineRoute of lineRoutes){
+					for(let i = 0; i < lineRoute.length - 1; i ++){
+						let l = lineRoute[i], l1 = lineRoute[i + 1];
+						if(l.isWidthSide && l1.isHeightSide){
+							l.dty = l1.dy + (l.sy < l.ty ? -0.5 : 0.5);
+							l1.dsx = l.dx;
+						}
+						if(l.isHeightSide && l1.isWidthSide){
+							l.dtx = l1.dx + (l.sx < l.tx ? -0.5 : 0.5);
+							l1.dsy = l.dy;
+						}
+						if(l.isWidthSide && l1.isWidthSide){
+							minilines.push({
+								iRobot: l.iRobot, sx: l.tx, sy: l.ty, tx: l1.sx, ty: l1.sy, dx: 0, dy: 0,
+								dsx: l.dx + (l.dx < l1.dx ? 0.5 : -0.5), dsy: 0,
+								dtx: l1.dx + (l.dx < l1.dx ? -0.5 : 0.5), dty: 0,
+								isHeightSide: true
+							});
+						}
+						if(l.isHeightSide && l1.isHeightSide){
+							minilines.push({
+								iRobot: l.iRobot, sx: l.tx, sy: l.ty, tx: l1.sx, ty: l1.sy, dx: 0, dy: 0,
+								dsx: 0, dsy: l.dy + (l.dy < l1.dy ? 0.5 : -0.5),
+								dtx: 0, dty: l1.dy + (l.dy < l1.dy ? -0.5 : 0.5),
+								isWidthSide: true
+							});
+						}
+					}
+					let l = lineRoute[0];
+					if(l){
+						if(l.isWidthSide) l.dsy = (l.sy < l.ty ? 2 : -2); else l.dsy = 0;
+						if(l.isHeightSide) l.dsx = (l.sx < l.tx ? 2 : -2); else l.dsx = 0;
+						robotProps[l.iRobot].dx = (l.dx || 0);
+						robotProps[l.iRobot].dy = (l.dy || 0);
+					}
+					l = lineRoute[lineRoute.length - 1];
+					if(l){
+						if(l.isWidthSide) l.dty = (l.sy < l.ty ? -2 : 2); else l.dty = 0;
+						if(l.isHeightSide) l.dtx = (l.sx < l.tx ? -2 : 2); else l.dtx = 0;
+						minirobots.push({
+							iRobot: l.iRobot,
+							x: l.tx, y: l.ty,
+							dx: (l.dx || 0) + l.dtx * 0.5, dy: (l.dy || 0) + l.dty * 0.5,
+							isMain: (l.iRobot == 0)
+						});
+					}
+				}
+
+				return <div className={"board" + (props.isLoading ? " loading" : "")}>
+					{ robotProps.map(_ => <Robot
+						key={_.key} x={_.x} y={_.y} isMain={_.isMain}
+						number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
+						dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
+					/>) }
+					{ cellProps.map(_ =>
+						<Cell key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
+							wallX={_.wallX} wallXBack={_.wallXBack}
+							wallY={_.wallY} wallYBack={_.wallYBack} isGoal={_.isGoal}
+						/>
+					)}
+					{ props.showsRoute && props.lines && props.lines.map((_, i) =>
+						<TraceLine key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
+							dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
+							isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+						/>
+					)}
+					{ props.showsRoute && minilines && minilines.map((_, i) =>
+						<TraceLine key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
+							dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
+							isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+						/>
+					)}
+					{ props.showsRoute && minirobots && minirobots.map((_, i) =>
+						<MiniRobot key={i} i={_.iRobot} x={_.x} y={_.y} dx={_.dx} dy={_.dy}
+							isMain={_.isMain}
+						/>
+					)}
+					{ props.isLoading ? <div className="loading-message">
+					</div> : null }
+				</div>
+			}
+			let WallX = function(props){
+				return <div className="wall wall-x" />
+			}
+			let WallXBack = function(props){
+				return <div className="wall wall-x wall-back" />
+			}
+			let WallY = function(props){
+				return <div className="wall wall-y" />
+			}
+			let WallYBack = function(props){
+				return <div className="wall wall-y wall-back" />
+			}
+			let Goal = function(props){
+				return <div className="goal" />
+			}
+		</script>
+
+		<script type="text/jsx">
+			class Game extends React.Component {
+
+				constructor(props){
+					super(props);
+
+					let paramName = load("paramName");
+					if( ! ["small", "medium", "large"].includes(paramName)){
+						paramName = "medium";
+						save("paramName", paramName);
+					}
+
+					let showAnswerAlways = load("showAnswerAlways") == "true";
+					save("showAnswerAlways", showAnswerAlways);
+					
+					let showRobotName = load("showRobotName") == "true";
+					save("showRobotName", showRobotName);
+					
+					let useTutrial = load("useTutrial") == "true";
+					save("useTutrial", useTutrial);
+
+					this.state = {
+						solution: {length: "計算中", description: "計算中"},
+						isDescriptionOpen : false,
+						params: props.params,
+						paramName,
+						showAnswerAlways,
+						showRobotName,
+						useTutrial
+					};
+				}
+
+				componentDidMount(){
+					this.resetBoard();
+				}
+
+				setSolution(solution){
+					this.setState({ solution });
+				}
+
+				openAnswer(){
+					this.setState({isAnswerOpen : true});
+				}
+				closeAnswer(){
+					this.setState({isAnswerOpen : false});
+				}
+				toggleAnswer(){
+					this.setState({isAnswerOpen : ! this.state.isAnswerOpen});
+				}
+				openDescription(){
+					this.setState({isDescriptionOpen : true});
+				}
+				closeDescription(){
+					this.setState({isDescriptionOpen : false});
+				}
+				toggleDescription(){
+					this.setState({isDescriptionOpen : ! this.state.isDescriptionOpen});
+				}
+				
+				resetBoard(){
+					console.log("resetting board");
+					this.resetBoardInternal(0);
+				}
+				resetBoardInternal(totalCount){
+					if(totalCount > 100) return;
+					if(totalCount > 0) console.log("(reset) restarted " + totalCount);
+					let cnt = 0, cntLimit = 80;
+
+					let param = this.state.params[this.state.paramName];
+
+					let width = Math.max(param.width, 6);
+					let height = Math.max(param.height, 6);
+
+					let walls = [];
+					let isGood = function(x, y){
+						for(let wall of walls) if(Math.abs(x - wall.x) <= 1 &&
+							Math.abs(y - wall.y) <= 1 && ++cnt < cntLimit) return false;
+						return true;
+					}
+					if(param.hasCenterWall){
+						let x = Math.floor(height / 2), y = Math.floor(width / 2);
+						walls.push({x: x - 1, y: y - 1, type: 1, isShade: true});
+						walls.push({x: x - 1, y: y, type: 2, isShade: true});
+						walls.push({x: x, y: y - 1, type: 3, isShade: true});
+						walls.push({x: x, y: y, type: 4, isShade: true});
+					}
+					for(let i = 0; i < param.widthSideCount || 0; ){
+						let y = Math.floor(Math.random() * (width - 3)) + 2;
+						if(isGood(0, y)) i += 1, walls.push({x: 0, y, type: 1});
+					}
+					for(let i = 0; i < param.widthSideCount || 0; ){
+						let y = Math.floor(Math.random() * (width - 3)) + 2;
+						if(isGood(height - 1, y)) i += 1, walls.push({x: height - 1, y, type: 3});
+					}
+					for(let i = 0; i < param.heightSideCount || 0; ){
+						let x = Math.floor(Math.random() * (height - 3)) + 2;
+						if(isGood(x, 0)) i += 1, walls.push({x, y: 0, type: 1});
+					}
+					for(let i = 0; i < param.heightSideCount || 0; ){
+						let x = Math.floor(Math.random() * (height - 3)) + 2;
+						if(isGood(x, width - 1)) i += 1, walls.push({x, y: width - 1, type: 2});
+					}
+					
+					for(let i = 0; i < param.cornerCount || 0; ){
+						let x = Math.floor(Math.random() * (height - 2)) + 1;
+						let y = Math.floor(Math.random() * (width - 2)) + 1;
+						let type = Math.floor(Math.random() * 4) + 1;
+						if(isGood(x, y)){
+							let isGoal = i == 0;
+							i += 1, walls.push({x, y, type, isGoal});
+						}
+					}
+
+					let robots = [];		
+					let isGoodRobot = function(x, y){
+						for(let wall of walls) if(x == wall.x && y == wall.y && ++cnt < cntLimit) return false;
+						for(let robot of robots) if(x == robot.x && y == robot.y && ++cnt < cntLimit) return false;
+						return true;
+					}
+					for(let i = 0; i < 4; ){
+						let x = Math.floor(Math.random() * height);
+						let y = Math.floor(Math.random() * width);
+						let isMain = i == 0;
+						if(isGoodRobot(x, y)) i += 1, robots.push({ key: i, x, y, isMain });
+					}
+
+					if(cnt >= cntLimit){
+						this.resetBoardInternal(totalCount + 1);
+						return;
+					}
+					else console.log("(reset) done");
+
+					this.setState({
+						boardWidth: width,
+						boardHeight: height,
+						boardScale: param.scale,
+						boardSize: param.size,
+						robots: robots,
+						walls: walls,
+						solution: {length: "", description: "解析しています..."},
+						isLoading: true
+					});
+					this.closeAnswer();
+					this.closeDescription();
+
+					setTimeout(function(){
+						this.setState({ isLoading: false });
+
+						if(this.solver) this.solver.stop();
+						this.solver = new Solver(
+							width, height, this.state.robots, this.state.walls
+						);
+						this.solver.solve(this.setSolution.bind(this));
+					}.bind(this), 100);
+
+				}
+
+				openSettings(){
+					this.openModal("settings");
+				}
+
+				openModal(name){
+					this.setState({ isModalOpen : true, modalName : name });
+				}
+
+				closeModal(){
+					this.setState({ isModalOpen: false });
+				}
+
+				setParamName(name){
+					this.setState({ paramName : name });
+					save("paramName", name);
+				}
+				setShowAnswerAlways(value){
+					this.setState({ showAnswerAlways : !! value });
+					save("showAnswerAlways", value);
+				}
+				setShowRobotName(value){
+					this.setState({ showRobotName : !! value });
+					save("showRobotName", value);
+				}
+				setUseTutrial(value){
+					this.setState({ useTutrial : !! value });
+					save("useTutrial", value);
+				}
+
+				render(){
+					let param = this.state.params[this.state.paramName];
+					return <div className={"all" + 
+						(" size" + this.state.boardSize)
+					}>
+						<div className="buttons">
+							<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
+							<button onClick={this.openSettings.bind(this)}>設定</button>
+						</div>
+						<Board 
+							width={this.state.boardWidth}
+							height={this.state.boardHeight}
+							scale={this.state.boardScale}
+							robots={this.state.robots} walls={this.state.walls}
+							lines={this.state.solution.lines}
+							showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
+							showsRoute={this.state.isDescriptionOpen}
+							isLoading={this.state.isLoading}
+						/>
+						<div className="buttons">
+							<button className={"cover-title" +
+								(this.state.showAnswerAlways ? " disabled" : "")}
+								onClick={this.toggleAnswer.bind(this)}
+							>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
+							<Covered value={this.state.solution.length} short={true}
+								isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
+							 />
+							<div className="flex-filler" />
+							<button onClick={this.resetBoard.bind(this)}>次の問題を表示</button>
+							<div className="flex-filler" />
+						</div>
+						<div className="buttons">
+							<button className="cover-title"
+								onClick={this.toggleDescription.bind(this)}
+							>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+							<Covered value={this.state.solution.description} long={true}
+								isOpen={this.state.isDescriptionOpen}
+							/>
+						</div>
+						{this.state.isModalOpen	&&
+							<div className="modal-back" onClick={this.closeModal.bind(this)} />
+						}
+						{this.state.isModalOpen	&&
+							<div className="modal-front">
+								{this.state.modalName == "settings" &&
+									<div className="modal setting-section">
+
+										<div className="buttons setting-item">
+											<div className="setting-title">サイズ (次の問題から有効)</div>
+											<label>
+												<input type="radio" name="param" value="small"
+													checked={this.state.paramName == "small"}
+													onChange={() => this.setParamName("small")} />
+												<span>小 (8×8)</span>
+											</label>
+											<label>
+												<input type="radio" name="param" value="medium"
+													checked={this.state.paramName == "medium"}
+													onChange={() => this.setParamName("medium")} />
+												<span>中 (8×12)</span>
+											</label>
+											<label>
+												<input type="radio" name="param" value="large"
+													checked={this.state.paramName == "large"}
+													onChange={() => this.setParamName("large")} />
+												<span>大 (10×14)</span>
+											</label>
+										</div>
+
+										<div className="buttons setting-item">
+											<div className="setting-title">出題形式</div>
+											<label>
+												<input type="radio" name="showansweralways" value="false"
+													checked={ ! this.state.showAnswerAlways}
+													onChange={() => this.setShowAnswerAlways(false)} />
+												<span>この盤面は何手？</span>
+											</label>
+											<label>
+												<input type="radio" name="showansweralways" value="true"
+													checked={ !! this.state.showAnswerAlways}
+													onChange={() => this.setShowAnswerAlways(true)} />
+												<span>最短手数の手順は？</span>
+											</label>
+										</div>
+
+										<div className="buttons setting-item">
+											<div className="setting-title">コマの識別方法</div>
+											<label>
+												<input type="radio" name="showrobotname" value="false"
+													checked={ ! this.state.showRobotName}
+													onChange={() => this.setShowRobotName(false)} />
+												<span>色で区別する</span>
+											</label>
+											<label>
+												<input type="radio" name="showrobotname" value="true"
+													checked={this.state.showRobotName}
+													onChange={() => this.setShowRobotName(true)} />
+												<span>色と名前で区別する</span>
+											</label>
+										</div>
+
+										{this.props.hasTutrial && <div className="buttons setting-item">
+											<div className="setting-title">起動時</div>
+											<label>
+												<input type="radio" name="usetutrial" value="true"
+													checked={ !! this.state.useTutrial}
+													onChange={() => this.setUseTutrial(true)} />
+												<span>チュートリアルあり</span>
+											</label>
+											<label>
+												<input type="radio" name="usetutrial" value="false"
+													checked={ ! this.state.useTutrial}
+													onChange={() => this.setUseTutrial(false)} />
+												<span>チュートリアルなし</span>
+											</label>
+										</div>}
+
+									</div>
+								}
+							</div>
+						}
+					</div>;
+				}
+			}
+
+			let Covered = function(props){
+				return <span className={
+					"covered" +
+					(props.short ? " short" : "") + 
+					(props.long ? " long" : "")
+				}>
+					{ props.isOpen ? props.value : " " }
+				</span>
+			}
+
+		</script>
+
+	</body>
+</html>
