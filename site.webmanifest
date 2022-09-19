@@ -1,6 +1,7 @@
 {
-    "name": "Passtime Robot Trainer",
+    "name": "Pocket Robot Trainer",
     "short_name": "Robots",
+    "description": "Improve your robot skills using pockets of time.",
     "icons": [
         {
             "src": "favicon/android-chrome-192x192.png",
