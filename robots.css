@@ -1,5 +1,23 @@
 * { box-sizing: content-box; font-size: 16px; line-height: 36px; }
-.all { width: min-content; margin: auto; }
+body { margin: 0; width: 100%; max-height: 100vh; }
+#root { max-height: 100vh; }
+.all { width: min-content; height: min-content; margin: auto; }
+
+@media (max-height: 850px){
+	.all { transform: scale(80%); transform-origin: top center; }
+}
+@media (max-height: 690px){
+	.all { transform: scale(60%); }
+}
+@media (max-height: 520px){
+	.all { transform: scale(40%); }
+}
+@media (min-width: 580px) and (min-height: 1050px){
+	.all { transform: scale(120%); transform-origin: top center; }
+}
+@media (min-width: 750px) and (min-height: 1280px){
+	.all { transform: scale(150%); }
+}
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px; position: relative; }
