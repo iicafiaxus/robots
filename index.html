@@ -289,6 +289,7 @@
 					onMouseLeave={() => setIsPressed(false)}
 					onTouchStart={() => setIsPressed(true)}
 					onTouchEnd={() => setIsPressed(false)}
+					onClick={props.showAnswer}
 					>
 					{ robotProps.map(_ => <Robot
 						key={_.key} x={_.x} y={_.y} isMain={_.isMain}
@@ -398,6 +399,14 @@
 					this.setState({isDescriptionOpen : ! this.state.isDescriptionOpen});
 				}
 				
+				showNextAnswer(){
+					if( ! this.state.showAnswerAlways && ! this.state.isAnswerOpen){
+						this.setState({ isAnswerOpen: true });
+					}
+					else if( ! this.state.isDescriptionOpen) this.setState({ isDescriptionOpen: true });
+					else this.setState({ isAnswerOpen: false, isDescriptionOpen: false });
+				}
+
 				resetBoard(){
 					console.log("resetting board");
 					this.resetBoardInternal(0);
@@ -548,6 +557,7 @@
 							showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
 							showsRoute={this.state.isDescriptionOpen}
 							isLoading={this.state.isLoading}
+							showAnswer={this.showNextAnswer.bind(this)}
 						/>
 						<div className="buttons">
 							<button className={"cover-title" +
