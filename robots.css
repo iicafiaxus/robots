@@ -22,13 +22,14 @@ body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; 
 @media (min-width: 960px) and (min-height: 1700px){ body { transform: scale(200%); }}
 
 .board { display: grid; width: auto; align-items: center; 
-	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px; position: relative; }
+	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
+	position: relative; cursor: pointer; }
 .board.loading .cell *, .board.loading .robot{ opacity: 0; }
 .board.loading .cell.shade{ background: transparent; border-color: #eee; }
 .board.loading .loading-message { opacity: 100; position: absolute; 
 	width: 100%; display: table-cell; 
 	text-align: center; vertical-align: middle; z-index: 110; }
-.board.pressed { transform: scale(99%); }
+.board.pressed { transform: scale(99.5%); opacity: 90%; }
 
 .cell { width: 40px; height: 40px; margin: 0px; position: relative; 
 	border: 1px solid #eee; background: #fff }
