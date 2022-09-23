@@ -28,6 +28,7 @@ body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; 
 .board.loading .loading-message { opacity: 100; position: absolute; 
 	width: 100%; display: table-cell; 
 	text-align: center; vertical-align: middle; z-index: 110; }
+.board.pressed { transform: scale(99%); }
 
 .cell { width: 40px; height: 40px; margin: 0px; position: relative; 
 	border: 1px solid #eee; background: #fff }

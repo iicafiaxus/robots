@@ -142,6 +142,8 @@
 				let height = props.height || 16
 				let width = props.width || 16
 
+				let [isPressed, setIsPressed] = React.useState(false);
+
 				let toKey = (x, y) => x + "/" + y;
 
 				let cellProps = [];
@@ -279,7 +281,15 @@
 					}
 				}
 
-				return <div className={"board" + (props.isLoading ? " loading" : "")}>
+				return <div className={"board" +
+					(props.isLoading ? " loading" : "") + 
+					(isPressed ? " pressed" : "")}
+					onMouseDown={() => setIsPressed(true)}
+					onMouseUp={() => setIsPressed(false)}
+					onMouseLeave={() => setIsPressed(false)}
+					onTouchStart={() => setIsPressed(true)}
+					onTouchEnd={() => setIsPressed(false)}
+					>
 					{ robotProps.map(_ => <Robot
 						key={_.key} x={_.x} y={_.y} isMain={_.isMain}
 						number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
