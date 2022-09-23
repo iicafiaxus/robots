@@ -82,6 +82,7 @@ body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; 
 .buttons button { line-height: unset; background: #ab44; border-radius: 4px; min-width: 3em;
 	cursor: pointer; user-select: none; }
 .buttons button:hover { background: #ab48; position: relative; left: 1px; top: 1px; }
+.buttons button:active { transform: scale(97.5%); }
 
 .buttons button.disabled { background: transparent; cursor: default; }
 .buttons button.disabled:hover { background: transparent; left: 0; top: 0; }
@@ -96,6 +97,7 @@ body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; 
 .buttons label > input[type=radio]:checked + *,
 .buttons label > input[type=radio]:checked + *:hover { border-color: #ab4; background: #ab44; }
 .buttons label > input[type=radio] + *:hover { border-color: #ab42; background: #ab42; }
+.buttons label > input[type=radio]:active + * { transform: scale(97.5%); }
 
 .covered { display: inline-block; text-align: center; min-width: 6em;
 	background: transparent; border-bottom: 1px solid #ab44; line-height: 34px; 
