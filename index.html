@@ -512,6 +512,11 @@
 					save("useTutrial", value);
 				}
 
+				setSettingValue(name, value){
+					this.setState({ [name] : value });
+					save(name, value);
+				}
+
 				render(){
 					let param = this.state.params[this.state.paramName];
 					return <div className={"all" + 
