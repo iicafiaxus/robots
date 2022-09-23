@@ -544,54 +544,57 @@
 
 				render(){
 					let param = this.state.params[this.state.paramName];
-					return <div className={"all" + 
-						(" size" + this.state.boardSize)
-					}>
-						<div className="buttons">
-							<div className="flex-filler" />
-							<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
-							<div className="flex-filler" />
-							<button className="material" onClick={this.openSettings.bind(this)}>
-								<span className="material-icons">settings</span>
-							</button>
-						</div>
+					return <div>
+						<div className={"all" + 
+							(" size" + this.state.boardSize)
+						}>
+							<div className="buttons">
+								<div className="flex-filler" />
+								<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
+								<div className="flex-filler" />
+								<button className="material" onClick={this.openSettings.bind(this)}>
+									<span className="material-icons">settings</span>
+								</button>
+							</div>
 
-						<div className="buttons">
-							<button className={"cover-title" +
-								(this.state.showAnswerAlways ? " disabled" : "")}
-								onClick={this.toggleAnswer.bind(this)}
-							>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
-							<Covered value={this.state.solution.length} short={true}
-								isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
-							 />
-							<div className="flex-filler" />
-							<button onClick={this.resetBoard.bind(this)}>次の問題を表示</button>
-							<div className="flex-filler" />
-						</div>
-						<div className="buttons">
-							<button className="cover-title"
-								onClick={this.toggleDescription.bind(this)}
-							>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-							<Covered value={this.state.solution.description} long={true}
-								isOpen={this.state.isDescriptionOpen}
+							<div className="buttons">
+								<button className={"cover-title" +
+									(this.state.showAnswerAlways ? " disabled" : "")}
+									onClick={this.toggleAnswer.bind(this)}
+								>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
+								<Covered value={this.state.solution.length} short={true}
+									isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
+								/>
+								<div className="flex-filler" />
+								<button onClick={this.resetBoard.bind(this)}>次の問題を表示</button>
+								<div className="flex-filler" />
+							</div>
+							<div className="buttons">
+								<button className="cover-title"
+									onClick={this.toggleDescription.bind(this)}
+								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+								<Covered value={this.state.solution.description} long={true}
+									isOpen={this.state.isDescriptionOpen}
+								/>
+							</div>
+
+							<Board 
+								width={this.state.boardWidth}
+								height={this.state.boardHeight}
+								scale={this.state.boardScale}
+								robots={this.state.robots} walls={this.state.walls}
+								lines={this.state.solution.lines}
+								showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
+								showsRoute={this.state.isDescriptionOpen}
+								isLoading={this.state.isLoading}
+								showAnswer={this.showNextAnswer.bind(this)}
 							/>
 						</div>
-
-						<Board 
-							width={this.state.boardWidth}
-							height={this.state.boardHeight}
-							scale={this.state.boardScale}
-							robots={this.state.robots} walls={this.state.walls}
-							lines={this.state.solution.lines}
-							showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
-							showsRoute={this.state.isDescriptionOpen}
-							isLoading={this.state.isLoading}
-							showAnswer={this.showNextAnswer.bind(this)}
-						/>
 
 						{this.state.isModalOpen	&&
 							<div className="modal-back" onClick={this.closeModal.bind(this)} />
 						}
+
 						{this.state.isModalOpen	&&
 							<div className="modal-front">
 								{this.state.modalName == "settings" &&
@@ -671,7 +674,7 @@
 								}
 							</div>
 						}
-					</div>;
+					</div>
 				}
 			}
 

@@ -1,25 +1,26 @@
 * { box-sizing: content-box; font-size: 16px; line-height: 36px; }
 html { overflow: hidden; }
-body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; }
+body { margin: 0; width: 100%; max-height: 100vh; }
 #root { max-height: 100vh; }
-.all { width: min-content; height: min-content; margin: auto; }
+.all { width: fit-content; height: max-content;
+	max-width: 480px; max-height: 850px; margin: auto; transform-origin: top center; }
 
-@media (min-width: 240px) and (min-height: 420px){ body { transform: scale(50%); }}
-@media (min-width: 285px) and (min-height: 505px){ body { transform: scale(60%); }}
-@media (min-width: 335px) and (min-height: 590px){ body { transform: scale(70%); }}
-@media (min-width: 385px) and (min-height: 675px){ body { transform: scale(80%); }}
-@media (min-width: 435px) and (min-height: 760px){ body { transform: scale(90%); }}
-@media (min-width: 480px) and (min-height: 850px){ body { transform: scale(100%); }}
-@media (min-width: 530px) and (min-height: 935px){ body { transform: scale(110%); }}
-@media (min-width: 580px) and (min-height: 1020px){ body { transform: scale(120%); }}
-@media (min-width: 630px) and (min-height: 1105px){ body { transform: scale(130%); }}
-@media (min-width: 680px) and (min-height: 1190px){ body { transform: scale(140%); }}
-@media (min-width: 720px) and (min-height: 1275px){ body { transform: scale(150%); }}
-@media (min-width: 770px) and (min-height: 1360px){ body { transform: scale(160%); }}
-@media (min-width: 820px) and (min-height: 1445px){ body { transform: scale(170%); }}
-@media (min-width: 870px) and (min-height: 1530px){ body { transform: scale(180%); }}
-@media (min-width: 920px) and (min-height: 1615px){ body { transform: scale(190%); }}
-@media (min-width: 960px) and (min-height: 1700px){ body { transform: scale(200%); }}
+@media (min-width: 240px) and (min-height: 420px){ .all { transform: scale(50%); }}
+@media (min-width: 285px) and (min-height: 505px){ .all { transform: scale(60%); }}
+@media (min-width: 335px) and (min-height: 590px){ .all { transform: scale(70%); }}
+@media (min-width: 385px) and (min-height: 675px){ .all { transform: scale(80%); }}
+@media (min-width: 435px) and (min-height: 760px){ .all { transform: scale(90%); }}
+@media (min-width: 480px) and (min-height: 850px){ .all { transform: scale(100%); }}
+@media (min-width: 530px) and (min-height: 935px){ .all { transform: scale(110%); }}
+@media (min-width: 580px) and (min-height: 1020px){ .all { transform: scale(120%); }}
+@media (min-width: 630px) and (min-height: 1105px){ .all { transform: scale(130%); }}
+@media (min-width: 680px) and (min-height: 1190px){ .all { transform: scale(140%); }}
+@media (min-width: 720px) and (min-height: 1275px){ .all { transform: scale(150%); }}
+@media (min-width: 770px) and (min-height: 1360px){ .all { transform: scale(160%); }}
+@media (min-width: 820px) and (min-height: 1445px){ .all { transform: scale(170%); }}
+@media (min-width: 870px) and (min-height: 1530px){ .all { transform: scale(180%); }}
+@media (min-width: 920px) and (min-height: 1615px){ .all { transform: scale(190%); }}
+@media (min-width: 960px) and (min-height: 1700px){ .all { transform: scale(200%); }}
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
