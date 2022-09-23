@@ -16,6 +16,9 @@
 		<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
    		<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 		<link rel="stylesheet" href="robots.css">
 		<script src="robotsolve.js"></script>
 	</head>
@@ -545,8 +548,12 @@
 						(" size" + this.state.boardSize)
 					}>
 						<div className="buttons">
+							<div className="flex-filler" />
 							<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
-							<button onClick={this.openSettings.bind(this)}>設定</button>
+							<div className="flex-filler" />
+							<button className="material" onClick={this.openSettings.bind(this)}>
+								<span className="material-icons">settings</span>
+							</button>
 						</div>
 
 						<div className="buttons">
