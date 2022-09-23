@@ -1,23 +1,25 @@
 * { box-sizing: content-box; font-size: 16px; line-height: 36px; }
-body { margin: 0; width: 100%; max-height: 100vh; }
+html { overflow: hidden; }
+body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; }
 #root { max-height: 100vh; }
 .all { width: min-content; height: min-content; margin: auto; }
 
-@media (max-height: 850px){
-	.all { transform: scale(80%); transform-origin: top center; }
-}
-@media (max-height: 690px){
-	.all { transform: scale(60%); }
-}
-@media (max-height: 520px){
-	.all { transform: scale(40%); }
-}
-@media (min-width: 580px) and (min-height: 1050px){
-	.all { transform: scale(120%); transform-origin: top center; }
-}
-@media (min-width: 750px) and (min-height: 1280px){
-	.all { transform: scale(150%); }
-}
+@media (min-width: 240px) and (min-height: 420px){ body { transform: scale(50%); }}
+@media (min-width: 285px) and (min-height: 505px){ body { transform: scale(60%); }}
+@media (min-width: 335px) and (min-height: 590px){ body { transform: scale(70%); }}
+@media (min-width: 385px) and (min-height: 675px){ body { transform: scale(80%); }}
+@media (min-width: 435px) and (min-height: 760px){ body { transform: scale(90%); }}
+@media (min-width: 480px) and (min-height: 850px){ body { transform: scale(100%); }}
+@media (min-width: 530px) and (min-height: 935px){ body { transform: scale(110%); }}
+@media (min-width: 580px) and (min-height: 1020px){ body { transform: scale(120%); }}
+@media (min-width: 630px) and (min-height: 1105px){ body { transform: scale(130%); }}
+@media (min-width: 680px) and (min-height: 1190px){ body { transform: scale(140%); }}
+@media (min-width: 720px) and (min-height: 1275px){ body { transform: scale(150%); }}
+@media (min-width: 770px) and (min-height: 1360px){ body { transform: scale(160%); }}
+@media (min-width: 820px) and (min-height: 1445px){ body { transform: scale(170%); }}
+@media (min-width: 870px) and (min-height: 1530px){ body { transform: scale(180%); }}
+@media (min-width: 920px) and (min-height: 1615px){ body { transform: scale(190%); }}
+@media (min-width: 960px) and (min-height: 1700px){ body { transform: scale(200%); }}
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px; position: relative; }
@@ -44,11 +46,14 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	background: #ab48; }
 .robot.minirobot.main { background: #e054; }
 
-.wall { position: absolute; background: #850f; z-index: 100; border-radius: 2px; }
-.wall-x { width: calc(100% + 6px);  height: 3px; left: -3px; top: calc(100% - 1px); }
-.wall-y { width: 3px; height: calc(100% + 6px); top: -3px; left: calc(100% - 1px); }
-.wall-x.wall-back { top: -2px; }
-.wall-y.wall-back { left: -2px; }
+.wall { position: absolute; background: #850f; z-index: 100; border-radius: calc(0.5px + 1px); }
+.wall-x { width: calc(100% + 2px + 2px);  height: calc(1px + 2px);
+	left: calc(-1px - 1px); top: calc(100% - 1px); }
+.wall-y { width: calc(1px + 2px); height: calc(100% + 2px + 2px);
+	top: calc(-1px - 1px); left: calc(100% - 1px); }
+.wall-x.wall-back { top: calc(-1px - 1px); }
+.wall-y.wall-back { left: calc(-1px - 1px); }
+
 
 .goal { position: absolute;
 	width: calc(100% + 4px); height: calc(100% + 4px);
