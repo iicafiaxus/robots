@@ -24,7 +24,8 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
-	position: relative; cursor: pointer; -webkit-tap-highlight-color: #0000;}
+	position: relative; cursor: pointer; -webkit-tap-highlight-color: #0000;
+	background: #ffff; }
 .board.loading .cell *, .board.loading .robot{ opacity: 0; }
 .board.loading .cell.shade{ background: transparent; border-color: #eee; }
 .board.loading .loading-message { opacity: 100; position: absolute; 
@@ -33,7 +34,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .board.pressed { transform: scale(99.5%); opacity: 90%; }
 
 .cell { width: 40px; height: 40px; margin: 0px; position: relative; 
-	border: 1px solid #eee; background: #fff }
+	border: 1px solid #eee; background: transparent; }
 .cell.shade { background: repeating-linear-gradient(-45deg,
 	transparent 0%, transparent 7%, #8509 7%, #8509 10%
 	); background-origin: 0px 0px;
