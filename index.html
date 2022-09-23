@@ -82,13 +82,14 @@
 			}
 
 			let Robot = function(props){
+				let du = 6;
 				return <div
 					className={"robot" + (props.isMain ? " main" : "")}
 					style={{
 						gridRow: (props.x || 0) + 1,
 						gridColumn: (props.y || 0) + 1,
-						top: props.dx * 6 + "px",
-						left: props.dy * 6 + "px"
+						top: props.dx * du + "px",
+						left: props.dy * du + "px"
 					}}
 				>
 					{props.number ? ["", "A", "B", "C", "D", "E", "F", "G", "H"][props.number] : null }
@@ -96,13 +97,14 @@
 			}
 
 			let MiniRobot = function(props){
+				let du = 6;
 				return <div
 					className={"robot minirobot" + (props.isMain ? " main" : "")}
 					style={{
 						gridRow: (props.x || 0) + 1,
 						gridColumn: (props.y || 0) + 1,
-						top: props.dx * 6 + "px",
-						left: props.dy * 6 + "px"
+						top: props.dx * du + "px",
+						left: props.dy * du + "px"
 					}}
 				>
 				</div>
@@ -120,17 +122,18 @@
 				let x1 = Math.min(props.sx, props.tx), x2 = Math.max(props.sx, props.tx);
 				let y1 = Math.min(props.sy, props.ty), y2 = Math.max(props.sy, props.ty);
 				let xoff = dx2 - dx1, yoff = dy2 - dy1;
+				let du = 6;
 				return <div
 					className={"trace" + (props.i == "0" ? " main" : "")}
 					style={{
 						gridRow: (x1 + 1) + " / " + (x2 + 2),
 						gridColumn: (y1 + 1) + " / " + (y2 + 2),
-						top: (dx + dx1 + (xoff > 0 ? xoff / 2 : 0)) * 6 + "px",
-						left: (dy + dy1 + (yoff > 0 ? yoff / 2 : 0)) * 6 + "px",
-						paddingBottom: xoff > 0 ? xoff * 6 + "px" : "0",
-						paddingRight: yoff > 0 ? yoff * 6 + "px" : "0",
-						clipPath: "inset( -1px " + (yoff < 0 ? -yoff * 6 + "px" : "-1px") + " " +
-							(xoff < 0 ? -xoff * 6 + "px" : "-1px") + " -1px)"
+						top: (dx + dx1 + (xoff > 0 ? xoff / 2 : 0)) * du + "px",
+						left: (dy + dy1 + (yoff > 0 ? yoff / 2 : 0)) * du + "px",
+						paddingBottom: xoff > 0 ? xoff * du + "px" : "0",
+						paddingRight: yoff > 0 ? yoff * du + "px" : "0",
+						clipPath: "inset( -1px " + (yoff < 0 ? -yoff * du + "px" : "-1px") + " " +
+							(xoff < 0 ? -xoff * du + "px" : "-1px") + " -1px)"
 					}}
 				></div>
 			}
