@@ -549,33 +549,52 @@
 							(" size" + this.state.boardSize)
 						}>
 							<div className="buttons">
+
 								<div className="flex-filler" />
+
 								<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
+
 								<div className="flex-filler" />
-								<button className="material" onClick={this.openSettings.bind(this)}>
+
+								<button className="material unimportant" onClick={this.openSettings.bind(this)}>
 									<span className="material-icons">settings</span>
 								</button>
+
 							</div>
 
 							<div className="buttons">
-								<button className={"cover-title" +
-									(this.state.showAnswerAlways ? " disabled" : "")}
+
+								<button className="material large important" onClick={this.resetBoard.bind(this)}>
+									<span className="material-icons">refresh</span>
+								</button>
+
+								<button className={"cover-title short" +
+									(this.state.showAnswerAlways ? " disabled" : "") + 
+									(this.state.isAnswerOpen || this.state.showAnswerAlways ? " isOpen" : "")
+								}
 									onClick={this.toggleAnswer.bind(this)}
 								>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
-								<Covered value={this.state.solution.length} short={true}
+								<Covered value={this.state.solution.length}
+									short={true}
 									isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
+									onClick={this.toggleAnswer.bind(this)}
 								/>
-								<div className="flex-filler" />
-								<button onClick={this.resetBoard.bind(this)}>次の問題を表示</button>
-								<div className="flex-filler" />
-							</div>
-							<div className="buttons">
-								<button className="cover-title"
+
+								<button className={"cover-title long" + 
+									(this.state.isDescriptionOpen ? " isOpen" : "")
+								}
 									onClick={this.toggleDescription.bind(this)}
 								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-								<Covered value={this.state.solution.description} long={true}
+								<Covered
+									title={this.state.showAnswerAlways ? "解答例" : "解説"}
+									value={this.state.solution.description}
+									long={true}
 									isOpen={this.state.isDescriptionOpen}
+									onClick={this.toggleDescription.bind(this)}
 								/>
+
+							</div>
+							<div className="buttons">
 							</div>
 
 							<Board 
@@ -682,8 +701,11 @@
 				return <span className={
 					"covered" +
 					(props.short ? " short" : "") + 
-					(props.long ? " long" : "")
-				}>
+					(props.long ? " long" : "") + 
+					(props.isOpen ? " isOpen" : "")
+				}
+					onClick={props.onClick}
+				>
 					{ props.isOpen ? props.value : " " }
 				</span>
 			}
