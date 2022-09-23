@@ -23,7 +23,7 @@ body { margin: 0; width: 100%; max-height: 100vh; transform-origin: top center; 
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
-	position: relative; cursor: pointer; }
+	position: relative; cursor: pointer; -webkit-tap-highlight-color: #0000;}
 .board.loading .cell *, .board.loading .robot{ opacity: 0; }
 .board.loading .cell.shade{ background: transparent; border-color: #eee; }
 .board.loading .loading-message { opacity: 100; position: absolute; 
