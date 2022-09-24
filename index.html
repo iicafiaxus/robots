@@ -552,9 +552,6 @@
 
 								<div className="flex-filler" />
 
-								<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
-
-								<div className="flex-filler" />
 
 								<button className="material unimportant" onClick={this.openSettings.bind(this)}>
 									<span className="material-icons">settings</span>
@@ -568,31 +565,23 @@
 									<span className="material-icons">refresh</span>
 								</button>
 
-								<button className={"cover-title short" +
+								<div className="flex-filler" />
+
+								<span>{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}</span>
+
+								<div className="flex-filler" />
+
+								<button className={"cover-title short2" +
 									(this.state.showAnswerAlways ? " disabled" : "") + 
 									(this.state.isAnswerOpen || this.state.showAnswerAlways ? " isOpen" : "")
 								}
 									onClick={this.toggleAnswer.bind(this)}
 								>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
 								<Covered value={this.state.solution.length}
-									short={true}
+									size="short2"
 									large={true}
 									isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
 									onClick={this.toggleAnswer.bind(this)}
-								/>
-
-								<button className={"cover-title long" + 
-									(this.state.isDescriptionOpen ? " isOpen" : "")
-								}
-									onClick={this.toggleDescription.bind(this)}
-								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-								<Covered
-									title={this.state.showAnswerAlways ? "解答例" : "解説"}
-									value={this.state.solution.description}
-									long={true}
-									large={true}
-									isOpen={this.state.isDescriptionOpen}
-									onClick={this.toggleDescription.bind(this)}
 								/>
 
 							</div>
@@ -610,6 +599,23 @@
 								isLoading={this.state.isLoading}
 								showAnswer={this.showNextAnswer.bind(this)}
 							/>
+
+							<div className="buttons fullwidth">
+								<button className={"cover-title long" + 
+									(this.state.isDescriptionOpen ? " isOpen" : "")
+								}
+									onClick={this.toggleDescription.bind(this)}
+								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+								<Covered
+									title={this.state.showAnswerAlways ? "解答例" : "解説"}
+									value={this.state.solution.description}
+									size="long"
+									large={true}
+									isOpen={this.state.isDescriptionOpen}
+									onClick={this.toggleDescription.bind(this)}
+								/>
+							</div>
+
 						</div>
 
 						{this.state.isModalOpen	&&
@@ -702,8 +708,9 @@
 			let Covered = function(props){
 				return <span className={
 					"covered" +
-					(props.short ? " short" : "") + 
-					(props.long ? " long" : "") + 
+					(props.size == "short" ? " short" : "") + 
+					(props.size == "short2" ? " short2" : "") + 
+					(props.size == "long" ? " long" : "") + 
 					(props.large ? " large" : "") + 
 					(props.isOpen ? " isOpen" : "")
 				}
