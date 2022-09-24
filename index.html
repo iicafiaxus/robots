@@ -576,6 +576,7 @@
 								>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
 								<Covered value={this.state.solution.length}
 									short={true}
+									large={true}
 									isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
 									onClick={this.toggleAnswer.bind(this)}
 								/>
@@ -702,6 +703,7 @@
 					"covered" +
 					(props.short ? " short" : "") + 
 					(props.long ? " long" : "") + 
+					(props.large ? " large" : "") + 
 					(props.isOpen ? " isOpen" : "")
 				}
 					onClick={props.onClick}
