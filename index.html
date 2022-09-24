@@ -490,7 +490,7 @@
 						boardSize: param.size,
 						robots: robots,
 						walls: walls,
-						solution: {length: "計算中", description: "解析しています..."},
+						solution: {length: "…", description: "解析しています..."},
 						isLoading: true
 					});
 					this.closeAnswer();
@@ -590,6 +590,7 @@
 									title={this.state.showAnswerAlways ? "解答例" : "解説"}
 									value={this.state.solution.description}
 									long={true}
+									large={true}
 									isOpen={this.state.isDescriptionOpen}
 									onClick={this.toggleDescription.bind(this)}
 								/>
