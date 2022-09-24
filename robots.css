@@ -77,9 +77,11 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .size35 .robot:not(.minirobot) { font-size: 17.5px; width: 28px; height: 28px; line-height: 28px; }
 .size35 .trace { max-width: calc(100% - 35px + 1px); max-height: calc(100% - 35px + 1px); }
 
-.buttons { text-align: center; margin: 0.2em auto; padding: 0.4em;
+.buttons { text-align: center; margin: 0.2em auto; padding: 0.4em 0;
 	display: flex; justify-content: space-around; max-width: 480px; }
+.buttons.fullwidth { justify-content: space-between; }
 .buttons > * { width: fit-content; line-height: 36px; border: 1px solid transparent; }
+.buttons > * + * { margin-left: 2px; }
 
 .buttons button { line-height: unset; background: #ab44; border-radius: 4px; min-width: 3em;
 	cursor: pointer; user-select: none; }
@@ -94,7 +96,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .buttons button.unimportant { background: transparent; border: 1px solid #ab44; }
 @media (hover: hover) { .buttons button.unimportant:hover { background: #ab48; } }
 
-.buttons button.important { background: transparent; border: 1px solid #e052; margin: 0 8px; 
+.buttons button.important { background: transparent; border: 1px solid #e052;
 	min-width: 60px; }
 @media (hover: hover) { .buttons button.important:hover { background: #e054; } }
 
@@ -106,13 +108,13 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .buttons label > input[type=radio] + *{ padding: 6px 8px; margin: 2px; line-height: 36px; 
 	border: #eee 2px solid; border-radius: 6px; user-select: none; cursor: pointer; }
 .buttons label > input[type=radio]:checked + *,
+.buttons label > input[type=radio]:checked + *:hover { border-color: #ab4; background: #ab44; }
 @media (hover: hover) {
-	.buttons label > input[type=radio]:checked + *:hover { border-color: #ab4; background: #ab44; }
 	.buttons label > input[type=radio] + *:hover { border-color: #ab42; background: #ab42; }
 }
 .buttons label > input[type=radio]:active + * { transform: scale(97.5%); }
 
-.covered { display: inline-block; text-align: center; margin: 0 2px; 
+.covered { display: inline-block; text-align: center;
 	background: transparent; border-bottom: 1px solid #ab44; line-height: 34px; 
 	padding: 0 0.4em; min-height: 1.5em; line-height: 36px; vertical-align: middle; }
 .covered.short { width: 60px; padding: 0; }
@@ -121,7 +123,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 
 .flex-filler { flex-grow: 1; }
 
-.buttons button.cover-title { display: inline-block; margin: 0 2px; width: fit-content; }
+.buttons button.cover-title { display: inline-block; width: fit-content; }
 .buttons button.cover-title.short { width: 60px; }
 .buttons button.cover-title.long { flex-grow: 1; }
 .buttons button.cover-title.isOpen { display: none; }
