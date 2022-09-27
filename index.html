@@ -164,7 +164,10 @@
 
 				let movePress = function(ev){
 					if( ! isPressed) return;
-					if( ! ev.buttons && ! (ev.touches && ev.touches.length)) return;
+					if( ! ev.buttons && ! (ev.touches && ev.touches.length)){
+						resetPress();
+						return;
+					}
 					setPoint({
 						x: ev.clientX || ev.touches[0] && ev.touches[0].clientX,
 						y: ev.clientY || ev.touches[0] && ev.touches[0].clientY
@@ -173,18 +176,21 @@
 						(point.x - origin.x) * (point.x - origin.x) + (point.y - origin.y) * (point.y - origin.y)
 					));
 					setIsClicking( isClicking && dragDistance <= 4);
-					setIsDragging( dragDistance > 4);
-					setIsDiscarding( Math.abs(point.x - origin.x) > 100);
+					setIsDragging( ev.touches && dragDistance > 4);
+					setIsDiscarding( ev.touches && point.y - origin.y > 40 && point.y > 700);
 				}
 
 				let stopPress = function(ev){
 					if(isClicking && ! ev.touches) props.showAnswer();
 					if(isDiscarding) props.resetBoard();
+					resetPress();
+				}
+
+				let resetPress = function(){
 					setIsDiscarding(false);
 					setIsClicking(false);
 					setIsDragging(false);
 					setIsPressed(false);
-					;
 				}
 
 				let toKey = (x, y) => x + "/" + y;
@@ -333,7 +339,7 @@
 					style={{
 						left: (isDragging ? (point.x - origin.x) : 0),
 						top: (isDragging ? (point.y - origin.y) : 0),
-						transform: (isDragging ? "scale(" + (100 / (dragDistance + 96)) + ")" : "none")
+						transform: (isDragging ? "scale(" + (100 / (dragDistance + 96)) + ")" : null)
 					}}
 					onMouseDown={startPress}
 					onMouseUp={stopPress}
