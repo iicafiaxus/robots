@@ -333,13 +333,12 @@
 				return <div className={"board" +
 					(props.isLoading ? " loading" : "") + 
 					(isPressed ? " pressed" : "") + 
-					(isDragging ? " dragging" : "") + 
-					(isDiscarding ? " discarding" : "")
+					(isDragging ? " dragging" : "")
 					}
 					style={{
 						left: (isDragging ? (point.x - origin.x) : 0),
 						top: (isDragging ? (point.y - origin.y) : 0),
-						transform: (isDragging ? "scale(" + (100 / (dragDistance + 96)) + ")" : null)
+						transform: (0 && isDragging ? "scale(" + (100 / (dragDistance + 96)) + ")" : null)
 					}}
 					onMouseDown={startPress}
 					onMouseUp={stopPress}
@@ -379,6 +378,7 @@
 					)}
 					{ props.isLoading ? <div className="loading-message">
 					</div> : null }
+					{ isDiscarding ? <div className="discarding" /> : null }
 				</div>
 			}
 			let WallX = function(props){
