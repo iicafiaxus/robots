@@ -39,8 +39,9 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	text-align: center; line-height: 400px; color: #ffff; }
 .board .discarding .material-icons { font-size: 48px; }
 
-.board-wrapper { position: relative; }
-.board.back { position: absolute; }
+.board-wrapper { position: relative; overflow: hidden; }
+.board.back { position: absolute; opacity: 90%; border-color: #eee; }
+.board.back .wall { background: transparent; }
 
 .cell { width: 40px; height: 40px; margin: 0px; position: relative; 
 	border: 1px solid #eee; background: transparent; }
