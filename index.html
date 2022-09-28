@@ -333,7 +333,8 @@
 				return <div className={"board" +
 					(props.isLoading ? " loading" : "") + 
 					(isPressed ? " pressed" : "") + 
-					(isDragging ? " dragging" : "")
+					(isDragging ? " dragging" : "") + 
+					(props.isBack ? " back" : "")
 					}
 					style={{
 						top: (isDragging && point.y > origin.y ? point.y - origin.y : 0),
@@ -645,18 +646,34 @@
 							<div className="buttons">
 							</div>
 
-							<Board 
-								width={this.state.boardWidth}
-								height={this.state.boardHeight}
-								scale={this.state.boardScale}
-								robots={this.state.robots} walls={this.state.walls}
-								lines={this.state.solution.lines}
-								showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
-								showsRoute={this.state.isDescriptionOpen}
-								isLoading={this.state.isLoading}
-								showAnswer={this.showNextAnswer.bind(this)}
-								resetBoard={this.resetBoard.bind(this)}
-							/>
+							<div className="board-wrapper">
+								<Board 
+									width={param.width}
+									height={param.height}
+									scale={param.scale}
+									robots={[]} walls={[]}
+									lines={[]}
+									showsNumber={false}
+									showsRoute={false}
+									isLoading={false}
+									showAnswer={null}
+									resetBoard={null}
+									isBack={true}
+								/>
+
+								<Board 
+									width={this.state.boardWidth}
+									height={this.state.boardHeight}
+									scale={this.state.boardScale}
+									robots={this.state.robots} walls={this.state.walls}
+									lines={this.state.solution.lines}
+									showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
+									showsRoute={this.state.isDescriptionOpen}
+									isLoading={this.state.isLoading}
+									showAnswer={this.showNextAnswer.bind(this)}
+									resetBoard={this.resetBoard.bind(this)}
+								/>
+							</div>
 
 							<div className="buttons fullwidth">
 								<button className={"cover-title long" + 
