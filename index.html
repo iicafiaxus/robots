@@ -177,7 +177,7 @@
 					));
 					setIsClicking( isClicking && dragDistance <= 4);
 					setIsDragging( ev.touches && dragDistance > 4);
-					setIsDiscarding( ev.touches && point.y - origin.y > 40 && point.y > 700);
+					setIsDiscarding( ev.touches && point.y - origin.y > 40);
 				}
 
 				let stopPress = function(ev){
@@ -336,9 +336,7 @@
 					(isDragging ? " dragging" : "")
 					}
 					style={{
-						left: (isDragging ? (point.x - origin.x) : 0),
-						top: (isDragging ? (point.y - origin.y) : 0),
-						transform: (0 && isDragging ? "scale(" + (100 / (dragDistance + 96)) + ")" : null)
+						top: (isDragging && point.y > origin.y ? point.y - origin.y : 0),
 					}}
 					onMouseDown={startPress}
 					onMouseUp={stopPress}
@@ -378,7 +376,9 @@
 					)}
 					{ props.isLoading ? <div className="loading-message">
 					</div> : null }
-					{ isDiscarding ? <div className="discarding" /> : null }
+					{ isDiscarding ? <div className="discarding">
+						<span className="material-icons">delete_forever</span>
+					</div> : null }
 				</div>
 			}
 			let WallX = function(props){
