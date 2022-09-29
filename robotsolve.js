@@ -137,6 +137,33 @@ let Solver = function(width, height, robots, walls){
 		return res;
 	}
 
+	this.isDirsGood = function(dirs){
+		let lines = this.traceLines(this.key, dirs);
+		let line = lines[lines.length - 1];
+		return line.iRobot == 0 && line.tx == this.xGoal && line.ty == this.yGoal;
+	}
+
+	this.normalize = function(dirs){
+		let n = dirs.length;
+		let res = [];
+		for(dir of dirs) res.push(dir);
+		
+		for(let j = n - 1; j > 0; j --){
+			for(let i = j - 1; i >= 0; i --){
+				if(res[i].iRobot == res[j].iRobot){
+					let tmp = [];
+					for(re of res.slice(0, i)) tmp.push(re);
+					for(re of res.slice(i + 1, j)) tmp.push(re);
+					tmp.push(res[i]);
+					for(re of res.slice(j, n)) tmp.push(re);
+					if(this.isDirsGood(tmp)) res = tmp;
+					break;
+				}
+			}
+		}
+		return res;
+	}
+
 	this.solve = function(onEnd){
 		let position = [];
 		for(let robot of this.robots) position.push(robot.y), position.push(robot.x);
@@ -170,7 +197,7 @@ let Solver = function(width, height, robots, walls){
 			if(k % this.mults[2] == this.goal){
 				console.log(`(solver) found in ${this.iq}`);
 				console.log(`(solver) answer: ${v}`);
-				let dirs = this.decodeDirs(v, d);
+				let dirs = this.normalize(this.decodeDirs(v, d));
 				let description = this.makeDirString(dirs);
 				console.log(`(solver) ${description}`);
 				let lines = this.traceLines(this.key, dirs);
