@@ -146,7 +146,7 @@ let Solver = function(width, height, robots, walls){
 	this.normalize = function(dirs){
 		let n = dirs.length;
 		let res = [];
-		for(dir of dirs) res.push(dir);
+		for(let dir of dirs) res.push(dir);
 		
 		for(let j = n - 1; j > 0; j --){
 			for(let i = j - 1; i >= 0; i --){
