@@ -466,16 +466,16 @@
 					else this.setState({ isAnswerOpen: false, isDescriptionOpen: false });
 				}
 
-				resetBoard(){
-					console.log("resetting board");
-					this.resetBoardInternal(0);
+				makeMap(param){
+					console.log("(make map) making...");
+					return this.makeMapInternal(param, 0);
 				}
-				resetBoardInternal(totalCount){
-					if(totalCount > 100) return;
-					if(totalCount > 0) console.log("(reset) restarted " + totalCount);
+				makeMapInternal(param, totalCount){
+					if(totalCount > 20){
+						return { walls: [], robots: [{ key: 0, x: 0, y: 0, isMain: true }]};
+					}
+					if(totalCount > 0) console.log("(make map) retrying: " + totalCount);
 					let cnt = 0, cntLimit = 80;
-
-					let param = this.state.params[this.state.paramName];
 
 					let width = Math.max(param.width, 6);
 					let height = Math.max(param.height, 6);
@@ -533,15 +533,20 @@
 						if(isGoodRobot(x, y)) i += 1, robots.push({ key: i, x, y, isMain });
 					}
 
-					if(cnt >= cntLimit){
-						this.resetBoardInternal(totalCount + 1);
-						return;
+					if(cnt >= cntLimit) return this.makeMapInternal(param, totalCount + 1);
+					else{
+						console.log("(make map) done");
+						return { walls, robots };
 					}
-					else console.log("(reset) done");
+				}
+
+				resetBoard(){
+					let param = this.state.params[this.state.paramName];
+					let { walls, robots } = this.makeMap(param);
 
 					this.setState({
-						boardWidth: width,
-						boardHeight: height,
+						boardWidth: param.width,
+						boardHeight: param.height,
 						boardScale: param.scale,
 						boardSize: param.size,
 						robots: robots,
@@ -557,7 +562,7 @@
 
 						if(this.solver) this.solver.stop();
 						this.solver = new Solver(
-							width, height, this.state.robots, this.state.walls
+							param.width, param.height, this.state.robots, this.state.walls
 						);
 						this.solver.solve(this.setSolution.bind(this));
 					}.bind(this), 100);
@@ -651,7 +656,7 @@
 									width={param.width}
 									height={param.height}
 									scale={param.scale}
-									robots={[]} walls={[]}
+									robots={this.state.nextRobots || []} walls={this.state.nextWalls || []}
 									lines={[]}
 									showsNumber={false}
 									showsRoute={false}
