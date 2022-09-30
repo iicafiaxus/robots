@@ -542,7 +542,15 @@
 
 				resetBoard(){
 					let param = this.state.params[this.state.paramName];
-					let { walls, robots } = this.makeMap(param);
+
+					let walls, robots;
+					if(this.state.nextWalls && this.state.nextRobots){
+						walls = this.state.nextWalls, robots = this.state.nextRobots;
+					}
+					else{
+						let map = this.makeMap(param);
+						walls = map.walls, robots = map.robots;
+					}
 
 					this.setState({
 						boardWidth: param.width,
@@ -565,6 +573,13 @@
 							param.width, param.height, this.state.robots, this.state.walls
 						);
 						this.solver.solve(this.setSolution.bind(this));
+					}.bind(this), 0);
+
+					setTimeout(function(){
+						let next = this.makeMap(param);
+						this.setState({
+							nextWalls: next.walls, nextRobots: next.robots
+						});
 					}.bind(this), 100);
 
 				}
@@ -582,7 +597,7 @@
 				}
 
 				setParamName(name){
-					this.setState({ paramName : name });
+					this.setState({ paramName : name, nextWalls: void 0, nextRobots: void 0 });
 					save("paramName", name);
 				}
 				setShowAnswerAlways(value){
