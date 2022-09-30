@@ -59,7 +59,8 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	background: #ab48; }
 .robot.minirobot.main { background: #e054; }
 
-.wall { position: absolute; background: #850f; border-radius: calc(0.5px + 1px); }
+.wall { position: absolute; background: #850f; border-radius: calc(0.5px + 1px);
+	z-index: 100}
 .wall-x { width: calc(100% + 2px + 2px);  height: calc(1px + 2px);
 	left: calc(-1px - 1px); top: calc(100% - 1px); }
 .wall-y { width: calc(1px + 2px); height: calc(100% + 2px + 2px);
