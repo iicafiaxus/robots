@@ -576,7 +576,9 @@
 						boardSize: param.size,
 						robots: robots,
 						walls: walls,
-						solution: {length: "…", description: "解析しています..."},
+						solution: {length: "…", description: "解析しています...",
+							descriptions: ["解析しています..."], liness: [[]]},
+						lineNumber: 0,
 						isLoading: true
 					});
 					this.closeAnswer();
@@ -656,6 +658,7 @@
 					save("useTutrial", value);
 				}
 
+
 				setSettingValue(name, value){
 					this.setState({ [name] : value });
 					save(name, value);
@@ -709,6 +712,7 @@
 									isOpen={! this.state.isDragging && (
 										this.state.isAnswerOpen || this.state.showAnswerAlways
 									)}
+									isActive={true}
 									onClick={this.toggleAnswer.bind(this)}
 								/>
 
@@ -737,7 +741,8 @@
 									height={this.state.boardHeight}
 									scale={this.state.boardScale}
 									robots={this.state.robots} walls={this.state.walls}
-									lines={this.state.solution.lines}
+									lines={this.state.solution.liness && 
+										this.state.solution.liness[this.state.lineNumber]}
 									showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
 									showsRoute={this.state.isDescriptionOpen}
 									isLoading={this.state.isLoading}
@@ -747,22 +752,38 @@
 								/>
 							</div>
 
-							<div className="buttons fullwidth">
-								<button className={"cover-title long" + 
-									(this.state.isDragging ? " inactive" : "") +
-									( ! this.state.isDragging && this.state.isDescriptionOpen ? " isOpen" : "")
-								}
-									onClick={this.toggleDescription.bind(this)}
-								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-								<Covered
-									title={this.state.showAnswerAlways ? "解答例" : "解説"}
-									value={this.state.solution.description}
-									size="long"
-									large={true}
-									isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
-									onClick={this.toggleDescription.bind(this)}
-								/>
-							</div>
+							{this.state.solution && this.state.solution.descriptions &&
+								this.state.solution.descriptions.map(
+								(description, i) =>
+
+								<div className="buttons fullwidth" key={i}>
+
+									{i == 0 &&
+										<button className={"cover-title long" + 
+											(this.state.isDragging ? " inactive" : "") +
+											( ! this.state.isDragging && this.state.isDescriptionOpen ? " isOpen" : "")
+										}
+											onClick={this.toggleDescription.bind(this)}
+										>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+									}
+
+									<Covered
+										title={this.state.showAnswerAlways ? "解答例" : "解説"}
+										value={description}
+										size="fullwidth"
+										large={true}
+										isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
+										isActive={this.state.lineNumber == i}
+										onClick={
+											this.state.lineNumber == i ?
+											this.toggleDescription.bind(this) :
+											() => this.setState({ lineNumber: i })
+										}
+									/>
+
+								</div>
+
+							)}
 
 						</div>
 
@@ -875,8 +896,10 @@
 					(props.size == "short" ? " short" : "") + 
 					(props.size == "short2" ? " short2" : "") + 
 					(props.size == "long" ? " long" : "") + 
+					(props.size == "fullwidth" ? " long fullwidth" : "") + 
 					(props.large ? " large" : "") + 
-					(props.isOpen ? " isOpen" : "")
+					(props.isOpen ? " isOpen" : "") +
+					(props.isActive ? "" : " inactive")
 				}
 					onClick={props.onClick}
 				>
