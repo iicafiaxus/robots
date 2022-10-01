@@ -202,6 +202,7 @@ let Solver = function(width, height, robots, walls){
 				console.log(`(solver) ${description}`);
 				let lines = this.traceLines(this.key, dirs);
 				let result = { length: v, description, lines };
+				this.isWorking = false;
 				this.onEnd(result);
 				return;
 			}
@@ -217,6 +218,7 @@ let Solver = function(width, height, robots, walls){
 			if(this.iq > 4000000){
 				console.log(`(solver) aborted in ${this.iq}`);
 				this.onEnd({ length: -1, description: "解が見つかりませんでした" });
+				this.isWorking = false;
 				return;
 			}
 			else if(this.iq % 5000 == 0){

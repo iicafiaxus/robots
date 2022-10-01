@@ -551,6 +551,11 @@
 
 				resetBoard(){
 					let param = this.state.params[this.state.paramName];
+					
+					if(this.solver){
+						this.solver.stop();
+						this.solver = null;
+					}
 
 					let walls, robots;
 					if(this.state.nextWalls && this.state.nextRobots){
@@ -580,10 +585,14 @@
 							nextSolution: null
 						});
 					}
+					else if(this.nextSolver && this.nextSolver.isWorking){
+						this.solver = this.nextSolver;
+						this.solver.onEnd = this.setSolution.bind(this);
+						this.nextSolver = null;
+					}
 					else setTimeout(function(){
 						this.setState({ isLoading: false });
 
-						if(this.solver) this.solver.stop();
 						this.solver = new Solver(
 							param.width, param.height, this.state.robots, this.state.walls
 						);
