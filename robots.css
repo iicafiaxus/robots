@@ -27,13 +27,11 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
 	position: relative; cursor: pointer; -webkit-tap-highlight-color: #0000;
 	background: #ffff; }
-/*.board.loading .cell *, .board.loading .robot{ opacity: 0; }
-.board.loading .cell.shade{ background: transparent; border-color: #eee; }*/
 .board.loading .loading-message { opacity: 100; position: absolute; 
 	width: 100%; display: table-cell; 
 	text-align: center; vertical-align: middle; z-index: 110; }
-.board.pressed { transform: scale(99.5%); opacity: 90%; }
-.board.dragging { transform: scale(95%); opacity: 90%; }
+.board.pressed { transform: scale(99.5%); }
+.board.dragging { transform: scale(95%); }
 .board .discarding { position: absolute; width: 100%; height: 100%;  top: 0; left: 0;
 	background: #444e; opacity: 100%; z-index: 120;
 	text-align: center; line-height: 400px; color: #ffff; }
@@ -41,9 +39,10 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 
 .board-wrapper { position: relative; overflow: hidden; }
 .board.back { position: absolute; opacity: 90%; border-color: #eee; }
-.board.back .wall { background: #cccf; }
+.board.back .wall { background: #eee; }
 .board.back .robot, .board.back .goal { opacity: 0; }
-.board.back .cell.shade { background: transparent; border-color: #cccf; }
+.board.back .cell { background: transparent; border-color: #eee8; }
+.board.back .cell.shade { background: transparent; border-color: #eee8; }
 
 .cell { width: 40px; height: 40px; margin: 0px; position: relative; 
 	border: 1px solid #eee; background: transparent; }
