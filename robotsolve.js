@@ -65,10 +65,9 @@ let Solver = function(width, height, robots, walls){
 		let position = this.fromKey(key);
 		let x = position[iRobot * 2 + 1], y = position[iRobot * 2];
 		if( ! this.isOpen[x][y][xy][dir]) return false;
-		let x2 = x, y2 = y;
-		if(xy == 0) x2 += dir; else y2 += dir;
+		if(xy == 0) x += dir; else y += dir;
 		for(let i = 0; i < this.nRobot; i ++) if(i != iRobot){
-			if(position[i * 2 + 1] == x2 && position[i * 2] == y2) return false;
+			if(position[i * 2 + 1] == x && position[i * 2] == y) return false;
 		}
 		return true;
 	}
@@ -76,7 +75,8 @@ let Solver = function(width, height, robots, walls){
 		return key + this.mults[iRobot * 2 + 1 - xy] * dir;
 	}
 	this.walkToWall = function(key, iRobot, xy, dir){
-		while(this.canWalk(key, iRobot, xy, dir)) key = this.walk(key, iRobot, xy, dir);
+		let walkToWallDiff = this.mults[iRobot * 2 + 1 - xy] * dir;
+		while(this.canWalk(key, iRobot, xy, dir)) key += walkToWallDiff;
 		return key;
 	}
 
@@ -84,6 +84,7 @@ let Solver = function(width, height, robots, walls){
 	this.array = [];
 	this.kq = [], this.dq = [], this.iq = -1;
 	this.push = function(k, v, d){
+		if(this.kq.length > 4000000) return;
 		if(this.array[k] === void 0 || this.array[k] > v){
 			this.array[k] = v, this.kq.push(k), this.dq.push(d);
 		}
@@ -209,25 +210,23 @@ let Solver = function(width, height, robots, walls){
 			}
 
 			for(i = 0; i < this.nRobot; i ++){
-				// ●が最後に連続して動く解を優先したいなら降順
 				this.push(this.walkToWall(k, i, 0, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 0);
 				this.push(this.walkToWall(k, i, 0, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 1);
 				this.push(this.walkToWall(k, i, 1, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 2);
 				this.push(this.walkToWall(k, i, 1, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 3);
 			}
 
-			if(this.iq > 4000000){
-				console.log(`(solver) aborted in ${this.iq}`);
-				this.onEnd({ length: -1, description: "解が見つかりませんでした" });
-				this.isWorking = false;
-				return;
-			}
-			else if(this.iq % 5000 == 0){
+			if(this.iq % 5000 == 0){
 				console.log(`(solver) searching ${this.iq}`);
 				setTimeout(this.solveInternal.bind(this), 1);
 				return;
 			}
 		}
+
+		console.log(`(solver) aborted in ${this.iq}`);
+		this.onEnd({ length: -1, description: "解が見つかりませんでした" });
+		this.isWorking = false;
+		return;
 	}
 
 }
