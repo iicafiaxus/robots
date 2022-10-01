@@ -82,10 +82,10 @@ let Solver = function(width, height, robots, walls){
 
 	// Queue
 	this.array = [];
-	this.kq = [], this.vq = [], this.dq = [], this.iq = -1;
+	this.kq = [], this.dq = [], this.iq = -1;
 	this.push = function(k, v, d){
 		if(this.array[k] === void 0 || this.array[k] > v){
-			this.array[k] = v, this.kq.push(k), this.vq.push(v), this.dq.push(d);
+			this.array[k] = v, this.kq.push(k), this.dq.push(d);
 		}
 	}
 
@@ -170,7 +170,7 @@ let Solver = function(width, height, robots, walls){
 		this.key = this.toKey(position);
 
 		this.array = [], this.array[this.key] = 0;
-		this.kq = [this.key], this.vq = [0], this.dq = [0], this.iq = 0; // Queue.flush
+		this.kq = [this.key], this.dq = [0], this.iq = 0; // Queue.flush
 
 		this.onEnd = onEnd;
 
@@ -192,7 +192,8 @@ let Solver = function(width, height, robots, walls){
 		let i;
 		while(this.iq < this.kq.length){
 
-			k = this.kq[this.iq], v = this.vq[this.iq], d = this.dq[this.iq], this.iq ++; // Queue.pop
+			k = this.kq[this.iq], d = this.dq[this.iq], this.iq ++; // Queue.pop
+			v = this.array[k];
 
 			if(k % this.mults[2] == this.goal){
 				console.log(`(solver) found in ${this.iq}`);
