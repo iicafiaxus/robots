@@ -75,8 +75,8 @@ let Solver = function(width, height, robots, walls){
 		return key + this.mults[iRobot * 2 + 1 - xy] * dir;
 	}
 	this.walkToWall = function(key, iRobot, xy, dir){
-		let walkToWallDiff = this.mults[iRobot * 2 + 1 - xy] * dir;
-		while(this.canWalk(key, iRobot, xy, dir)) key += walkToWallDiff;
+		let diff = this.mults[iRobot * 2 + 1 - xy] * dir;
+		while(this.canWalk(key, iRobot, xy, dir)) key += diff;
 		return key;
 	}
 
