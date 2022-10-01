@@ -177,6 +177,7 @@
 					));
 					setIsClicking( isClicking && dragDistance <= 4);
 					setIsDragging( ev.touches && dragDistance > 4);
+					if(props.setIsDragging) props.setIsDragging(isDragging);
 					setIsDiscarding( ev.touches && point.y - origin.y > 40);
 				}
 
@@ -190,6 +191,7 @@
 					setIsDiscarding(false);
 					setIsClicking(false);
 					setIsDragging(false);
+					if(props.setIsDragging) props.setIsDragging(false);
 					setIsPressed(false);
 				}
 
@@ -469,6 +471,10 @@
 					else this.setState({ isAnswerOpen: false, isDescriptionOpen: false });
 				}
 
+				setIsDragging(isDragging){
+					this.setState({ isDragging });
+				}
+
 				makeMap(param){
 					console.log("(make map) making...");
 					return this.makeMapInternal(param, 0);
@@ -670,14 +676,19 @@
 
 								<button className={"cover-title short2" +
 									(this.state.showAnswerAlways ? " disabled" : "") + 
-									(this.state.isAnswerOpen || this.state.showAnswerAlways ? " isOpen" : "")
+									(this.state.isDragging ? " inactive" : "") +
+									( ! this.state.isDragging && (
+										this.state.isAnswerOpen || this.state.showAnswerAlways
+									) ? " isOpen" : "")
 								}
 									onClick={this.toggleAnswer.bind(this)}
 								>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
 								<Covered value={this.state.solution.length}
 									size="short2"
 									large={true}
-									isOpen={this.state.isAnswerOpen || this.state.showAnswerAlways}
+									isOpen={! this.state.isDragging && (
+										this.state.isAnswerOpen || this.state.showAnswerAlways
+									)}
 									onClick={this.toggleAnswer.bind(this)}
 								/>
 
@@ -697,6 +708,7 @@
 									isLoading={false}
 									showAnswer={null}
 									resetBoard={null}
+									setIsDragging={null}
 									isBack={true}
 								/>
 
@@ -711,12 +723,14 @@
 									isLoading={this.state.isLoading}
 									showAnswer={this.showNextAnswer.bind(this)}
 									resetBoard={this.resetBoard.bind(this)}
+									setIsDragging={this.setIsDragging.bind(this)}
 								/>
 							</div>
 
 							<div className="buttons fullwidth">
 								<button className={"cover-title long" + 
-									(this.state.isDescriptionOpen ? " isOpen" : "")
+									(this.state.isDragging ? " inactive" : "") +
+									( ! this.state.isDragging && this.state.isDescriptionOpen ? " isOpen" : "")
 								}
 									onClick={this.toggleDescription.bind(this)}
 								>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
@@ -725,7 +739,7 @@
 									value={this.state.solution.description}
 									size="long"
 									large={true}
-									isOpen={this.state.isDescriptionOpen}
+									isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
 									onClick={this.toggleDescription.bind(this)}
 								/>
 							</div>
