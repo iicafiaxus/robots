@@ -219,7 +219,7 @@ let Solver = function(width, height, robots, walls){
 				this.onEnd({ length: -1, description: "解が見つかりませんでした" });
 				return;
 			}
-			else if(this.iq % 20000 == 0){
+			else if(this.iq % 5000 == 0){
 				console.log(`(solver) searching ${this.iq}`);
 				setTimeout(this.solveInternal.bind(this), 1);
 				return;
