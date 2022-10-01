@@ -168,17 +168,16 @@
 						resetPress();
 						return;
 					}
-					setPoint({
-						x: ev.clientX || ev.touches[0] && ev.touches[0].clientX,
-						y: ev.clientY || ev.touches[0] && ev.touches[0].clientY
-					});
+					let x = ev.clientX || ev.touches[0] && ev.touches[0].clientX;
+					let y = ev.clientY || ev.touches[0] && ev.touches[0].clientY;
+					setPoint({ x, y });
 					setDragDistance(Math.sqrt(
 						(point.x - origin.x) * (point.x - origin.x) + (point.y - origin.y) * (point.y - origin.y)
 					));
 					setIsClicking( isClicking && dragDistance <= 4);
 					setIsDragging( ev.touches && dragDistance > 4);
 					if(props.setIsDragging) props.setIsDragging(isDragging);
-					setIsDiscarding( ev.touches && point.y - origin.y > 40);
+					setIsDiscarding( ev.touches && y - origin.y > 40);
 				}
 
 				let stopPress = function(ev){
