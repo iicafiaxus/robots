@@ -678,7 +678,9 @@
 								<div className="flex-filler" />
 
 								<div className="caption large">
-									{this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？"}
+									{ ! this.state.isDragging &&
+										(this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？")
+									}
 								</div>
 
 								<div className="flex-filler" />
