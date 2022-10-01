@@ -31,7 +31,6 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	width: 100%; display: table-cell; 
 	text-align: center; vertical-align: middle; z-index: 110; }
 .board.pressed { transform: scale(99.5%); }
-.board.dragging { transform: scale(95%); }
 .board .discarding { position: absolute; width: 100%; height: 100%;  top: 0; left: 0;
 	background: #444e; opacity: 100%; z-index: 120;
 	text-align: center; line-height: 400px; color: #ffff; }
