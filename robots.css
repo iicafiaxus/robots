@@ -94,6 +94,10 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .buttons > * { width: fit-content; line-height: 36px; border: 1px solid transparent; }
 .buttons > * + * { margin-left: 2px; }
 
+.buttonset { max-height: 150px; overflow-y: auto; }
+.buttonset .buttons { padding: 0; }
+.buttonset .buttons > * + * { margin-left: 0; margin-top: 2px; }
+
 .buttons button { line-height: unset; background: #ab44; border-radius: 4px;
 	min-width: 48px; min-height: 36px; cursor: pointer; user-select: none; }
 @media (hover: hover) {

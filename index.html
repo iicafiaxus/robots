@@ -592,7 +592,7 @@
 					}
 					else if(this.nextSolver && this.nextSolver.isWorking){
 						this.solver = this.nextSolver;
-						this.solver.onEnd = this.setSolution.bind(this);
+						this.solver.onFound = this.setSolution.bind(this);
 						this.nextSolver = null;
 					}
 					else setTimeout(function(){
@@ -752,38 +752,41 @@
 								/>
 							</div>
 
-							{this.state.solution && this.state.solution.descriptions &&
-								this.state.solution.descriptions.map(
-								(description, i) =>
 
-								<div className="buttons fullwidth" key={i}>
+							<div className="buttonset">
 
-									{i == 0 &&
+								{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
+									<div className="buttons fullwidth">
 										<button className={"cover-title long" + 
-											(this.state.isDragging ? " inactive" : "") +
-											( ! this.state.isDragging && this.state.isDescriptionOpen ? " isOpen" : "")
+											(this.state.isDragging ? " inactive" : "")
 										}
 											onClick={this.toggleDescription.bind(this)}
 										>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-									}
+									</div>
+								}
 
-									<Covered
-										title={this.state.showAnswerAlways ? "解答例" : "解説"}
-										value={description}
-										size="fullwidth"
-										large={true}
-										isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
-										isActive={this.state.lineNumber == i}
-										onClick={
-											this.state.lineNumber == i ?
-											this.toggleDescription.bind(this) :
-											() => this.setState({ lineNumber: i })
-										}
-									/>
+								{this.state.solution && this.state.solution.descriptions &&
+									this.state.solution.descriptions.map(
+									(description, i) =>
 
-								</div>
+									<div className="buttons fullwidth" key={i}>
+										<Covered
+											title={this.state.showAnswerAlways ? "解答例" : "解説"}
+											value={description}
+											size="fullwidth"
+											large={true}
+											isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
+											isActive={this.state.lineNumber == i}
+											onClick={
+												this.state.lineNumber == i ?
+												this.toggleDescription.bind(this) :
+												() => this.setState({ lineNumber: i })
+											}
+										/>
+									</div>
 
-							)}
+								)}
+							</div>
 
 						</div>
 

@@ -84,14 +84,18 @@ let Solver = function(width, height, robots, walls){
 	this.array = [];
 	this.kq = [], this.dq = [], this.iq = -1;
 	this.backs = [];
+
 	this.push = function(k, v, d, k0){
 		if(this.kq.length > 4000000) return;
-		if(this.array[k] === void 0 || this.array[k] > v){
-			this.array[k] = v, this.kq.push(k), this.dq.push(d);
+		if( ! this.best){
+			if(this.array[k] === void 0 || this.array[k] > v){
+				this.array[k] = v, this.kq.push(k), this.dq.push(d);
+			}
+		}
+		if(this.array[k] == v){
 			if( ! this.backs[k]) this.backs[k] = [k0];
 			else this.backs[k].push(k0);
 		}
-		else if(this.array[k] == v) this.backs[k].push(k0);
 	}
 
 	this.traceBacks = function(k){
@@ -147,6 +151,19 @@ let Solver = function(width, height, robots, walls){
 		}
 		return res;
 	}
+	this.makeLineString = function(lines){
+		let us = [];
+		for(let i = 0; i < this.nRobot; i ++) us[i] = [];
+		for(let l of lines){
+			if(us[l.iRobot].length == 0) us[l.iRobot].push({x: l.sx, y: l.sy});
+			us[l.iRobot].push({x: l.tx, y: l.ty});
+		}
+		let res = "";
+		for(let i = 0; i < this.nRobot; i ++){
+			res += i + ": " + us[i].map(u => `(${u.x}, ${u.y})`).join("→") + "\n";
+		}
+		return res;
+	}
 
 	this.traceLines = function(key, dirs){
 		let res = [];
@@ -197,7 +214,7 @@ let Solver = function(width, height, robots, walls){
 		return res;
 	}
 
-	this.solve = function(onEnd){
+	this.solve = function(onFound, onEnd){
 		let position = [];
 		for(let robot of this.robots) position.push(robot.y), position.push(robot.x);
 		this.key = this.toKey(position);
@@ -205,7 +222,12 @@ let Solver = function(width, height, robots, walls){
 		this.array = [], this.array[this.key] = 0;
 		this.kq = [this.key], this.dq = [0], this.iq = 0; // Queue.flush
 
+		this.onFound = onFound;
 		this.onEnd = onEnd;
+
+		this.best = 0;
+		this.descriptions = [];
+		this.liness = [];
 
 		console.log("solver started");
 		this.solveInternal();
@@ -227,11 +249,11 @@ let Solver = function(width, height, robots, walls){
 			let v = this.array[k];
 			this.iq ++; // Queue.pop
 
-			if(k % this.mults[2] == this.goal){
+			if(k % this.mults[2] == this.goal && ( ! this.best || this.best == v)){
+				this.best = v;
 				let traces = this.traceBacks(k);
 				let ds = traces.map(this.decodeTrace.bind(this));
 				this.success(v, d, ds);
-				return;
 			}
 
 			for(let i = 0; i < this.nRobot; i ++){
@@ -248,33 +270,40 @@ let Solver = function(width, height, robots, walls){
 			}
 		}
 
-		console.log(`(solver) aborted in ${this.iq}`);
-		this.onEnd({ length: -1, description: "解が見つかりませんでした" });
+		if( ! this.best){
+			console.log(`(solver) aborted in ${this.iq}`);
+			this.onFound({ length: -1, description: "解が見つかりませんでした" });
+		}
+		else{
+			console.log(`(solver) successfully terminated in ${this.iq}`);
+		}
 		this.isWorking = false;
-		return;
+		if(this.onEnd) this.onEnd();
 	}
 
 	this.success = function(v, d, ds){
-		this.isWorking = false;
 		let d0 = d; //ds[0];
 		let dirs = this.normalize(this.decodeDirs(v, d0));
 		let description = this.makeDirString(dirs);
 		let lines = this.traceLines(this.key, dirs);
-		let descriptions = [], liness = [];
-		let descriptionSet = {}; // 本当はSetにする
+		let summarySet = {}; // 本当はSetにする
 		for(let d1 of ds){
 			let dirs1 = this.normalize(d1);
 			let description1 = this.makeDirString(dirs1);
-			if(description1 in descriptionSet) continue;
-			else descriptionSet[description1] = 1;
-			descriptions.push(description1);
-			liness.push(this.traceLines(this.key, dirs1));
+			let lines = this.traceLines(this.key, dirs1);
+			let lineString = this.makeLineString(lines);
+			let summary = lineString;
+			if(summary in summarySet) continue;
+			else summarySet[summary] = 1;
+			this.descriptions.push(description1);
+			this.liness.push(lines);
 		}
-		let result = { length: v, description, lines, descriptions, liness };
+		let result = { length: v, description, lines,
+			descriptions: this.descriptions, liness: this.liness };
 		console.log(`(solver) found in ${this.iq}`);
 		console.log(`(solver) ${v}`);
-		descriptions.map(x => console.log(`(solver) ${x}`));
-		this.onEnd(result);
+		this.descriptions.map(x => console.log(`(solver) ${x}`));
+		this.onFound(result);
 
 	}
 
