@@ -138,7 +138,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .covered.short { width: 60px; padding: 0; }
 .covered.short2 { width: 120px; padding: 0; }
 .covered.long { width: min-content; flex-grow: 1; }
-.covered.long.fullwidth { width: min-content; white-space: nowrap; }
+.covered.long.fullwidth { width: min-content; }
 .covered.short.large, .covered.short2.large { line-height: calc(60px - 2px); font-size: calc(36px - 2px); }
 .covered.long.large { line-height: 24px; padding: 6px 12px; }
 .covered.long.large.fullwidth { padding: 6px 0; }
