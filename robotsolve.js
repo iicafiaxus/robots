@@ -86,7 +86,10 @@ let Solver = function(width, height, robots, walls){
 	this.backs = [];
 
 	this.push = function(k, v, d, k0){
-		if(this.kq.length > 4000000) return;
+		if(this.kq.length > 4000000){
+			this.isAborted = true;
+			return;
+		}
 		if( ! this.best){
 			if(this.array[k] === void 0 || this.array[k] > v){
 				this.array[k] = v, this.kq.push(k), this.dq.push(d);
@@ -270,13 +273,11 @@ let Solver = function(width, height, robots, walls){
 			}
 		}
 
-		if( ! this.best){
-			console.log(`(solver) aborted in ${this.iq}`);
-			this.onFound({ length: -1, description: "解が見つかりませんでした" });
-		}
-		else{
-			console.log(`(solver) done in ${this.iq}`);
-		}
+		if(this.isAborted) console.log(`(solver) aborted in ${this.iq}`);
+		else console.log(`(solver) done in ${this.iq}`);
+
+		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした" });
+
 		this.isWorking = false;
 		if(this.onEnd) this.onEnd();
 	}
