@@ -478,6 +478,13 @@
 					this.setState({ isDragging });
 				}
 
+				setIsSolving(isSolving){
+					this.setState({ isSolving });
+				}
+				endSolving(){
+					this.setIsSolving(false);
+				}
+
 				makeMap(param){
 					console.log("(make map) making...");
 					return this.makeMapInternal(param, 0);
@@ -577,7 +584,7 @@
 						robots: robots,
 						walls: walls,
 						solution: {length: "…", description: "解析しています...",
-							descriptions: ["解析しています..."], liness: [[]]},
+							descriptions: [], liness: [[]]},
 						lineNumber: 0,
 						isLoading: true
 					});
@@ -593,6 +600,8 @@
 					else if(this.nextSolver && this.nextSolver.isWorking){
 						this.solver = this.nextSolver;
 						this.solver.onFound = this.setSolution.bind(this);
+						this.solver.onEnd = this.endSolving.bind(this);
+						this.setIsSolving(this.solver.isWorking);
 						this.nextSolver = null;
 					}
 					else setTimeout(function(){
@@ -601,7 +610,8 @@
 						this.solver = new Solver(
 							param.width, param.height, this.state.robots, this.state.walls
 						);
-						this.solver.solve(this.setSolution.bind(this));
+						this.solver.solve(this.setSolution.bind(this), this.endSolving.bind(this));
+						this.setIsSolving(true);
 					}.bind(this), 0);
 
 					setTimeout(function(){
@@ -772,7 +782,9 @@
 								}
 
 								{this.state.solution && this.state.solution.descriptions &&
-									this.state.solution.descriptions.map(
+									this.state.solution.descriptions.concat(
+										this.state.isSolving ? ["解析しています…"] : []
+									).map(
 									(description, i) =>
 
 									<div className="buttons fullwidth" key={i}>
@@ -792,12 +804,6 @@
 									</div>
 
 								)}
-
-								{this.solver && this.solver.isWorking ?
-									<div className="buttons fullwidth">
-										解析しています…
-									</div>
-								: null}
 
 							</div>
 

@@ -244,6 +244,7 @@ let Solver = function(width, height, robots, walls){
 	this.solveInternal = function(){
 		if( ! this.isWorking){
 			console.log("(solver) stopped.");
+			if(this.onEnd) this.onEnd();
 			return;
 		}
 
@@ -276,7 +277,8 @@ let Solver = function(width, height, robots, walls){
 		if(this.isAborted) console.log(`(solver) aborted in ${this.iq}`);
 		else console.log(`(solver) done in ${this.iq}`);
 
-		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした" });
+		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした",
+			descriptions: ["解が見つかりませんでした"] });
 
 		this.isWorking = false;
 		if(this.onEnd) this.onEnd();
