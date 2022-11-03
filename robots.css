@@ -6,6 +6,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .all { width: fit-content; height: max-content;
 	max-width: 480px; max-height: 850px; margin: auto; transform-origin: top center; }
 
+@media (max-width: 239px), (max-height: 419px) { html { overflow: auto; }}
 @media (min-width: 240px) and (min-height: 420px){ .all { transform: scale(50%); }}
 @media (min-width: 285px) and (min-height: 505px){ .all { transform: scale(60%); }}
 @media (min-width: 335px) and (min-height: 590px){ .all { transform: scale(70%); }}
