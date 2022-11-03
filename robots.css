@@ -101,7 +101,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .buttons button { line-height: unset; background: #ab44; border-radius: 4px;
 	min-width: 48px; min-height: 36px; cursor: pointer; user-select: none; }
 @media (hover: hover) {
-	.buttons button:hover { background: #ab48; position: relative; left: 1px; top: 1px; }
+	.buttons button:hover { background: #ab48; position: relative; left: 0px; top: 1px; }
 }
 .buttons button:active { transform: scale(97.5%); }
 
