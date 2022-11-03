@@ -626,6 +626,9 @@
 				openSettings(){
 					this.openModal("settings");
 				}
+				openMobileLink(){
+					this.openModal("qrcode");
+				}
 
 				openModal(name){
 					this.setState({ isModalOpen : true, modalName : name });
@@ -675,6 +678,9 @@
 								<div className="flex-filler" />
 
 
+								<button className="material unimportant" onClick={this.openMobileLink.bind(this)}>
+									<span className="material-icons">devices</span>
+								</button>
 								<button className="material unimportant" onClick={this.openSettings.bind(this)}>
 									<span className="material-icons">settings</span>
 								</button>
@@ -786,6 +792,13 @@
 									</div>
 
 								)}
+
+								{this.solver && this.solver.isWorking ?
+									<div className="buttons fullwidth">
+										解析しています…
+									</div>
+								: null}
+
 							</div>
 
 						</div>
@@ -885,6 +898,16 @@
 											</label>
 										</div>}
 
+
+									</div>
+								}
+
+								{this.state.modalName == "qrcode" &&
+									<div className="modal setting-section">
+										<div className="buttons setting-item">
+											<div className="setting-title">他のデバイスで開く</div>
+											<QrCode size="80" data={location.href}/>
+										</div>
 									</div>
 								}
 							</div>
@@ -908,6 +931,12 @@
 				>
 					{ props.isOpen ? props.value : " " }
 				</span>
+			}
+
+			let QrCode = function(props){
+				let size = props.size || 100;
+				let data = encodeURI(props.data) || location.href;
+				return <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}`} alt={data} />
 			}
 
 		</script>
