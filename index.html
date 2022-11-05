@@ -283,6 +283,7 @@
 					line.dx = line.iRowTrack - (line.nRowTrack - 1) / 2;
 					line.dy = line.iColumnTrack - (line.nColumnTrack - 1) / 2;
 				}
+				for(let rp of robotProps) rp.dx = 0, rp.dy = 0;
 				for(let lineRoute of lineRoutes){
 					for(let i = 0; i < lineRoute.length - 1; i ++){
 						let l = lineRoute[i], l1 = lineRoute[i + 1];
