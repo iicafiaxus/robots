@@ -171,3 +171,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 button.material { color: #0008; padding: calc(6px - 1px); height: 36px;  width: 48px; }
 button.large { height: 60px; }
 button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
+
+.dialog-line { padding: 2px; display: flex; }
+.dialog-line input { flex-grow: 1;  }
+.dialog-line button { height: 42px; }
