@@ -4,25 +4,25 @@ html { overflow: hidden; }
 body { margin: 0; width: 100%; max-height: 100vh; }
 #root { max-height: 100vh; }
 .all { width: fit-content; height: max-content;
-	max-width: 480px; max-height: 850px; margin: auto; transform-origin: top center; }
+	max-width: 480px; max-height: 900px; margin: auto; transform-origin: top center; }
 
-@media (max-width: 239px), (max-height: 419px) { html { overflow: auto; }}
-@media (min-width: 240px) and (min-height: 420px){ .all { transform: scale(50%); }}
-@media (min-width: 285px) and (min-height: 505px){ .all { transform: scale(60%); }}
-@media (min-width: 335px) and (min-height: 590px){ .all { transform: scale(70%); }}
-@media (min-width: 385px) and (min-height: 675px){ .all { transform: scale(80%); }}
-@media (min-width: 435px) and (min-height: 760px){ .all { transform: scale(90%); }}
-@media (min-width: 480px) and (min-height: 850px){ .all { transform: scale(100%); }}
-@media (min-width: 530px) and (min-height: 935px){ .all { transform: scale(110%); }}
-@media (min-width: 580px) and (min-height: 1020px){ .all { transform: scale(120%); }}
-@media (min-width: 630px) and (min-height: 1105px){ .all { transform: scale(130%); }}
-@media (min-width: 680px) and (min-height: 1190px){ .all { transform: scale(140%); }}
-@media (min-width: 720px) and (min-height: 1275px){ .all { transform: scale(150%); }}
-@media (min-width: 770px) and (min-height: 1360px){ .all { transform: scale(160%); }}
-@media (min-width: 820px) and (min-height: 1445px){ .all { transform: scale(170%); }}
-@media (min-width: 870px) and (min-height: 1530px){ .all { transform: scale(180%); }}
-@media (min-width: 920px) and (min-height: 1615px){ .all { transform: scale(190%); }}
-@media (min-width: 960px) and (min-height: 1700px){ .all { transform: scale(200%); }}
+@media (max-width: 239px), (max-height: 474px) { html { overflow: auto; }}
+@media (min-width: 240px) and (min-height: 475px){ .all { transform: scale(50%); }}
+@media (min-width: 285px) and (min-height: 570px){ .all { transform: scale(60%); }}
+@media (min-width: 335px) and (min-height: 665px){ .all { transform: scale(70%); }}
+@media (min-width: 385px) and (min-height: 760px){ .all { transform: scale(80%); }}
+@media (min-width: 435px) and (min-height: 855px){ .all { transform: scale(90%); }}
+@media (min-width: 480px) and (min-height: 950px){ .all { transform: scale(100%); }}
+@media (min-width: 530px) and (min-height: 1045px){ .all { transform: scale(110%); }}
+@media (min-width: 580px) and (min-height: 1140px){ .all { transform: scale(120%); }}
+@media (min-width: 630px) and (min-height: 1235px){ .all { transform: scale(130%); }}
+@media (min-width: 680px) and (min-height: 1330px){ .all { transform: scale(140%); }}
+@media (min-width: 720px) and (min-height: 1425px){ .all { transform: scale(150%); }}
+@media (min-width: 770px) and (min-height: 1520px){ .all { transform: scale(160%); }}
+@media (min-width: 820px) and (min-height: 1615px){ .all { transform: scale(170%); }}
+@media (min-width: 870px) and (min-height: 1710px){ .all { transform: scale(180%); }}
+@media (min-width: 920px) and (min-height: 1805px){ .all { transform: scale(190%); }}
+@media (min-width: 960px) and (min-height: 1900px){ .all { transform: scale(200%); }}
 
 .board { display: grid; width: auto; align-items: center; 
 	border: 3px solid #850f; border-radius: 2px; margin: 0 auto 16px;
