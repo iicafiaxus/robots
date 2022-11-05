@@ -660,6 +660,9 @@
 				openMobileLink(){
 					this.openModal("qrcode");
 				}
+				openTutrial(){
+					this.openModal("tutrial");
+				}
 
 				openModal(name){
 					this.setState({ isModalOpen : true, modalName : name });
@@ -712,6 +715,11 @@
 								<button className="material unimportant" onClick={this.openMobileLink.bind(this)}>
 									<span className="material-icons">devices</span>
 								</button>
+								
+								<button className="material unimportant" onClick={this.openTutrial.bind(this)}>
+									<span className="material-icons">help</span>
+								</button>
+								
 								<button className="material unimportant" onClick={this.openSettings.bind(this)}>
 									<span className="material-icons">settings</span>
 								</button>
@@ -930,11 +938,8 @@
 								}
 
 								{this.state.modalName == "qrcode" &&
-									<div className="modal setting-section">
-										<div className="buttons setting-item">
-											<div className="setting-title">他のデバイスで開く</div>
-											<QrCode size="200" data={location.href} />
-										</div>
+									<div className="modal dialog">
+										<div className="dialog-title">他のデバイスで開く</div>
 										<div className="dialog-line">
 											<input type="text" value={location.href} readOnly={true} />
 											{ !!navigator.share &&
@@ -943,8 +948,25 @@
 												</button>
 											}
 										</div>
+										<div className="dialog-line centered">
+											<QrCode size="200" data={location.href} />
+										</div>										
 									</div>
 								}
+
+								{this.state.modalName == "tutrial" &&
+									<div className="modal dialog">
+										<div className="dialog-title">盤面をタップすると解答・解説を表示</div>
+										<div className="dialog-line centered">
+											<img src="images/tutrial-answer.png" />
+										</div>
+										<div className="dialog-title">下方にスワイプで次の問題（モバイルのみ）</div>
+										<div className="dialog-line centered">
+											<img src="images/tutrial-discard.png" />
+										</div>
+									</div>
+								}
+
 							</div>
 						}
 					</div>

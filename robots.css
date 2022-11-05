@@ -172,6 +172,9 @@ button.material { color: #0008; padding: calc(6px - 1px); height: 36px;  width: 
 button.large { height: 60px; }
 button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 
-.dialog-line { padding: 2px; display: flex; }
-.dialog-line input { flex-grow: 1;  }
-.dialog-line button { height: 42px; }
+.modal.dialog { display: flex; flex-direction: column; align-items: stretch; }
+.modal.dialog .dialog-title { justify-content: start; padding: 4px; }
+.modal.dialog .dialog-line { padding: 2px; display: flex; }
+.modal.dialog .dialog-line input { flex-grow: 1;  }
+.modal.dialog .dialog-line button { height: 42px; }
+.modal.dialog .dialog-line.centered { justify-content: center; }
