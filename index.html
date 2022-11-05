@@ -55,6 +55,14 @@
 		</script>
 
 		<script type="text/javascript">
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker
+					.register('serviceworker.js')
+					.then(() => { console.log('Service Worker Registered'); });
+			}
+		</script>
+
+		<script type="text/javascript">
 			let save = function(key, value){
 				localStorage.setItem("robots_" + key, "" + value);
 			}
