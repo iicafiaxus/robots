@@ -611,8 +611,8 @@
 						this.solver = new Solver(
 							param.width, param.height, this.state.robots, this.state.walls
 						);
-						this.solver.solve(this.setSolution.bind(this), this.endSolving.bind(this));
 						this.setIsSolving(true);
+						this.solver.solve(this.setSolution.bind(this), this.endSolving.bind(this));
 					}.bind(this), 0);
 
 					setTimeout(function(){
