@@ -25,6 +25,7 @@
 	<body>
 		<div id="root"></div>
 
+		<!--　起動時の初期化処理 -->
 		<script type="text/jsx">
 			window.addEventListener("load", function(){
 				let params = {
@@ -54,6 +55,7 @@
 			});
 		</script>
 
+		<!--　サービスワーカー -->
 		<script type="text/javascript">
 			if ('serviceWorker' in navigator) {
 				navigator.serviceWorker
@@ -62,6 +64,7 @@
 			}
 		</script>
 
+		<!-- ストレージのユーティリティ -->
 		<script type="text/javascript">
 			let save = function(key, value){
 				localStorage.setItem("robots_" + key, "" + value);
@@ -71,8 +74,8 @@
 			}
 		</script>
 
+		<!-- 盤面 -->
 		<script type="text/jsx">
-
 			let Cell = function(props){
 				return <div
 					className={
@@ -409,6 +412,7 @@
 			}
 		</script>
 
+		<!-- ゲーム全体 -->
 		<script type="text/jsx">
 			class Game extends React.Component {
 
