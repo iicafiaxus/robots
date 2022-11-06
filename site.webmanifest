@@ -3,6 +3,7 @@
     "name": "ハイパーロボット練習所",
     "short_name": "Robots",
     "description": "すきま時間にロボットの練習をしましょう！",
+    "scope": "./",
     "start_url": "./",
     "icons": [
         {
