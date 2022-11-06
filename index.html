@@ -450,8 +450,13 @@
 				}
 
 				componentDidMount(){
+					window.addEventListener("popstate", this.popState.bind(this));
 					this.resetBoard();
 					if(this.state.useTutrial) this.openTutrial();
+				}
+
+				componentWillUnmount(){
+					window.removeEventListener("popstate", this.popState.bind(this));
 				}
 
 				setSolution(solution){
@@ -666,11 +671,20 @@
 				}
 
 				openModal(name){
+					history.pushState(null, null, location.href);
 					this.setState({ isModalOpen : true, modalName : name });
 				}
-
 				closeModal(){
 					this.setState({ isModalOpen: false });
+					history.back();
+					console.log(history);
+				}
+
+				popState(e){	
+					if(this.state.isModalOpen){
+						history.pushState(null, null, location.href);
+						this.closeModal();
+					}
 				}
 
 				setParamName(name){
