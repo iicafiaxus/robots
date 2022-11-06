@@ -705,7 +705,7 @@
 				render(){
 					let param = this.state.params[this.state.paramName];
 					return <div>
-						<div className={"all" + 
+						<div className={"all scalable" + 
 							(" size" + this.state.boardSize)
 						}>
 							<div className="buttons">
@@ -949,7 +949,7 @@
 												</button>
 											}
 										</div>
-										<div className="dialog-line centered">
+										<div className="dialog-line image-view qrcode">
 											<QrCode size="200" data={location.href} />
 										</div>										
 									</div>
@@ -963,7 +963,7 @@
 											<img src="images/tutrial-answer.png" />
 											<span className="overlay">タップ</span>
 										</div>
-										<div className="dialog-line-caption">下にスワイプ → 次の問題</div>
+										<div className="dialog-line-caption">下にスワイプ → 現在の問題を破棄して次へ</div>
 										<div className="dialog-line image-view">
 											<img src="images/tutrial-discard.png" />
 											<span className="overlay">スワイプ</span>
