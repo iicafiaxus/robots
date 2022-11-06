@@ -449,10 +449,13 @@
 					};
 				}
 
+				componentWillMount(){
+				}
+
 				componentDidMount(){
-					window.addEventListener("popstate", this.popState.bind(this));
 					this.resetBoard();
 					if(this.state.useTutrial) this.openTutrial();
+					window.addEventListener("popstate", this.popState.bind(this));
 				}
 
 				componentWillUnmount(){
@@ -671,18 +674,17 @@
 				}
 
 				openModal(name){
-					history.pushState(null, null, location.href);
+					history.pushState({}, "", location.href);
 					this.setState({ isModalOpen : true, modalName : name });
 				}
 				closeModal(){
 					this.setState({ isModalOpen: false });
 					history.back();
-					console.log(history);
 				}
 
-				popState(e){	
+				popState(e){
 					if(this.state.isModalOpen){
-						history.pushState(null, null, location.href);
+						history.pushState({}, "", location.href);
 						this.closeModal();
 					}
 				}
@@ -932,21 +934,21 @@
 											</label>
 										</div>
 
-										{this.props.hasTutrial && <div className="buttons setting-item">
-											<div className="setting-title">起動時</div>
+										<div className="buttons setting-item">
+											<div className="setting-title">起動時の操作説明</div>
 											<label>
 												<input type="radio" name="usetutrial" value="true"
 													checked={ !! this.state.useTutrial}
 													onChange={() => this.setUseTutrial(true)} />
-												<span>チュートリアルあり</span>
+												<span>操作説明あり</span>
 											</label>
 											<label>
 												<input type="radio" name="usetutrial" value="false"
 													checked={ ! this.state.useTutrial}
 													onChange={() => this.setUseTutrial(false)} />
-												<span>チュートリアルなし</span>
+												<span>操作説明なし</span>
 											</label>
-										</div>}
+										</div>
 
 
 									</div>
