@@ -434,7 +434,7 @@
 					let solveAllRoutes = load("solveAllRoutes") == "true";
 					save("solveAllRoutes", solveAllRoutes);
 					
-					let useTutrial = load("useTutrial") == "true";
+					let useTutrial = load("useTutrial") != "false";
 					save("useTutrial", useTutrial);
 
 					this.state = {
@@ -451,6 +451,7 @@
 
 				componentDidMount(){
 					this.resetBoard();
+					if(this.state.useTutrial) this.openTutrial();
 				}
 
 				setSolution(solution){
@@ -956,13 +957,31 @@
 
 								{this.state.modalName == "tutrial" &&
 									<div className="modal dialog">
-										<div className="dialog-title">盤面をタップすると解答・解説を表示</div>
-										<div className="dialog-line centered">
+										<div className="dialog-title">タッチ操作の説明</div>
+										<div className="dialog-line-caption">盤面をタップ → 解答・解説を表示</div>
+										<div className="dialog-line image-view">
 											<img src="images/tutrial-answer.png" />
+											<span className="overlay">タップ</span>
 										</div>
-										<div className="dialog-title">下方にスワイプで次の問題（モバイルのみ）</div>
-										<div className="dialog-line centered">
+										<div className="dialog-line-caption">下にスワイプ → 次の問題</div>
+										<div className="dialog-line image-view">
 											<img src="images/tutrial-discard.png" />
+											<span className="overlay">スワイプ</span>
+										</div>
+										<div className="buttons setting-item">
+											<span>この操作説明を起動時に表示</span>
+											<label>
+												<input type="radio" name="usetutrial" value="true"
+													checked={ !! this.state.useTutrial}
+													onChange={() => this.setUseTutrial(true)} />
+												<span>する</span>
+											</label>
+											<label>
+												<input type="radio" name="usetutrial" value="false"
+													checked={ ! this.state.useTutrial}
+													onChange={() => this.setUseTutrial(false)} />
+												<span>しない</span>
+											</label>
 										</div>
 									</div>
 								}
