@@ -58,6 +58,11 @@
 						width: 12, height: 16, scale: 1.0, size: 35,
 						hasCenterWall: true,
 						cornerCount: 15, widthSideCount: 2, heightSideCount: 2
+					},
+					large3: {
+						width: 16, height: 16, scale: 1.0, size: 25,
+						hasCenterWall: true,
+						cornerCount: 17, widthSideCount: 2, heightSideCount: 2
 					}
 				}
 				const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -430,7 +435,7 @@
 					super(props);
 
 					let paramName = load("paramName");
-					if( ! ["small", "medium", "large"].includes(paramName)){
+					if( ! props.params[paramName]){
 						paramName = "medium";
 						save("paramName", paramName);
 					}
@@ -880,19 +885,31 @@
 												<input type="radio" name="param" value="small"
 													checked={this.state.paramName == "small"}
 													onChange={() => this.setParamName("small")} />
-												<span>小 (8×8)</span>
+												<span>8×8</span>
 											</label>
 											<label>
 												<input type="radio" name="param" value="medium"
 													checked={this.state.paramName == "medium"}
 													onChange={() => this.setParamName("medium")} />
-												<span>中 (8×12)</span>
+												<span>8×12</span>
 											</label>
 											<label>
 												<input type="radio" name="param" value="large"
 													checked={this.state.paramName == "large"}
 													onChange={() => this.setParamName("large")} />
-												<span>大 (10×14)</span>
+												<span>10×14</span>
+											</label>
+											<label>
+												<input type="radio" name="param" value="large2"
+													checked={this.state.paramName == "large2"}
+													onChange={() => this.setParamName("large2")} />
+												<span>12×16</span>
+											</label>
+											<label>
+												<input type="radio" name="param" value="large3"
+													checked={this.state.paramName == "large3"}
+													onChange={() => this.setParamName("large3")} />
+												<span>16×16</span>
 											</label>
 										</div>
 

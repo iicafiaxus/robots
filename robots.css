@@ -90,6 +90,10 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .size35 .robot:not(.minirobot) { font-size: 17.5px; width: 28px; height: 28px; line-height: 28px; }
 .size35 .trace { max-width: calc(100% - 35px + 1px); max-height: calc(100% - 35px + 1px); }
 
+.size25 .cell { width: 25px; height: 25px; }
+.size25 .robot:not(.minirobot) { font-size: 12.5px; width: 18px; height: 18px; line-height: 18px; }
+.size25 .trace { max-width: calc(100% - 25px + 1px); max-height: calc(100% - 25px + 1px); }
+
 .buttons { text-align: center; margin: 0.2em auto; padding: 0.4em 0;
 	display: flex; justify-content: space-around; max-width: 480px; flex-wrap: wrap; }
 .buttons.fullwidth { justify-content: space-between; }
