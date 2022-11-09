@@ -25,7 +25,7 @@
 		
 		<script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
 		<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
-   	<script src="https://fb.me/JSXTransformer-0.13.3.js"></script>
+		<script src="https://unpkg.com/babel-standalone@6/babel.min.js" crossorigin></script>
 
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -36,8 +36,8 @@
 		<div id="root"></div>
 
 		<!--　起動時の初期化処理 -->
-		<script type="text/jsx">
-			window.addEventListener("load", function(){
+		<script type="text/babel">
+			window.setTimeout(function(){
 				let params = {
 					small: {
 						width: 8, height: 8, scale: 1.2, size: 50,
@@ -67,7 +67,7 @@
 				}
 				const root = ReactDOM.createRoot(document.getElementById("root"));
 				root.render(<Game params={params} paramName={"medium"} />);
-			});
+			}, 0);
 		</script>
 
 		<!--　サービスワーカー -->
@@ -90,7 +90,7 @@
 		</script>
 
 		<!-- 盤面 -->
-		<script type="text/jsx">
+		<script type="text/babel">
 			let Cell = function(props){
 				return <div
 					className={
@@ -428,7 +428,7 @@
 		</script>
 
 		<!-- ゲーム全体 -->
-		<script type="text/jsx">
+		<script type="text/babel">
 			class Game extends React.Component {
 
 				constructor(props){
