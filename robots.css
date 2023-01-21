@@ -183,7 +183,7 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 .modal.dialog .dialog-line-caption { padding: 2px; margin-top: 6px; }
 .modal.dialog .dialog-line { padding: 2px; display: flex; }
 .modal.dialog .dialog-line input { flex-grow: 1;  }
-.modal.dialog .dialog-line textarea { flex-grow: 1; height: 210px; }
+.modal.dialog .dialog-line textarea { flex-grow: 1; height: 540px; }
 .modal.dialog .dialog-line button { height: 42px; }
 .modal.dialog .dialog-line.image-view { justify-content: center; background: #d8d8d8; padding: 8px 2px;
 	position: relative; }
