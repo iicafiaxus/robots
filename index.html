@@ -31,6 +31,7 @@
 
 		<link rel="stylesheet" href="robots.css">
 		<script src="robotsolve.js"></script>
+		<script src="robotdecode.js"></script>
 	</head>
 	<body>
 		<div id="root"></div>
@@ -477,6 +478,20 @@
 					window.removeEventListener("popstate", this.popState.bind(this));
 				}
 
+				importMap(){
+					if( ! this.state.importingCode) return;
+					let importParam = decoder.decode(this.state.importingCode);
+					if(importParam.isError){
+						this.openAlert("インポートは失敗しました。 (" + importParam.message + ")", "エラー");
+						return;
+					}
+					this.setParamName(importParam.paramName);
+					this.setState({
+						importedWalls: importParam.walls,
+						importedRobots: importParam.robots
+					});
+				}
+
 				setSolution(solution){
 					this.setState({ solution });
 				}
@@ -605,7 +620,11 @@
 					}
 
 					let walls, robots;
-					if(this.state.nextWalls && this.state.nextRobots){
+					if(this.state.importedWalls && this.state.importedRobots){
+						walls = this.state.importedWalls, robots = this.state.importedRobots;
+						this.state.importedWalls = void 0, this.state.importedRobots = void 0;
+					}
+					else if(this.state.nextWalls && this.state.nextRobots){
 						walls = this.state.nextWalls, robots = this.state.nextRobots;
 					}
 					else{
@@ -687,6 +706,19 @@
 				openTutrial(){
 					this.openModal("tutrial");
 				}
+				openImport(){
+					this.openModal("import");
+				}
+				openAlert(message, title){
+					window.setTimeout(() => {
+						this.setState({ alertMessage: message, alertTitle: title });
+						this.openModal("alert");
+					}, 0);
+				}
+				closeAlert(){
+					this.setState({ alertMessage: void 0 });
+					this.closeModal();
+				}
 
 				openModal(name){
 					history.pushState({}, "", location.href);
@@ -746,6 +778,10 @@
 
 								<button className="material unimportant" onClick={this.openMobileLink.bind(this)}>
 									<span className="material-icons">devices</span>
+								</button>
+								
+								<button className="material unimportant" onClick={this.openImport.bind(this)}>
+									<span className="material-icons">edit</span>
 								</button>
 								
 								<button className="material unimportant" onClick={this.openTutrial.bind(this)}>
@@ -1025,6 +1061,38 @@
 													onChange={() => this.setUseTutrial(false)} />
 												<span>しない</span>
 											</label>
+										</div>
+									</div>
+								}
+
+								{this.state.modalName == "import" &&
+									<div className="modal dialog">
+										<div className="dialog-title">盤面のインポート</div>
+										<div className="dialog-line-caption">インポートコード</div>
+										<div className="dialog-line">
+											<textarea
+												onChange={(e) => this.setState({ importingCode: e.target.value})}
+												value={this.state.importingCode}
+											/>
+										</div>
+										<div className="buttons setting-item">
+											<button onClick={() => this.closeModal() + this.importMap()}>
+												インポート (更新後有効)
+											</button>
+										</div>
+									</div>
+								}
+
+								{this.state.modalName == "alert" &&
+									<div className="modal dialog">
+										{this.state.alertTitle && <div className="dialog-title">{this.state.alertTitle}</div>}
+										<div className="dialog-line">
+											{this.state.alertMessage}
+										</div>
+										<div className="buttons setting-item">
+											<button onClick={() => this.closeAlert()}>
+												OK
+											</button>
 										</div>
 									</div>
 								}
