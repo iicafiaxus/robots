@@ -481,6 +481,17 @@
 				}
 
 				let [selectedCellKey, setSelectedCellKey] = React.useState("");
+				let setSelect = function(key){
+					if(selectedCellKey === key){
+						setSelectedCellKey(void 0);
+						return;
+					}
+					let cell = cells.find(c => c.key == key);
+					if(cell){
+						if(cell.isShade) setSelectedCellKey(void 0);
+						else setSelectedCellKey(cell.key);
+					}
+				}
 				let setWallType = function(type){
 					let cell = cells.find(c => c.key == selectedCellKey);
 					if(cell) cell.setWallType(type);
@@ -519,9 +530,7 @@
 								wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade}
 								robot={cell.robotName}
 								isSelected={cell.key === selectedCellKey}
-								onClick={() => setSelectedCellKey(
-									selectedCellKey == cell.key ? void 0 : cell.key
-								)}
+								onClick={() => setSelect(cell.key)}
 							/>
 						)}
 					</div>
