@@ -191,3 +191,15 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 	background: #fffc; border: 2px solid #999f; border-radius: 4px; padding: 0 16px; 
 	position: absolute; top: 16px; left: 16px; }
 .modal.dialog .dialog-line.image-view.qrcode { background: #fff; padding: 24px; }
+
+.board.editboard { max-width: 100%; border: none; }
+.cell.editcell { width: unset; height: unset; line-height: unset; text-align: center;  border: 1px solid #eeef; }
+.cell.editcell.selected { outline: 2px dotted #4448; outline-offset: 3px;}
+.cell.editcell.wall1, .cell.editcell.wall2 { border-top-color: #850c; }
+.cell.editcell.wall1, .cell.editcell.wall3 { border-left-color: #850c; }
+.cell.editcell.wall2, .cell.editcell.wall4 { border-right-color: #850c; }
+.cell.editcell.wall3, .cell.editcell.wall4 { border-bottom-color: #850c; }
+.cell.editcell.wall1, .cell.editcell.wall2 { border-top-width: 3px }
+.cell.editcell.wall1, .cell.editcell.wall3 { border-left-width: 3px }
+.cell.editcell.wall2, .cell.editcell.wall4 { border-right-width: 3px }
+.cell.editcell.wall3, .cell.editcell.wall4 { border-bottom-width: 3px }

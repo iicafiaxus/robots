@@ -428,6 +428,114 @@
 			}
 		</script>
 
+		<!-- 編集用盤面 -->
+		<script type="text/babel">
+			let EditCell = function(props){
+				return <div
+					className={
+						"cell editcell" +
+						(props.isGoal ? " edit-goal" : "") +
+						(props.isShade ? " shade" : "") + 
+						(props.wallType ? " wall" + props.wallType : "") +
+						(props.isSelected ? " selected" : "")
+					}
+					style={{
+						gridRow: (props.x || 0) + 1,
+						gridColumn: (props.y || 0) + 1
+					}}
+					onClick={props.onClick}
+				>
+					{props.robot || (props.isGoal ? "☆" : "　")}
+				</div>
+			}
+
+			let EditBoard = function(props){
+				let cells = [];
+				for(let x = 0; x < props.height; x ++){
+					for(let y = 0; y < props.width; y ++){
+						let cell = { x, y, key: x + "/" + y };
+						cells.push(cell);
+					}
+				}
+				
+				for(let robot of props.robots){
+					let key = robot.x + "/" + robot.y;
+					let cell = cells.find(c => c.key == key);
+					if(cell) cell.defaultRobotName = ["●", "A", "B", "C", "D", "E", "F", "G", "H"][robot.key - 1];
+				}
+				for(let wall of props.walls){
+					let key = wall.x + "/" + wall.y;
+					let cell = cells.find(c => c.key == key);
+					if(cell){
+						cell.defaultWallType = wall.type;
+						cell.defaultIsGoal = wall.isGoal;
+						cell.defaultIsShade = wall.isShade;
+					}
+				}
+
+				for(let cell of cells){
+					[cell.robotName, cell.setRobotName] = React.useState(cell.defaultRobotName);
+					[cell.wallType, cell.setWallType] = React.useState(cell.defaultWallType);
+					[cell.isGoal, cell.setIsGoal] = React.useState(cell.defaultIsGoal);
+					[cell.isShade, cell.setIsShade] = React.useState(cell.defaultIsShade);
+				}
+
+				let [selectedCellKey, setSelectedCellKey] = React.useState("");
+				let setWallType = function(type){
+					let cell = cells.find(c => c.key == selectedCellKey);
+					if(cell) cell.setWallType(type);
+				}
+				let setGoal = function(){
+					let cell = cells.find(c => c.key == selectedCellKey);
+					console.log(cell);
+					if(cell){
+						for(let c of cells) c.setIsGoal(false);
+						cell.setIsGoal(true);
+					}
+				}
+				let setRobot = function(number){
+					let cell = cells.find(c => c.key == selectedCellKey);
+					let name = ["●", "A", "B", "C", "D", "E", "F", "G", "H"][number];
+					if(cell){
+						for(let c of cells) if(c.robotName === name) c.setRobotName(void 0);
+						cell.setRobotName(name);
+					}
+				}
+				return <div>
+					<div
+						className="board editboard"
+						style={{
+							gridTemplateRows: "repeat(" + props.height + ", 1fr)",
+							gridTemplateColumns: "repeat(" + props.width + ", 1fr)",
+							lineHeight: (24 * 16 / props.height) + "px"
+						}}
+					>
+						{ cells.map(cell =>
+							<EditCell
+								key={cell.key} x={cell.x} y={cell.y}
+								wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade}
+								robot={cell.robotName}
+								isSelected={cell.key === selectedCellKey}
+								onClick={() => setSelectedCellKey(cell.key)}
+							/>
+						)}
+					</div>
+					<div>
+						<button onClick={() => setWallType(0)}>なし</button>
+						<button onClick={() => setWallType(2)}>右上</button>
+						<button onClick={() => setWallType(4)}>右下</button>
+						<button onClick={() => setWallType(3)}>左下</button>
+						<button onClick={() => setWallType(1)}>左上</button>
+						<button onClick={() => setGoal()}>ゴール</button>
+						<button onClick={() => setRobot(0)}>●</button>
+						<button onClick={() => setRobot(1)}>A</button>
+						<button onClick={() => setRobot(2)}>B</button>
+						<button onClick={() => setRobot(3)}>C</button>
+					</div>
+				</div>
+			}
+		</script>
+
 		<!-- ゲーム全体 -->
 		<script type="text/babel">
 			class Game extends React.Component {
@@ -709,6 +817,9 @@
 				openImport(){
 					this.openModal("import");
 				}
+				openEdit(){
+					this.openModal("edit");
+				}
 				openAlert(message, title){
 					window.setTimeout(() => {
 						this.setState({ alertMessage: message, alertTitle: title });
@@ -775,6 +886,10 @@
 
 								<button className="material unimportant" onClick={this.openImport.bind(this)}>
 									<span className="material-icons">input</span>
+								</button>
+								
+								<button className="material unimportant" onClick={this.openEdit.bind(this)}>
+									<span className="material-icons">edit</span>
 								</button>
 								
 								<div className="flex-filler" />
@@ -1077,6 +1192,26 @@
 										<div className="buttons setting-item">
 											<button onClick={() => this.closeModal() + this.importMap()}>
 												インポート (更新後有効)
+											</button>
+										</div>
+									</div>
+								}
+
+								{this.state.modalName == "edit" &&
+									<div className="modal dialog">
+										<div className="dialog-title">盤面編集</div>
+										<div className="dialog-line image-view">
+											<EditBoard
+												width={this.state.boardWidth}
+												height={this.state.boardHeight}
+												robots={this.state.robots}
+												walls={this.state.walls}
+												setEditMap={(robots, walls) => setEditMap(robots, walls)}
+											/>
+										</div>
+										<div className="buttons setting-item">
+											<button onClick={() => this.closeModal() + this.importEdit()}>
+												反映 (更新後有効)
 											</button>
 										</div>
 									</div>
