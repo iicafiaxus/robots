@@ -484,6 +484,7 @@
 				let setWallType = function(type){
 					let cell = cells.find(c => c.key == selectedCellKey);
 					if(cell) cell.setWallType(type);
+					setSelectedCellKey(void 0);
 				}
 				let setGoal = function(){
 					let cell = cells.find(c => c.key == selectedCellKey);
@@ -492,6 +493,7 @@
 						for(let c of cells) c.setIsGoal(false);
 						cell.setIsGoal(true);
 					}
+					setSelectedCellKey(void 0);
 				}
 				let setRobot = function(number){
 					let cell = cells.find(c => c.key == selectedCellKey);
@@ -500,14 +502,15 @@
 						for(let c of cells) if(c.robotName === name) c.setRobotName(void 0);
 						cell.setRobotName(name);
 					}
+					setSelectedCellKey(void 0);
 				}
-				return <div>
+				return <div className="board-set">
 					<div
 						className="board editboard"
 						style={{
 							gridTemplateRows: "repeat(" + props.height + ", 1fr)",
 							gridTemplateColumns: "repeat(" + props.width + ", 1fr)",
-							lineHeight: (24 * 16 / props.height) + "px"
+							lineHeight: (24 * 16 / props.width) + "px"
 						}}
 					>
 						{ cells.map(cell =>
@@ -516,16 +519,22 @@
 								wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade}
 								robot={cell.robotName}
 								isSelected={cell.key === selectedCellKey}
-								onClick={() => setSelectedCellKey(cell.key)}
+								onClick={() => setSelectedCellKey(
+									selectedCellKey == cell.key ? void 0 : cell.key
+								)}
 							/>
 						)}
 					</div>
-					<div>
+					<div className={"buttons" + (selectedCellKey ? "" : " disabled")}>
+						壁
 						<button onClick={() => setWallType(0)}>なし</button>
 						<button onClick={() => setWallType(2)}>右上</button>
 						<button onClick={() => setWallType(4)}>右下</button>
 						<button onClick={() => setWallType(3)}>左下</button>
 						<button onClick={() => setWallType(1)}>左上</button>
+					</div>
+					<div className={"buttons" + (selectedCellKey ? "" : " disabled")}>
+						オブジェクト
 						<button onClick={() => setGoal()}>ゴール</button>
 						<button onClick={() => setRobot(0)}>●</button>
 						<button onClick={() => setRobot(1)}>A</button>
@@ -1200,7 +1209,7 @@
 								{this.state.modalName == "edit" &&
 									<div className="modal dialog">
 										<div className="dialog-title">盤面編集</div>
-										<div className="dialog-line image-view">
+										<div className="dialog-line">
 											<EditBoard
 												width={this.state.boardWidth}
 												height={this.state.boardHeight}
