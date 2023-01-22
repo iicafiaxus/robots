@@ -617,6 +617,10 @@
 						importedRobots: importParam.robots
 					});
 				}
+				importEdit(){
+					this.openAlert("未実装です。盤面編集は反映されません。", "情報");
+					return;
+				}
 
 				setSolution(solution){
 					this.setState({ solution });
@@ -1229,7 +1233,7 @@
 										</div>
 										<div className="buttons setting-item">
 											<button onClick={() => this.closeModal() + this.importEdit()}>
-												反映 (更新後有効)
+												反映 (更新後有効) ※未実装
 											</button>
 										</div>
 									</div>
