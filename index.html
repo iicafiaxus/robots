@@ -515,13 +515,15 @@
 					}
 					setSelectedCellKey(void 0);
 				}
+
+				let cellSize = Math.min(24 * 16 / props.height, 28 * 16 / props.width);
 				return <div className="board-set">
 					<div
 						className="board editboard"
 						style={{
-							gridTemplateRows: "repeat(" + props.height + ", 1fr)",
-							gridTemplateColumns: "repeat(" + props.width + ", 1fr)",
-							lineHeight: (24 * 16 / props.width) + "px"
+							gridTemplateRows: `repeat(${props.height}, ${cellSize + "px"})`,
+							gridTemplateColumns: `repeat(${props.width}, ${cellSize + "px"})`,
+							lineHeight: `${(cellSize - 6) + "px"}`,
 						}}
 					>
 						{ cells.map(cell =>
