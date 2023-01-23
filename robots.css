@@ -193,7 +193,7 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 .modal.dialog .dialog-line.image-view.qrcode { background: #fff; padding: 24px; }
 
 .board-set { width: 100%; margin: 8px; }
-.board-set .disabled { opacity: 0; }
+.board-set .disabled { visibility: hidden; }
 .board.editboard { max-width: 100%; padding: 2px; border-width: 1px; background: #eeef; 
 	width: fit-content; height: fit-content; }
 .cell.editcell { width: unset; height: unset; line-height: unset; text-align: center;  border: 2px solid transparent;
