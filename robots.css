@@ -210,3 +210,5 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 .cell.editcell.wall2, .cell.editcell.wall4 { border-right-width: 3px }
 .cell.editcell.wall3, .cell.editcell.wall4 { border-bottom-width: 3px }
 */
+.cell.editcell.sample { width: 24px; height: 24px; line-height: 36px;
+	background: transparent; }

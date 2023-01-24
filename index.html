@@ -434,12 +434,14 @@
 				return <div
 					className={
 						"cell editcell" +
+						(props.disabled ? " disabled" : "") + 
+						(props.isSample ? " sample" : "") +
 						(props.isGoal ? " edit-goal" : "") +
 						(props.isShade ? " shade" : "") + 
 						(props.wallType ? " wall" + props.wallType : "") +
 						(props.isSelected ? " selected" : "")
 					}
-					style={{
+					style={props.isSample ? null : {
 						gridRow: (props.x || 0) + 1,
 						gridColumn: (props.y || 0) + 1
 					}}
@@ -447,6 +449,15 @@
 				>
 					{props.robot || (props.isGoal ? "☆" : "　")}
 				</div>
+			}
+			let EditCellButton = function(props){
+				return (
+					<button onClick={() => props.setWallType(props.wallType)}>
+						<EditCell isSample={true} disabled={props.disabled}
+							key={"sample" + props.wallType} wallType={props.wallType}
+						/>
+					</button>
+				);
 			}
 
 			let EditBoard = function(props){
@@ -535,21 +546,25 @@
 						)}
 					</div>
 					<div className={"buttons" + (selectedCell ? "" : " disabled")}>
-						壁
-						<button onClick={() => setWallType(0)}>なし</button>
-						<button onClick={() => setWallType(2)}>右上</button>
-						<button onClick={() => setWallType(4)}>右下</button>
-						<button onClick={() => setWallType(3)}>左下</button>
-						<button onClick={() => setWallType(1)}>左上</button>
+						<EditCellButton setWallType={setWallType} wallType="0"
+						disabled={selectedCell && selectedCell.isGoal} />
+						<EditCellButton setWallType={setWallType} wallType="2" />
+						<EditCellButton setWallType={setWallType} wallType="4" />
+						<EditCellButton setWallType={setWallType} wallType="3" />
+						<EditCellButton setWallType={setWallType} wallType="1" />
 					</div>
 					<div className={"buttons" +
-						(selectedCell && ! selectedCell.robotName ? "" : " disabled")}>
-						オブジェクト
-						<button onClick={() => setGoal()}>ゴール</button>
+						(selectedCell && ! selectedCell.robotName && ! selectedCell.isGoal ?
+						"" : " disabled")}>
 						<button onClick={() => setRobot(0)}>●</button>
 						<button onClick={() => setRobot(1)}>A</button>
 						<button onClick={() => setRobot(2)}>B</button>
 						<button onClick={() => setRobot(3)}>C</button>
+						<button onClick={() => setGoal()}
+						className={selectedCell &&
+							(! selectedCell.wallType || selectedCell.isGoal || selectedCell.robotName) &&
+							 "disabled"}
+						>☆</button>
 					</div>
 				</div>
 			}
