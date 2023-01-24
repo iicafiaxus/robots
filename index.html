@@ -452,8 +452,9 @@
 			}
 			let EditCellButton = function(props){
 				return (
-					<button onClick={() => props.setWallType(props.wallType)}>
-						<EditCell isSample={true} disabled={props.disabled}
+					<button onClick={() => props.setWallType(props.wallType)}
+						className={props.disabled ? "disabled" : ""}>
+						<EditCell isSample={true}
 							key={"sample" + props.wallType} wallType={props.wallType}
 						/>
 					</button>
@@ -506,6 +507,7 @@
 					let cell = selectedCell;
 					if(cell) cell.setWallType(type);
 					setSelectedCell(void 0);
+					setCounter(c => c + 1);
 				}
 				let setGoal = function(){
 					let cell = selectedCell;
@@ -514,6 +516,7 @@
 						cell.setIsGoal(true);
 						setSelectedCell(void 0);
 					}
+					setCounter(c => c + 1);
 				}
 				let setRobot = function(number){
 					let cell = selectedCell;
@@ -523,7 +526,13 @@
 						cell.setRobotName(name);
 					}
 					setSelectedCell(void 0);
+					setCounter(c => c + 1);
 				}
+
+				let [counter, setCounter] = React.useState(0);
+				React.useEffect(() => {
+					props.update(cells);
+				}, [counter]);
 
 				let cellSize = Math.min(24 * 16 / props.height, 28 * 16 / props.width);
 				return <div className="board-set">
@@ -546,12 +555,12 @@
 						)}
 					</div>
 					<div className={"buttons" + (selectedCell ? "" : " disabled")}>
-						<EditCellButton setWallType={setWallType} wallType="0"
+						<EditCellButton setWallType={setWallType} wallType={0}
 						disabled={selectedCell && selectedCell.isGoal} />
-						<EditCellButton setWallType={setWallType} wallType="2" />
-						<EditCellButton setWallType={setWallType} wallType="4" />
-						<EditCellButton setWallType={setWallType} wallType="3" />
-						<EditCellButton setWallType={setWallType} wallType="1" />
+						<EditCellButton setWallType={setWallType} wallType={2} />
+						<EditCellButton setWallType={setWallType} wallType={4} />
+						<EditCellButton setWallType={setWallType} wallType={3} />
+						<EditCellButton setWallType={setWallType} wallType={1} />
 					</div>
 					<div className={"buttons" +
 						(selectedCell && ! selectedCell.robotName && ! selectedCell.isGoal ?
@@ -634,8 +643,28 @@
 					});
 				}
 				importEdit(){
-					this.openAlert("未実装です。盤面編集は反映されません。", "情報");
-					return;
+					if( ! this.state.editResult) return;
+					if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
+					this.setState({
+						nextWalls: this.state.editResult.walls,
+						nextRobots: this.state.editResult.robots,
+						nextSolution: void 0,
+					});
+				}
+				updateEditResult(cells){
+					let walls = [];
+					let robots = [];
+					for(let cell of cells){
+						if(cell.robotName) robots.push({
+							x: cell.x, y: cell.y, isMain: cell.robotName==="●",
+							key: ["", "●", "A", "B", "C", "D", "E", "F", "G", "H"].findIndex(x => x == cell.robotName),
+						});
+						if(cell.wallType) walls.push({
+							x: cell.x, y: cell.y, type: cell.wallType, isGoal: cell.isGoal, isShade: cell.isShade
+						});
+					}
+					robots.sort((a, b) => a.key - b.key);
+					this.setState({ editResult: { walls, robots } });
 				}
 
 				setSolution(solution){
@@ -1244,12 +1273,12 @@
 												height={this.state.boardHeight}
 												robots={this.state.robots}
 												walls={this.state.walls}
-												setEditMap={(robots, walls) => setEditMap(robots, walls)}
+												update={(cells) => this.updateEditResult(cells)}
 											/>
 										</div>
 										<div className="buttons setting-item">
 											<button onClick={() => this.closeModal() + this.importEdit()}>
-												反映 (更新後有効) ※未実装
+												反映 (更新後有効)
 											</button>
 										</div>
 									</div>
