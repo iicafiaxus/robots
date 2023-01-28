@@ -32,6 +32,7 @@
 		<link rel="stylesheet" href="robots.css">
 		<script src="robotsolve.js"></script>
 		<script src="robotdecode.js"></script>
+		<script src="robotencode.js"></script>
 	</head>
 	<body>
 		<div id="root"></div>
@@ -887,6 +888,16 @@
 				openEdit(){
 					this.openModal("edit");
 				}
+				openExport(){
+					this.openModal("export");
+					this.setState({
+						exportingCode: encoder.encode({
+							paramName: this.state.paramName,
+							robots: this.state.robots,
+							walls: this.state.walls,
+						})
+					});
+				}
 				openAlert(message, title){
 					window.setTimeout(() => {
 						this.setState({ alertMessage: message, alertTitle: title });
@@ -957,6 +968,10 @@
 								
 								<button className="material unimportant" onClick={this.openEdit.bind(this)}>
 									<span className="material-icons">edit</span>
+								</button>
+								
+								<button className="material unimportant" onClick={this.openExport.bind(this)}>
+									<span className="material-icons">output</span>
 								</button>
 								
 								<div className="flex-filler" />
@@ -1248,8 +1263,8 @@
 
 								{this.state.modalName == "import" &&
 									<div className="modal dialog">
-										<div className="dialog-title">盤面のインポート</div>
-										<div className="dialog-line-caption">インポートコード</div>
+										<div className="dialog-title">インポート</div>
+										<div className="dialog-line-caption">インポートする盤面コード</div>
 										<div className="dialog-line">
 											<textarea
 												onChange={(e) => this.setState({ importingCode: e.target.value})}
@@ -1280,6 +1295,19 @@
 											<button onClick={() => this.closeModal() + this.importEdit()}>
 												反映 (更新後有効)
 											</button>
+										</div>
+									</div>
+								}
+
+								{this.state.modalName == "export" &&
+									<div className="modal dialog">
+										<div className="dialog-title">エクスポート</div>
+										<div className="dialog-line-caption">現在の盤面コード</div>
+										<div className="dialog-line">
+											<textarea
+												readOnly={true}
+												value={this.state.exportingCode}
+											/>
 										</div>
 									</div>
 								}
