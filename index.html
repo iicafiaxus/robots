@@ -896,7 +896,13 @@
 							paramName: this.state.paramName,
 							robots: this.state.robots,
 							walls: this.state.walls,
-						})
+						}),
+						foreignCode: encoder.encodeExternal({
+							width: this.state.boardWidth,
+							height: this.state.boardHeight,
+							robots: this.state.robots,
+							walls: this.state.walls,
+						}),
 					});
 				}
 				openAlert(message, title){
@@ -1268,6 +1274,7 @@
 										<div className="dialog-line-caption">インポートする盤面コード</div>
 										<div className="dialog-line">
 											<textarea
+												className="code"
 												onChange={(e) => this.setState({ importingCode: e.target.value})}
 												value={this.state.importingCode}
 											/>
@@ -1306,8 +1313,17 @@
 										<div className="dialog-line-caption">現在の盤面コード</div>
 										<div className="dialog-line">
 											<textarea
+												className="code"
 												readOnly={true}
 												value={this.state.exportingCode}
+											/>
+										</div>
+										<div className="dialog-line-caption">外部ツール連携用コード</div>
+										<div className="dialog-line">
+											<textarea
+												className="code"
+												readOnly={true}
+												value={this.state.foreignCode}
 											/>
 										</div>
 									</div>
