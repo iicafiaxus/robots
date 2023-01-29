@@ -79,6 +79,10 @@ let encoder = new function(){
 					if(y == y0 || y == y0 + width) code &= NG_LEFT;
 					if(y == y0 - 1 || y == y0 + width - 1) code &= NG_RIGHT;
 				}
+				if(x == 0) code &= NG_UP;
+				if(x == 15) code &= NG_DOWN;
+				if(y == 0) code &= NG_LEFT;
+				if(y == 15) code &= NG_RIGHT;
 				cellCodes.push(code);
 			}
 		}
