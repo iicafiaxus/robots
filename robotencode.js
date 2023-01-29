@@ -51,7 +51,6 @@ let encoder = new function(){
 
 		let otherWalls = param.walls.filter(w => ! w.isGoal && ! w.isShade);
 		let wallTypes = new Set(otherWalls.map(w => w.type));
-		console.log({wallTypes});
 		for(let type of wallTypes){
 			let wValue = encodeWalls(otherWalls.filter(w => w.type == type));
 			lines.push("w" + wValue);
@@ -120,7 +119,6 @@ let encoder = new function(){
 		let allCodes = cellCodes.concat(goalCodes).concat(robotCodes).concat(whichCodes);
 		let allCodesQuater = this.valuesToQuater(allCodes);
 		let result = this.quaterTo64(allCodesQuater);
-		console.log({ cellCodes, goalCodes, robotCodes, whichCodes, allCodes, allCodesQuater, result });
 
 		return result;
 	}
