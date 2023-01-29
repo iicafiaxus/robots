@@ -78,6 +78,11 @@ let encoder = new function(){
 					if(y == y0 || y == y0 + width) code &= NG_LEFT;
 					if(y == y0 - 1 || y == y0 + width - 1) code &= NG_RIGHT;
 				}
+				if((x <= x0 - 1 || y <= y0 - 1 || x >= x0 + height || y >= y0 + width) &&
+					(y >= 1 || x >= 1)){
+					///*x >= x0 - 1 && */y >= y0 - 1 && /*x <= x0 + height && */1/*y <= y0 + width*/){
+					code = 0;
+				}
 				if(x == 0) code &= NG_UP;
 				if(x == 15) code &= NG_DOWN;
 				if(y == 0) code &= NG_LEFT;
@@ -88,7 +93,7 @@ let encoder = new function(){
 
 		let goals = [];
 		for(let i = 0; i < 17; i ++){
-			goals.push({ x: 15, y : 15 });
+			goals.push({ x: 0, y : 0 });
 		}
 
 		let index = function(x, y) { return y + x * 16; };
