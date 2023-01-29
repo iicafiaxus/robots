@@ -104,12 +104,19 @@ let encoder = new function(){
 			else if(dy == 1) cellCodes[z] &= NG_RIGHT;
 			else if(dy == -1) cellCodes[z] &= NG_LEFT;
 		}
+		let setShade = function(x, y){
+				setWall(x, y, -1, 0), setWall(x, y, 1, 0), setWall(x, y, 0, -1), setWall(x, y, 0, 1);
+		}
+
 		for(wall of param.walls){
-			if(wall.type == 1) setWall(wall.x, wall.y, -1, 0), setWall(wall.x, wall.y, 0, -1);
-			else if(wall.type == 2) setWall(wall.x, wall.y, -1, 0), setWall(wall.x, wall.y, 0, 1);
-			else if(wall.type == 3) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, -1);
-			else if(wall.type == 4) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, 1);
-			if(wall.isGoal) goals[0] = { x: x0 + wall.x, y: y0 + wall.y };
+			if(wall.isShade) setShade(wall.x, wall.y);
+			else{
+				if(wall.type == 1) setWall(wall.x, wall.y, -1, 0), setWall(wall.x, wall.y, 0, -1);
+				else if(wall.type == 2) setWall(wall.x, wall.y, -1, 0), setWall(wall.x, wall.y, 0, 1);
+				else if(wall.type == 3) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, -1);
+				else if(wall.type == 4) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, 1);
+				if(wall.isGoal) goals[0] = { x: x0 + wall.x, y: y0 + wall.y };
+			}
 		}
 
 		let goalCodes = goals.flatMap(g => [g.y, g.x]);
