@@ -442,31 +442,31 @@ class Game extends React.Component {
 							<div className="buttons setting-item">
 								<div className="setting-title">サイズ (次の問題から有効)</div>
 								<label>
-									<input type="radio" name="param" value="small"
+									<input type="radio" name="sizeName" value="small"
 										checked={this.state.sizeName == "small"}
 										onChange={() => this.setSizeName("small")} />
 									<span>小 (8×8)</span>
 								</label>
 								<label>
-									<input type="radio" name="param" value="medium"
+									<input type="radio" name="sizeName" value="medium"
 										checked={this.state.sizeName == "medium"}
 										onChange={() => this.setSizeName("medium")} />
 									<span>中 (8×12)</span>
 								</label>
 								<label>
-									<input type="radio" name="param" value="large"
+									<input type="radio" name="sizeName" value="large"
 										checked={this.state.sizeName == "large"}
 										onChange={() => this.setSizeName("large")} />
 									<span>大 (10×14)</span>
 								</label>
 								<label>
-									<input type="radio" name="param" value="large2"
+									<input type="radio" name="sizeName" value="large2"
 										checked={this.state.sizeName == "large2"}
 										onChange={() => this.setSizeName("large2")} />
 									<span>特大 (12×16)</span>
 								</label>
 								<label>
-									<input type="radio" name="param" value="large3"
+									<input type="radio" name="sizeName" value="large3"
 										checked={this.state.sizeName == "large3"}
 										onChange={() => this.setSizeName("large3")} />
 									<span>フルサイズ (16×16)</span>
