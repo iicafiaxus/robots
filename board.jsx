@@ -55,49 +55,46 @@ let Board = function(props){
 
 	let toKey = (x, y) => x + "/" + y;
 
-	let cellProps = [];
-	let cellPropDic = {};
-	for(let i = 0; i < height; i ++){
-		for(let j = 0; j < width; j ++){
-			let key = toKey(i, j);
-			let cellProp = {
-				isGoal: false,
-				x: i,
-				y: j,
-				key: key
+	let cells = [];
+	let cellDic = {};
+	for(let x = 0; x < height; x ++){
+		for(let y = 0; y < width; y ++){
+			let key = toKey(x, y);
+			let cell = {
+				x, y, key, isGoal: false,
+				wallXBack: (x == 0),
+				wallX: (x == height - 1),
+				wallYBack: (y == 0),
+				wallY: (y == width - 1)
 			};
-			if(i == 0) cellProp.wallXBack = true;
-			if(i == height - 1) cellProp.wallX = true;
-			if(j == 0) cellProp.wallYBack = true;
-			if(j == width - 1) cellProp.wallY = true;
-			cellProps.push(cellProp);
-			cellPropDic[key] = cellProp;
+			cells.push(cell);
+			cellDic[key] = cell;
 		}
 	}
 	for(let wall of props.walls || []){
 		let x = wall.x, y = wall.y;
 		if(wall.type == 1 || wall.type == 2){
-			cellPropDic[toKey(x, y)].wallXBack = true;
-			if(x > 0) cellPropDic[toKey(x - 1, y)].wallX = true;
+			cellDic[toKey(x, y)].wallXBack = true;
+			if(x > 0) cellDic[toKey(x - 1, y)].wallX = true;
 		}
 		if(wall.type == 3 || wall.type == 4){
-			cellPropDic[toKey(x, y)].wallX = true;
-			if(x < height - 1) cellPropDic[toKey(x + 1, y)].wallXBack = true;
+			cellDic[toKey(x, y)].wallX = true;
+			if(x < height - 1) cellDic[toKey(x + 1, y)].wallXBack = true;
 		}
 		if(wall.type == 1 || wall.type == 3){
-			cellPropDic[toKey(x, y)].wallYBack = true;
-			if(y > 0) cellPropDic[toKey(x, y - 1)].wallY = true;
+			cellDic[toKey(x, y)].wallYBack = true;
+			if(y > 0) cellDic[toKey(x, y - 1)].wallY = true;
 		}
 		if(wall.type == 2 || wall.type == 4){
-			cellPropDic[toKey(x, y)].wallY = true;
-			if(y < width - 1) cellPropDic[toKey(x, y + 1)].wallYBack = true;
+			cellDic[toKey(x, y)].wallY = true;
+			if(y < width - 1) cellDic[toKey(x, y + 1)].wallYBack = true;
 		}
-		if(wall.isGoal) cellPropDic[toKey(x, y)].isGoal = true;
-		if(wall.isShade) cellPropDic[toKey(x, y)].isShade = true;
+		if(wall.isGoal) cellDic[toKey(x, y)].isGoal = true;
+		if(wall.isShade) cellDic[toKey(x, y)].isShade = true;
 	}
 
-	let robotProps = props.robots || [];
-	let nRobot = robotProps.length;
+	let robots = props.robots || [];
+	let nRobot = robots.length;
 
 	let lines = props.lines || [];
 	let lineRows = [], lineColumns = [];
@@ -142,7 +139,7 @@ let Board = function(props){
 		line.dx = line.iRowTrack - (line.nRowTrack - 1) / 2;
 		line.dy = line.iColumnTrack - (line.nColumnTrack - 1) / 2;
 	}
-	for(let rp of robotProps) rp.dx = 0, rp.dy = 0;
+	for(let r of robots) r.dx = 0, r.dy = 0;
 	for(let lineRoute of lineRoutes){
 		for(let i = 0; i < lineRoute.length - 1; i ++){
 			let l = lineRoute[i], l1 = lineRoute[i + 1];
@@ -175,8 +172,8 @@ let Board = function(props){
 		if(l){
 			if(l.isWidthSide) l.dsy = (l.sy < l.ty ? 2 : -2); else l.dsy = 0;
 			if(l.isHeightSide) l.dsx = (l.sx < l.tx ? 2 : -2); else l.dsx = 0;
-			robotProps[l.iRobot].dx = (l.dx || 0);
-			robotProps[l.iRobot].dy = (l.dy || 0);
+			robots[l.iRobot].dx = (l.dx || 0);
+			robots[l.iRobot].dy = (l.dy || 0);
 		}
 		l = lineRoute[lineRoute.length - 1];
 		if(l){
@@ -208,38 +205,53 @@ let Board = function(props){
 		onMouseMove={movePress}
 		onTouchMove={movePress}
 		>
-		{ robotProps.map(_ => <Robot
-			key={_.key} x={_.x} y={_.y} isMain={_.isMain}
-			number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
-			dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
-		/>) }
-		{ cellProps.map(_ =>
-			<Cell key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
+
+		{ robots.map(_ =>
+			<Robot
+				key={_.key} x={_.x} y={_.y} isMain={_.isMain}
+				number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
+				dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
+			/>
+		) }
+
+		{ cells.map(_ =>
+			<Cell
+				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
 				wallX={_.wallX} wallXBack={_.wallXBack}
 				wallY={_.wallY} wallYBack={_.wallYBack} isGoal={_.isGoal}
 			/>
 		)}
+
 		{ props.showsRoute && props.lines && props.lines.map((_, i) =>
-			<TraceLine key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
+			<TraceLine
+				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
 			/>
 		)}
+
 		{ props.showsRoute && minilines && minilines.map((_, i) =>
-			<TraceLine key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
+			<TraceLine
+				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
 			/>
 		)}
+
 		{ props.showsRoute && minirobots && minirobots.map((_, i) =>
-			<MiniRobot key={i} i={_.iRobot} x={_.x} y={_.y} dx={_.dx} dy={_.dy}
+			<MiniRobot
+				key={i} i={_.iRobot} x={_.x} y={_.y} dx={_.dx} dy={_.dy}
 				isMain={_.isMain}
 			/>
 		)}
-		{ props.isLoading ? <div className="loading-message">
-		</div> : null }
-		{ isDiscarding ? <div className="discarding">
-			<span className="material-icons">delete_forever</span>
-		</div> : null }
+
+		{ props.isLoading ? <div className="loading-message"></div> : null }
+		{ isDiscarding ?
+			<div className="discarding">
+				<span className="material-icons">delete_forever</span>
+			</div>
+			: null
+		}
+		
 	</div>
 }
