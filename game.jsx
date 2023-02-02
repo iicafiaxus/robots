@@ -1,4 +1,5 @@
 "REQUIRE board.jsx";
+"REQUIRE buttons.jsx";
 "REQUIRE editboard.jsx";
 "REQUIRE mapmaker.js";
 "REQUIRE robotsolve.js";
@@ -312,40 +313,19 @@ class Game extends React.Component {
 			}>
 				<div className="buttons">
 
-					<button className="material unimportant" onClick={this.openImport.bind(this)}>
-						<span className="material-icons">input</span>
-					</button>
-					
-					<button className="material unimportant" onClick={this.openEdit.bind(this)}>
-						<span className="material-icons">edit</span>
-					</button>
-					
-					<button className="material unimportant" onClick={this.openExport.bind(this)}>
-						<span className="material-icons">output</span>
-					</button>
-					
+					<MaterialButton name="input" onClick={this.openImport.bind(this)} />
+					<MaterialButton name="edit" onClick={this.openEdit.bind(this)} />
+					<MaterialButton name="output" onClick={this.openExport.bind(this)} />
 					<div className="flex-filler" />
-
-					<button className="material unimportant" onClick={this.openMobileLink.bind(this)}>
-						<span className="material-icons">devices</span>
-					</button>
-					
-					<button className="material unimportant" onClick={this.openTutrial.bind(this)}>
-						<span className="material-icons">help</span>
-					</button>
-					
-					<button className="material unimportant" onClick={this.openSettings.bind(this)}>
-						<span className="material-icons">settings</span>
-					</button>
+					<MaterialButton name="devices" onClick={this.openMobileLink.bind(this)} />
+					<MaterialButton name="help" onClick={this.openTutrial.bind(this)} />
+					<MaterialButton name="settings" onClick={this.openSettings.bind(this)} />
 
 				</div>
 
 				<div className="buttons fullwidth">
 
-					<button className="material large important" onClick={this.resetBoard.bind(this)}>
-						<span className="material-icons">refresh</span>
-					</button>
-
+					<MaterialLargeButton name="refresh" onClick={this.resetBoard.bind(this)} />
 					<div className="flex-filler" />
 
 					<div className="caption large">
@@ -674,23 +654,6 @@ class Game extends React.Component {
 			}
 		</div>
 	}
-}
-
-let Covered = function(props){
-	return <span className={
-		"covered" +
-		(props.size == "short" ? " short" : "") + 
-		(props.size == "short2" ? " short2" : "") + 
-		(props.size == "long" ? " long" : "") + 
-		(props.size == "fullwidth" ? " long fullwidth" : "") + 
-		(props.large ? " large" : "") + 
-		(props.isOpen ? " isOpen" : "") +
-		(props.isActive ? "" : " inactive")
-	}
-		onClick={props.onClick}
-	>
-		{ props.isOpen ? props.value : " " }
-	</span>
 }
 
 let QrCode = function(props){
