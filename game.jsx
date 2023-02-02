@@ -22,9 +22,6 @@ class Game extends React.Component {
 		let showRobotName = load("showRobotName") == "true";
 		save("showRobotName", showRobotName);
 
-		let solveAllRoutes = load("solveAllRoutes") == "true";
-		save("solveAllRoutes", solveAllRoutes);
-		
 		let useTutrial = load("useTutrial") != "false";
 		save("useTutrial", useTutrial);
 
@@ -35,7 +32,6 @@ class Game extends React.Component {
 			paramName,
 			showAnswerAlways,
 			showRobotName,
-			solveAllRoutes,
 			useTutrial
 		};
 	}
@@ -369,10 +365,6 @@ class Game extends React.Component {
 		this.setState({ showRobotName : !! value });
 		save("showRobotName", value);
 	}
-	setSolveAllRoutes(value){
-		this.setState({ solveAllRoutes : !! value });
-		save("solveAllRoutes", value);
-	}
 	setUseTutrial(value){
 		this.setState({ useTutrial : !! value });
 		save("useTutrial", value);
@@ -590,22 +582,6 @@ class Game extends React.Component {
 									<span>最短手数の手順は？</span>
 								</label>
 							</div>
-
-							{false &&<div className="buttons setting-item">
-								<div className="setting-title">最短手数の手順の提示</div>
-								<label>
-									<input type="radio" name="solveallroutes" value="false"
-										checked={ ! this.state.solveAllRoutes}
-										onChange={() => this.setSolveAllRoutes(false)} />
-									<span>一つの手順</span>
-								</label>
-								<label>
-									<input type="radio" name="solveallroutes" value="true"
-										checked={ !! this.state.solveAllRoutes}
-										onChange={() => this.setSolveAllRoutes(true)} />
-									<span>すべての手順</span>
-								</label>
-							</div>}
 
 							<div className="buttons setting-item">
 								<div className="setting-title">コマの識別方法</div>
