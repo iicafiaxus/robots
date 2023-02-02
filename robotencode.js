@@ -8,7 +8,7 @@ let encoder = new function(){
 			"large": "EA,1",
 			"large2": "GC,1",
 			"large3": "GG,1",
-		}[param.paramName];
+		}[param.sizeName];
 		lines.push("z" + zValue);
 
 		let encodePoint = function(x, y){

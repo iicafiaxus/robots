@@ -87,11 +87,11 @@ let decoder = new function(){
 				if(result.isError) return result;
 				usedKeyset.add(k);
 
-				if(v == "88,0") temp.paramName = "small", temp.h = 8, temp.w = 8;
-				else if(v == "C8,1") temp.paramName = "medium", temp.h = 12, temp.w = 8, temp.hasCenter = true;
-				else if(v == "EA,1") temp.paramName = "large", temp.h = 14, temp.w = 10, temp.hasCenter = true;
-				else if(v == "GC,1") temp.paramName = "large2", temp.h = 16, temp.w = 12, temp.hasCenter = true;
-				else if(v == "GG,1") temp.paramName = "large3", temp.h = 16, temp.w = 16, temp.hasCenter = true;
+				if(v == "88,0") temp.sizeName = "small", temp.h = 8, temp.w = 8;
+				else if(v == "C8,1") temp.sizeName = "medium", temp.h = 12, temp.w = 8, temp.hasCenter = true;
+				else if(v == "EA,1") temp.sizeName = "large", temp.h = 14, temp.w = 10, temp.hasCenter = true;
+				else if(v == "GC,1") temp.sizeName = "large2", temp.h = 16, temp.w = 12, temp.hasCenter = true;
+				else if(v == "GG,1") temp.sizeName = "large3", temp.h = 16, temp.w = 16, temp.hasCenter = true;
 				else{
 					result.isError = true;
 					result.message = "unknown board size: " + v;
@@ -179,7 +179,7 @@ let decoder = new function(){
 		checkKeyExists("g");
 		if(result.isError) return result;
 
-		result.paramName = temp.paramName;
+		result.sizeName = temp.sizeName;
 
 		result.robots = [temp.mainRobot];
 		for(let r of temp.otherRobots) result.robots.push(r);

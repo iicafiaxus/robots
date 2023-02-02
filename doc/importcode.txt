@@ -9,7 +9,7 @@ v0;zC8,1;r05;q71B352;g3,26;w3,0351;w6,236787A3;wC,11208095B5;w9,82;
 値は,で区切る
 
 zの値
-paramName
+sizeName	
 88,0	small
 C8,1	medium
 EA,1	large

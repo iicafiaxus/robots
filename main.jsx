@@ -33,5 +33,5 @@ let params = {
 	dom.className = "root";
 	const root = ReactDOM.createRoot(dom);
 	document.body.appendChild(dom);
-	root.render(<Game params={params} paramName={"medium"} />);
+	root.render(<Game params={params} sizeName={"medium"} />);
 })();

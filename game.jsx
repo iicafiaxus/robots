@@ -12,10 +12,10 @@ class Game extends React.Component {
 	constructor(props){
 		super(props);
 
-		let paramName = load("paramName");
-		if( ! props.params[paramName]){
-			paramName = "medium";
-			save("paramName", paramName);
+		let sizeName = load("sizeName");
+		if( ! props.params[sizeName]){
+			sizeName = "medium";
+			save("sizeName", sizeName);
 		}
 
 		let showAnswerAlways = load("showAnswerAlways") == "true";
@@ -31,7 +31,7 @@ class Game extends React.Component {
 			solution: {length: "計算中", description: "計算中"},
 			isDescriptionOpen : false,
 			params: props.params,
-			paramName,
+			sizeName,
 			showAnswerAlways,
 			showRobotName,
 			useTutrial
@@ -58,7 +58,7 @@ class Game extends React.Component {
 			this.openAlert("インポートは失敗しました。 (" + importParam.message + ")", "エラー");
 			return;
 		}
-		this.setParamName(importParam.paramName);
+		this.setSizeName(importParam.sizeName);
 		this.setState({
 			importedWalls: importParam.walls,
 			importedRobots: importParam.robots,
@@ -137,7 +137,7 @@ class Game extends React.Component {
 
 
 	resetBoard(){
-		let param = this.state.params[this.state.paramName];
+		let param = this.state.params[this.state.sizeName];
 		
 		if(this.solver){
 			this.solver.stop();
@@ -241,7 +241,7 @@ class Game extends React.Component {
 		this.openModal("export");
 		this.setState({
 			exportingCode: encoder.encode({
-				paramName: this.state.paramName,
+				sizeName: this.state.sizeName,
 				robots: this.state.robots,
 				walls: this.state.walls,
 			}),
@@ -280,11 +280,11 @@ class Game extends React.Component {
 		}
 	}
 
-	setParamName(name){
+	setSizeName(name){
 		if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
-		this.setState({ paramName : name,
+		this.setState({ sizeName : name,
 			nextWalls: void 0, nextRobots: void 0, nextSolution: void 0 });
-		save("paramName", name);
+		save("sizeName", name);
 	}
 	setShowAnswerAlways(value){
 		this.setState({ showAnswerAlways : !! value });
@@ -306,11 +306,9 @@ class Game extends React.Component {
 	}
 
 	render(){
-		let param = this.state.params[this.state.paramName];
+		let param = this.state.params[this.state.sizeName];
 		return <div>
-			<div className={"all scalable" + 
-				(" size" + this.state.boardSize)
-			}>
+			<div className={"all scalable size" + this.state.boardSize}>
 				<div className="buttons">
 
 					<MaterialButton name="input" onClick={this.openImport.bind(this)} />
@@ -445,32 +443,32 @@ class Game extends React.Component {
 								<div className="setting-title">サイズ (次の問題から有効)</div>
 								<label>
 									<input type="radio" name="param" value="small"
-										checked={this.state.paramName == "small"}
-										onChange={() => this.setParamName("small")} />
+										checked={this.state.sizeName == "small"}
+										onChange={() => this.setSizeName("small")} />
 									<span>小 (8×8)</span>
 								</label>
 								<label>
 									<input type="radio" name="param" value="medium"
-										checked={this.state.paramName == "medium"}
-										onChange={() => this.setParamName("medium")} />
+										checked={this.state.sizeName == "medium"}
+										onChange={() => this.setSizeName("medium")} />
 									<span>中 (8×12)</span>
 								</label>
 								<label>
 									<input type="radio" name="param" value="large"
-										checked={this.state.paramName == "large"}
-										onChange={() => this.setParamName("large")} />
+										checked={this.state.sizeName == "large"}
+										onChange={() => this.setSizeName("large")} />
 									<span>大 (10×14)</span>
 								</label>
 								<label>
 									<input type="radio" name="param" value="large2"
-										checked={this.state.paramName == "large2"}
-										onChange={() => this.setParamName("large2")} />
+										checked={this.state.sizeName == "large2"}
+										onChange={() => this.setSizeName("large2")} />
 									<span>特大 (12×16)</span>
 								</label>
 								<label>
 									<input type="radio" name="param" value="large3"
-										checked={this.state.paramName == "large3"}
-										onChange={() => this.setParamName("large3")} />
+										checked={this.state.sizeName == "large3"}
+										onChange={() => this.setSizeName("large3")} />
 									<span>フルサイズ (16×16)</span>
 								</label>
 							</div>
