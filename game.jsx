@@ -43,7 +43,7 @@ class Game extends React.Component {
 
 	componentDidMount(){
 		this.resetBoard();
-		if(this.state.useTutrial) this.openTutrial();
+		if(this.state.useTutrial) this.openModal("tutrial");
 		window.addEventListener("popstate", this.popState.bind(this));
 	}
 
@@ -222,21 +222,6 @@ class Game extends React.Component {
 		navigator.share(data);
 	}
 
-	openSettings(){
-		this.openModal("settings");
-	}
-	openMobileLink(){
-		this.openModal("qrcode");
-	}
-	openTutrial(){
-		this.openModal("tutrial");
-	}
-	openImport(){
-		this.openModal("import");
-	}
-	openEdit(){
-		this.openModal("edit");
-	}
 	openExport(){
 		this.openModal("export");
 		this.setState({
@@ -308,13 +293,13 @@ class Game extends React.Component {
 			<div className={"all scalable size" + this.state.boardSize}>
 				<div className="buttons">
 
-					<MaterialButton name="input" onClick={this.openImport.bind(this)} />
-					<MaterialButton name="edit" onClick={this.openEdit.bind(this)} />
+					<MaterialButton name="input" onClick={() => this.openModal("import")} />
+					<MaterialButton name="edit" onClick={() => this.openModal("edit")} />
 					<MaterialButton name="output" onClick={this.openExport.bind(this)} />
 					<div className="flex-filler" />
-					<MaterialButton name="devices" onClick={this.openMobileLink.bind(this)} />
-					<MaterialButton name="help" onClick={this.openTutrial.bind(this)} />
-					<MaterialButton name="settings" onClick={this.openSettings.bind(this)} />
+					<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
+					<MaterialButton name="help" onClick={() => this.openModal("tutrial")} />
+					<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
 
 				</div>
 
