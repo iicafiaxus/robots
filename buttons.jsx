@@ -31,3 +31,19 @@ let Covered = function(props){
 	</span>
 }
 
+let SettingRadios = function(props){
+	return (
+		<div className="buttons setting-item">
+			{props.title && <div className="setting-title">{props.title}</div>}
+			{props.prefix && <span>{props.prefix}</span>}
+			{props.items.map( item  =>
+			<label key={item.value}>
+				<input type="radio" name={props.name} value={item.value}
+					checked={props.value === item.value}
+					onChange={() => props.setValue(item.value)} />
+				<span>{item.caption}</span>
+			</label>
+			)}
+		</div>
+	);
+}

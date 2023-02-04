@@ -280,29 +280,26 @@ class Game extends React.Component {
 		}
 	}
 
-	setSizeName(name){
-		if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
-		this.setState({ sizeName : name,
-			nextWalls: void 0, nextRobots: void 0, nextSolution: void 0 });
-		save("sizeName", name);
-	}
-	setShowAnswerAlways(value){
-		this.setState({ showAnswerAlways : !! value });
-		save("showAnswerAlways", value);
-	}
-	setShowRobotName(value){
-		this.setState({ showRobotName : !! value });
-		save("showRobotName", value);
-	}
-	setUseTutrial(value){
-		this.setState({ useTutrial : !! value });
-		save("useTutrial", value);
-	}
-
-
 	setSettingValue(name, value){
 		this.setState({ [name] : value });
 		save(name, value);
+		if(name == "sizeName"){
+			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
+			this.setState({ nextWalls: void 0, nextRobots: void 0, nextSolution: void 0 });
+		}
+	}
+
+	renderSettingRadios(param){
+		return (
+			<SettingRadios
+				title={param.title}
+				name={param.name}
+				prefix={param.prefix}
+				items={param.items}
+				value={this.state[param.name]}
+				setValue={v => this.setSettingValue(param.name, v)}
+			/>
+		);
 	}
 
 	render(){
@@ -436,91 +433,48 @@ class Game extends React.Component {
 
 			{this.state.isModalOpen	&&
 				<div className="modal-front">
+
 					{this.state.modalName == "settings" &&
 						<div className="modal setting-section">
 
-							<div className="buttons setting-item">
-								<div className="setting-title">サイズ (次の問題から有効)</div>
-								<label>
-									<input type="radio" name="sizeName" value="small"
-										checked={this.state.sizeName == "small"}
-										onChange={() => this.setSizeName("small")} />
-									<span>小 (8×8)</span>
-								</label>
-								<label>
-									<input type="radio" name="sizeName" value="medium"
-										checked={this.state.sizeName == "medium"}
-										onChange={() => this.setSizeName("medium")} />
-									<span>中 (8×12)</span>
-								</label>
-								<label>
-									<input type="radio" name="sizeName" value="large"
-										checked={this.state.sizeName == "large"}
-										onChange={() => this.setSizeName("large")} />
-									<span>大 (10×14)</span>
-								</label>
-								<label>
-									<input type="radio" name="sizeName" value="large2"
-										checked={this.state.sizeName == "large2"}
-										onChange={() => this.setSizeName("large2")} />
-									<span>特大 (12×16)</span>
-								</label>
-								<label>
-									<input type="radio" name="sizeName" value="large3"
-										checked={this.state.sizeName == "large3"}
-										onChange={() => this.setSizeName("large3")} />
-									<span>フルサイズ (16×16)</span>
-								</label>
-							</div>
+							{this.renderSettingRadios({
+								title: "サイズ (次の問題から有効)",
+								name: "sizeName",
+								items: [
+									{ value: "small", caption: "小 (8×8)" },
+									{ value: "medium", caption: "中 (8×12)" },
+									{ value: "large", caption: "大 (10×14)" },
+									{ value: "large2", caption: "特大 (12×16)" },
+									{ value: "large3", caption: "フルサイズ (16×16)" },
+								]
+							})}
 
-							<div className="buttons setting-item">
-								<div className="setting-title">出題形式</div>
-								<label>
-									<input type="radio" name="showansweralways" value="false"
-										checked={ ! this.state.showAnswerAlways}
-										onChange={() => this.setShowAnswerAlways(false)} />
-									<span>この盤面は何手？</span>
-								</label>
-								<label>
-									<input type="radio" name="showansweralways" value="true"
-										checked={ !! this.state.showAnswerAlways}
-										onChange={() => this.setShowAnswerAlways(true)} />
-									<span>最短手数の手順は？</span>
-								</label>
-							</div>
+							{this.renderSettingRadios({
+								title: "出題形式",
+								name: "showAnswerAlways",
+								items: [
+									{ value: false, caption: "この盤面は何手？" },
+									{ value: true, caption: "最短手数の手順は？" }
+								]
+							})}
 
-							<div className="buttons setting-item">
-								<div className="setting-title">コマの識別方法</div>
-								<label>
-									<input type="radio" name="showrobotname" value="false"
-										checked={ ! this.state.showRobotName}
-										onChange={() => this.setShowRobotName(false)} />
-									<span>色で区別する</span>
-								</label>
-								<label>
-									<input type="radio" name="showrobotname" value="true"
-										checked={this.state.showRobotName}
-										onChange={() => this.setShowRobotName(true)} />
-									<span>色と名前で区別する</span>
-								</label>
-							</div>
+							{this.renderSettingRadios({
+								title: "コマの識別方法",
+								name: "showRobotName",
+								items: [
+									{ value: false, caption: "色で区別する" },
+									{ value: true, caption: "色と名前で区別する" }
+								]
+							})}
 
-							<div className="buttons setting-item">
-								<div className="setting-title">起動時の操作説明</div>
-								<label>
-									<input type="radio" name="usetutrial" value="true"
-										checked={ !! this.state.useTutrial}
-										onChange={() => this.setUseTutrial(true)} />
-									<span>操作説明あり</span>
-								</label>
-								<label>
-									<input type="radio" name="usetutrial" value="false"
-										checked={ ! this.state.useTutrial}
-										onChange={() => this.setUseTutrial(false)} />
-									<span>操作説明なし</span>
-								</label>
-							</div>
-
+							{this.renderSettingRadios({
+								title: "起動時の操作説明",
+								name: "useTutrial",
+								items: [
+									{ value: true, caption: "操作説明あり" },
+									{ value: false, caption: "操作説明なし" }
+								]
+							})}
 
 						</div>
 					}
@@ -555,21 +509,15 @@ class Game extends React.Component {
 								<img src="images/tutrial-discard.png" />
 								<span className="overlay">スワイプ</span>
 							</div>
-							<div className="buttons setting-item">
-								<span>この操作説明を起動時に表示</span>
-								<label>
-									<input type="radio" name="usetutrial" value="true"
-										checked={ !! this.state.useTutrial}
-										onChange={() => this.setUseTutrial(true)} />
-									<span>する</span>
-								</label>
-								<label>
-									<input type="radio" name="usetutrial" value="false"
-										checked={ ! this.state.useTutrial}
-										onChange={() => this.setUseTutrial(false)} />
-									<span>しない</span>
-								</label>
-							</div>
+
+							{this.renderSettingRadios({
+								name: "useTutrial",
+								prefix: "この操作説明を起動時に表示",
+								items: [
+									{ value: true, caption: "する" },
+									{ value: false, caption: "しない" }
+								]
+							})}
 						</div>
 					}
 
