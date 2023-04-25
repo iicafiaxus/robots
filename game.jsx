@@ -58,7 +58,7 @@ class Game extends React.Component {
 			this.openAlert("インポートは失敗しました。 (" + importParam.message + ")", "エラー");
 			return;
 		}
-		this.setSizeName(importParam.sizeName);
+		this.setSettingValue("sizeName", importParam.sizeName);
 		this.setState({
 			importedWalls: importParam.walls,
 			importedRobots: importParam.robots,
