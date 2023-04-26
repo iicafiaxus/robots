@@ -1,3 +1,5 @@
+"REQUIRE robotsolveutil.js";
+
 let Solver = function(width, height, robots, walls){
 
 	this.width = width, this.height = height;
@@ -5,6 +7,8 @@ let Solver = function(width, height, robots, walls){
 	this.walls = walls || [];
 	
 	this.nRobot = this.robots.length;
+
+	this.util = new RobotSolveUtil({ nRobot: this.nRobot	});
 
 	this.mults = [1];
 	for(let m = 1, i = 0; i < this.nRobot; i ++){
