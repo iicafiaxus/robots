@@ -489,10 +489,10 @@ class Game extends React.Component {
 								<img src="images/tutrial-answer.png" />
 								<span className="overlay">タップ</span>
 							</div>
-							<div className="dialog-line-caption">(モバイル) 下にスワイプ → 現在の問題を破棄して次へ</div>
+							<div className="dialog-line-caption">下にスワイプ → 現在の問題を破棄して次へ</div>
 							<div className="dialog-line image-view">
 								<img src="images/tutrial-discard.png" />
-								<span className="overlay">スワイプ</span>
+								<span className="overlay">スワイプ (モバイルのみ)</span>
 							</div>
 
 							{this.renderSettingRadios({
