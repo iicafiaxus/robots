@@ -105,11 +105,11 @@ let EditBoard = function(props){
 	let cellSize = Math.min(24 * 16 / props.height, 28 * 16 / props.width);
 	return <div className="board-set">
 		<div
-			className="board editboard"
-			style={{
+			className={"board editboard size" + props.size}
+			style={{/*
 				gridTemplateRows: `repeat(${props.height}, ${cellSize + "px"})`,
 				gridTemplateColumns: `repeat(${props.width}, ${cellSize + "px"})`,
-				lineHeight: `${(cellSize - 6) + "px"}`,
+				lineHeight: `${(cellSize - 6) + "px"}`,*/
 			}}
 		>
 			{ cells.map(cell =>

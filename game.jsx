@@ -527,6 +527,7 @@ class Game extends React.Component {
 								<EditBoard
 									width={this.state.boardWidth}
 									height={this.state.boardHeight}
+									size={this.state.boardSize}
 									robots={this.state.robots}
 									walls={this.state.walls}
 									update={(cells) => this.updateEditResult(cells)}
