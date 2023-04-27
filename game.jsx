@@ -38,9 +38,6 @@ class Game extends React.Component {
 		};
 	}
 
-	componentWillMount(){
-	}
-
 	componentDidMount(){
 		this.resetBoard();
 		if(this.state.useTutrial) this.openModal("tutrial");
