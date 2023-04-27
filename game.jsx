@@ -333,9 +333,7 @@ class Game extends React.Component {
 					/>
 
 				</div>
-				<div className="buttons">
-				</div>
-
+				
 				<div className="board-wrapper">
 					<Board 
 						width={param.width}
