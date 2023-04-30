@@ -69,8 +69,7 @@ let Solver = function(width, height, robots, walls){
 	}
 
 
-	this.canWalk = function(key, iRobot, xy, dir){
-		let position = this.fromKey(key);
+	this.canWalk = function(position, iRobot, xy, dir){
 		let x = position[iRobot * 2 + 1], y = position[iRobot * 2];
 		if( ! this.isOpen[x][y][xy][dir]) return false;
 		if(xy == 0) x += dir; else y += dir;
@@ -83,9 +82,10 @@ let Solver = function(width, height, robots, walls){
 		return key + this.mults[iRobot * 2 + 1 - xy] * dir;
 	}
 	this.walkToWall = function(key, iRobot, xy, dir){
-		let diff = this.mults[iRobot * 2 + 1 - xy] * dir;
-		while(this.canWalk(key, iRobot, xy, dir)) key += diff;
-		return key;
+		let position = this.fromKey(key);
+		let iPosition = iRobot * 2 + 1 - xy;
+		while(this.canWalk(position, iRobot, xy, dir)) position[iPosition] += dir;
+		return this.toKey(position);
 	}
 
 	// Queue
@@ -280,7 +280,6 @@ let Solver = function(width, height, robots, walls){
 				return;
 			}
 		}
-
 		if(this.isAborted) console.log(`(solver) aborted in ${this.iq}`);
 		else console.log(`(solver) done in ${this.iq}`);
 
