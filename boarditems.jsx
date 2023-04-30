@@ -20,7 +20,11 @@ let Cell = function(props){
 let Robot = function(props){
 	let du = 6;
 	return <div
-		className={"robot" + (props.isMain ? " main" : "")}
+		className={[
+			"robot",
+			props.isMain ? "main" : "",
+			props.color ? "color" + props.color : "",
+		].join(" ")}
 		style={{
 			gridRow: (props.x || 0) + 1,
 			gridColumn: (props.y || 0) + 1,
@@ -35,7 +39,12 @@ let Robot = function(props){
 let MiniRobot = function(props){
 	let du = 6;
 	return <div
-		className={"robot minirobot" + (props.isMain ? " main" : "")}
+		className={[
+			"robot",
+			"minirobot",
+			props.isMain ? "main" : "",
+			props.color ? "color" + props.color : "",
+		].join(" ")}
 		style={{
 			gridRow: (props.x || 0) + 1,
 			gridColumn: (props.y || 0) + 1,
@@ -60,7 +69,11 @@ let TraceLine = function(props){
 	let xoff = dx2 - dx1, yoff = dy2 - dy1;
 	let du = 6;
 	return <div
-		className={"trace" + (props.i == "0" ? " main" : "")}
+		className={[
+			"trace",
+			props.i == "0" ? "main" : "",
+			props.color ? "color" + props.color : "",
+		].join(" ")}
 		style={{
 			gridRow: (x1 + 1) + " / " + (x2 + 2),
 			gridColumn: (y1 + 1) + " / " + (y2 + 2),

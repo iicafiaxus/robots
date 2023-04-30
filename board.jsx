@@ -211,6 +211,7 @@ let Board = function(props){
 				key={_.key} x={_.x} y={_.y} isMain={_.isMain}
 				number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
 				dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
+				color={props.useColorful ? _.key : null}
 			/>
 		) }
 
@@ -227,6 +228,7 @@ let Board = function(props){
 				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+				color={props.useColorful ? _.iRobot + 1 : null}
 			/>
 		)}
 
@@ -235,6 +237,7 @@ let Board = function(props){
 				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+				color={props.useColorful ? _.iRobot + 1 : null}
 			/>
 		)}
 
@@ -242,6 +245,7 @@ let Board = function(props){
 			<MiniRobot
 				key={i} i={_.iRobot} x={_.x} y={_.y} dx={_.dx} dy={_.dy}
 				isMain={_.isMain}
+				color={props.useColorful ? _.iRobot + 1 : null}
 			/>
 		)}
 

@@ -89,9 +89,15 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	box-shadow: none; position: relative; 
 	height: 30px; width: 30px; margin: auto; }
 .robot.main { background: #e05f; }
+.robot.color2 { background: #03ef; }
+.robot.color3 { background: #0a2f; }
+.robot.color4 { background: #db0f; }
 .robot.minirobot { width: 9px; height: 9px; line-height: 9px; border-radius: 3px; 
 	background: #ab48; }
 .robot.minirobot.main { background: #e054; }
+.robot.minirobot.color2 { background: #03e4; }
+.robot.minirobot.color3 { background: #0a26; }
+.robot.minirobot.color4 { background: #db08; }
 
 .wall { position: absolute; background: #850f; border-radius: calc(0.5px + 1px);
 	z-index: 100}
@@ -108,11 +114,17 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	border-radius: 2px; 
 	background: #e054; z-index: 90; 
 	top: -2px; left: -2px; }
+.goal.color2 { background: #03e4; }
+.goal.color3 { background: #0a26; }
+.goal.color4 { background: #db08; }
 
 .trace { width: 100%; height: 100%; margin: auto; position: relative; 
 	max-width: calc(100% - 40px + 1px); max-height: calc(100% - 40px + 1px);
 	background: #ab48; z-index: 103; border-radius: 0px; }
 .trace.main { background: #e054; }
+.trace.color2 { background: #03e4; }
+.trace.color3 { background: #0a26; }
+.trace.color4 { background: #db08; }
 
 .size50 .cell { width: 50px; height: 50px; }
 .size50 .robot:not(.minirobot) { font-size: 25px; width: 36px; height: 36px; line-height: 36px; }

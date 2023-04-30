@@ -27,6 +27,9 @@ class Game extends React.Component {
 		let useTutrial = load("useTutrial") != "false";
 		save("useTutrial", useTutrial);
 
+		let useColorful = load("useColorful") == "true";
+		save("useColorful", useColorful);
+
 		this.state = {
 			solution: {length: "計算中", description: "計算中"},
 			isDescriptionOpen : false,
@@ -34,7 +37,8 @@ class Game extends React.Component {
 			sizeName,
 			showAnswerAlways,
 			showRobotName,
-			useTutrial
+			useTutrial,
+			useColorful,
 		};
 	}
 
@@ -361,6 +365,7 @@ class Game extends React.Component {
 						showsRoute={this.state.isDescriptionOpen}
 						isLoading={this.state.isLoading}
 						showAnswer={this.showNextAnswer.bind(this)}
+						useColorful={this.state.useColorful}
 						resetBoard={this.resetBoard.bind(this)}
 						setIsDragging={this.setIsDragging.bind(this)}
 					/>
@@ -439,11 +444,11 @@ class Game extends React.Component {
 							})}
 
 							{this.renderSettingRadios({
-								title: "コマの識別方法",
+								title: "コマの名称",
 								name: "showRobotName",
 								items: [
-									{ value: false, caption: "色で区別する" },
-									{ value: true, caption: "色と名前で区別する" }
+									{ value: true, caption: "つねに表示する" },
+									{ value: false, caption: "解説時のみ" },
 								]
 							})}
 
@@ -453,6 +458,15 @@ class Game extends React.Component {
 								items: [
 									{ value: true, caption: "操作説明あり" },
 									{ value: false, caption: "操作説明なし" }
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "コマの色",
+								name: "useColorful",
+								items: [
+									{ value: true, caption: "カラフル" },
+									{ value: false, caption: "素朴" }
 								]
 							})}
 
