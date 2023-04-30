@@ -138,7 +138,10 @@ class Game extends React.Component {
 
 
 	resetBoard(){
-		let param = this.state.params[this.state.sizeName];
+		let param = {
+			...this.state.params[this.state.sizeName],
+			goalCount: 1,
+		};
 		
 		if(this.solver){
 			this.solver.stop();

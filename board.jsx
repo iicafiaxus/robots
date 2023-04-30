@@ -89,7 +89,10 @@ let Board = function(props){
 			cellDic[toKey(x, y)].wallY = true;
 			if(y < width - 1) cellDic[toKey(x, y + 1)].wallYBack = true;
 		}
-		if(wall.isGoal) cellDic[toKey(x, y)].isGoal = true;
+		if(wall.isGoal){
+			cellDic[toKey(x, y)].isGoal = true;
+			cellDic[toKey(x, y)].goalColor = wall.goalColor;
+		}
 		if(wall.isShade) cellDic[toKey(x, y)].isShade = true;
 	}
 
@@ -219,7 +222,8 @@ let Board = function(props){
 			<Cell
 				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
 				wallX={_.wallX} wallXBack={_.wallXBack}
-				wallY={_.wallY} wallYBack={_.wallYBack} isGoal={_.isGoal}
+				wallY={_.wallY} wallYBack={_.wallYBack}
+				isGoal={_.isGoal} goalColor={_.goalColor}
 			/>
 		)}
 

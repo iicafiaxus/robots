@@ -15,6 +15,8 @@ let mapMaker = new function(){
 		let width = Math.max(param.width, 6);
 		let height = Math.max(param.height, 6);
 
+		let goalCount = param.goalCount || 1;
+
 		let walls = [];
 		let isGood = function(x, y){
 			for(let wall of walls) if(Math.abs(x - wall.x) <= 1 &&
@@ -50,8 +52,8 @@ let mapMaker = new function(){
 			let y = Math.floor(Math.random() * (width - 2)) + 1;
 			let type = Math.floor(Math.random() * 4) + 1;
 			if(isGood(x, y)){
-				let isGoal = i == 0;
-				i += 1, walls.push({x, y, type, isGoal});
+				let isGoal = i < goalCount;
+				i += 1, walls.push({ x, y, type, isGoal, goalColor: isGoal ? i : null });
 			}
 		}
 

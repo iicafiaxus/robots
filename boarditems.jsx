@@ -13,7 +13,7 @@ let Cell = function(props){
 		{ props.wallXBack ? <WallXBack /> : null }
 		{ props.wallY ? <WallY /> : null }
 		{ props.wallYBack ? <WallYBack /> : null }
-		{ props.isGoal ? <Goal /> : null }
+		{ props.isGoal ? <Goal color={props.goalColor} /> : null }
 	</div>
 }
 
@@ -104,5 +104,5 @@ let WallYBack = function(props){
 }
 
 let Goal = function(props){
-	return <div className="goal" />
+	return <div className={"goal" + " color" + props.color} />
 }

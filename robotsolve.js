@@ -49,8 +49,13 @@ let Solver = function(width, height, robots, walls){
 			this.isOpen[i][j][1][-1] = (j > 0);
 		}
 	}
+	this.goal = 0;
 	for(let wall of this.walls){
-		if(wall.isGoal) this.xGoal = wall.x, this.yGoal = wall.y;
+		if(wall.isGoal){
+			this.goal += wall.y * this.mults[wall.goalColor * 2 - 2];
+			this.goal += wall.x * this.mults[wall.goalColor * 2 - 1];
+			this.goalMod = this.mults[wall.goalColor * 2];
+		}
 		let dx, dy;
 		if(wall.type == 1) dx = -1, dy = -1;
 		if(wall.type == 2) dx = -1, dy = 1;
@@ -62,7 +67,6 @@ let Solver = function(width, height, robots, walls){
 		if(x2 >= 0 && x2 < this.height) this.isOpen[x2][wall.y][0][-dx] = false;
 		if(y2 >= 0 && y2 < this.width) this.isOpen[wall.x][y2][1][-dy] = false;
 	}
-	this.goal = this.yGoal + this.xGoal * this.mults[1];
 
 
 	this.canWalk = function(key, iRobot, xy, dir){
@@ -173,7 +177,7 @@ let Solver = function(width, height, robots, walls){
 	}
 
 	this.traceLines = function(key, dirs){
-		let res = [];
+		let lines = [];
 		let k = this.key, k2;
 		let p = this.fromKey(key), p2;
 		for(let dir of dirs){
@@ -181,7 +185,7 @@ let Solver = function(width, height, robots, walls){
 			p2 = this.fromKey(k2);
 			for(let iRobot = 0; iRobot < this.nRobot; iRobot ++){
 				if(p[iRobot * 2] != p2[iRobot * 2] || p[iRobot * 2 + 1] != p2[iRobot * 2 + 1]){
-					res.push({
+					lines.push({
 						iRobot,
 						sx: p[iRobot * 2 + 1], sy: p[iRobot * 2],
 						tx: p2[iRobot * 2 + 1], ty: p2[iRobot * 2]
@@ -191,13 +195,12 @@ let Solver = function(width, height, robots, walls){
 			}
 			p = p2, k = k2;
 		}
-		return res;
+		return { lines, key: k };
 	}
 
 	this.isDirsGood = function(dirs){
-		let lines = this.traceLines(this.key, dirs);
-		let line = lines[lines.length - 1];
-		return line.iRobot == 0 && line.tx == this.xGoal && line.ty == this.yGoal;
+		let key = this.traceLines(this.key, dirs).key;
+		return (key % this.goalMod == this.goal);
 	}
 
 	this.normalize = function(dirs){
@@ -257,7 +260,7 @@ let Solver = function(width, height, robots, walls){
 			let v = this.array[k];
 			this.iq ++; // Queue.pop
 
-			if(k % this.mults[2] == this.goal && ( ! this.best || this.best == v)){
+			if(k % this.goalMod == this.goal && ( ! this.best || this.best == v)){
 				this.best = v;
 				let traces = this.traceBacks(k);
 				let ds = traces.map(this.decodeTrace.bind(this));
@@ -292,12 +295,12 @@ let Solver = function(width, height, robots, walls){
 		let d0 = d; //ds[0];
 		let dirs = this.normalize(this.decodeDirs(v, d0));
 		let description = this.makeDirString(dirs);
-		let lines = this.traceLines(this.key, dirs);
+		let lines = this.traceLines(this.key, dirs).lines;
 		let summarySet = {}; // 本当はSetにする
 		for(let d1 of ds){
 			let dirs1 = this.normalize(d1);
 			let description1 = this.makeDirString(dirs1);
-			let lines = this.traceLines(this.key, dirs1);
+			let lines = this.traceLines(this.key, dirs1).lines;
 			let lineString = this.makeLineString(lines);
 			let summary = lineString;
 			if(summary in summarySet) continue;
