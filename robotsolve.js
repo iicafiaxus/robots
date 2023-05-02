@@ -297,7 +297,7 @@ let Solver = function(width, height, robots, walls){
 			}
 
 			if(this.iq % 5000 == 0){
-				if(this.iq % 100000 == 0) console.log(`(solver) searching: ${this.iq}`);
+				if(this.iq % 100000 == 0) console.log(`(solver) searching ${v}: ${this.iq}`);
 				setTimeout(this.solveInternal.bind(this), 1);
 				return;
 			}
