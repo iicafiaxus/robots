@@ -271,7 +271,7 @@ let Solver = function(width, height, robots, walls){
 
 	this.solveInternal = function(){
 		if( ! this.isWorking){
-			console.log("(solver) stopped.");
+			console.log("(solver) stopped");
 			if(this.onEnd) this.onEnd();
 			return;
 		}
@@ -288,6 +288,8 @@ let Solver = function(width, height, robots, walls){
 				this.success(v, d, ds);
 			}
 
+			if(this.best && this.best < v) break; // 幅優先探索のため
+
 			let pos = this.fromKey(k);
 			for(let i = 0; i < this.nRobot; i ++){
 				this.push(this.walkToWall(k, pos, i, 0, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 0, k);
@@ -297,13 +299,13 @@ let Solver = function(width, height, robots, walls){
 			}
 
 			if(this.iq % 5000 == 0){
-				if(this.iq % 100000 == 0) console.log(`(solver) searching ${v}: ${this.iq}`);
+				if(this.iq % 100000 == 0) console.log(`(solver) [${this.iq}] searching ${v}`);
 				setTimeout(this.solveInternal.bind(this), 1);
 				return;
 			}
 		}
-		if(this.isAborted) console.log(`(solver) aborted in ${this.iq}`);
-		else console.log(`(solver) done in ${this.iq}`);
+		if(this.isAborted) console.log(`(solver) [${this.iq}] aborted`);
+		else console.log(`(solver) [${this.iq}] done`);
 
 		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした",
 			descriptions: ["解が見つかりませんでした"] });
@@ -331,7 +333,7 @@ let Solver = function(width, height, robots, walls){
 		}
 		let result = { length: v, description, lines,
 			descriptions: this.descriptions, liness: this.liness };
-		console.log(`(solver) found in ${this.iq}`);
+		console.log(`(solver) [${this.iq}] found`);
 		this.descriptions.map(x => console.log(`(solver) ${v}: ${x}`));
 		this.onFound(result);
 
