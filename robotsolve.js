@@ -221,8 +221,9 @@ Solver.prototype.solveInternal = function(){
 			}
 		}
 
-		if(this.kq.length > 4000000){
+		if(this.iq > 4000000){
 			this.isAborted = true;
+			break;
 		}
 
 		if(this.iq % 5000 == 0){
