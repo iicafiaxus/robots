@@ -162,6 +162,7 @@ let Solver = function(width, height, robots, walls){
 	this.isWorking = true;
 	this.stop = function(){
 		this.isWorking = false;
+		Solver.isWorking = false;
 	}
 
 }
@@ -181,6 +182,17 @@ Solver.prototype.solve = function(onFound, onEnd){
 	this.descriptions = [];
 	this.liness = [];
 
+	this.startSolving();
+}
+
+Solver.isWorking = false;
+
+Solver.prototype.startSolving = function(){
+	if(Solver.isWorking){
+		setTimeout(this.startSolving.bind(this), 500);
+		return;
+	}
+	Solver.isWorking = true;
 	console.log("(solver) searching...");
 	this.timer.start();
 	this.solveInternal();
@@ -228,7 +240,7 @@ Solver.prototype.solveInternal = function(){
 
 		if(this.iq % 5000 == 0){
 			if(this.iq % 100000 == 0) console.log(`(solver) [${this.iq}] searching ${v}`);
-			setTimeout(this.solveInternal.bind(this), 1);
+			setTimeout(this.solveInternal.bind(this), 0);
 			return;
 		}
 	}
@@ -245,7 +257,7 @@ Solver.prototype.solveInternal = function(){
 
 	if( ! this.best) this.onFound({ length: 0, descriptions: ["解が見つかりませんでした"] });
 
-	this.isWorking = false;
+	this.stop();
 	if(this.onEnd) this.onEnd();
 }
 
