@@ -115,14 +115,18 @@ let Solver = function(width, height, robots, walls){
 			}
 		}
 		if(this.array[k] == v){
-			if( ! this.backs[k]) this.backs[k] = [k0];
-			else this.backs[k].push(k0);
+			if( ! this.backs[k]) this.backs[k] = k0;
+			else{
+				if( ! Array.isArray(this.backs[k])) this.backs[k] = [this.backs[k], k0];
+				else this.backs[k].push(k0);
+			}
 		}
 	}
 
 	this.traceBacks = function(k){
 		if(k == this.key) return [[k]];
 		let traces = [];
+		if( ! Array.isArray(this.backs[k])) this.backs[k] = [this.backs[k]];
 		for(let back of this.backs[k]){
 			let subs = this.traceBacks(back);
 			for(let sub of subs){
