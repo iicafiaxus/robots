@@ -189,7 +189,7 @@ let Solver = function(width, height, robots, walls){
 
 	this.traceLines = function(key, dirs){
 		let lines = [];
-		let k = this.key, k2;
+		let k = key, k2;
 		for(let dir of dirs){
 			k2 = this.walkToWall(k, dir.iRobot, [0, 0, 1, 1][dir.code], [1, -1, 1, -1][dir.code]);
 			for(let iRobot = 0; iRobot < this.nRobot; iRobot ++){
