@@ -9,13 +9,16 @@ let Solver = function(width, height, robots, walls){
 	
 	this.nRobot = this.robots.length;
 
-	this.util = new RobotSolveUtil({ nRobot: this.nRobot	});
-
 	this.mults = [1];
 	for(let m = 1, i = 0; i < this.nRobot; i ++){
 		m *= this.width, this.mults.push(m);
 		m *= this.height, this.mults.push(m);
 	}
+
+	this.util = new RobotSolveUtil({
+		nRobot: this.nRobot,
+		mults: this.mults,
+	});
 
 	this.toKey = function(position){
 		let res = 0;
@@ -122,47 +125,6 @@ let Solver = function(width, height, robots, walls){
 		return traces;
 	}
 
-	this.decodeTrace = function(trace){
-		let dirs = [];
-		for(let i = 0; i < trace.length - 1; i ++){
-			let diff = trace[i + 1] - trace[i];
-			let dir;
-			for(let iRobot = 0; iRobot < this.nRobot; iRobot ++){
-				if(diff % this.mults[iRobot * 2] == 0) dir = {iRobot, code: (diff > 0 ? 2 : 3)};
-				if(diff % this.mults[iRobot * 2 + 1] == 0) dir = {iRobot, code: (diff > 0 ? 0 : 1)};
-			}
-			dirs.push(dir);
-		}
-		return dirs;
-	}
-
-	this.makeDirString = function(dirs){
-		let res = "", last = -1;
-		for(let s of dirs){
-			let l = s.iRobot, r = s.code;
-			if(last != l){
-				if(last != -1) res += "　";
-				res += ["●", "A", "B", "C", "D", "E", "F", "G", "H"][l];
-				last = l;
-			}
-			res += ["↓", "↑", "→", "←"][r];
-		}
-		return res;
-	}
-	this.makeLineString = function(lines){
-		let us = [];
-		for(let i = 0; i < this.nRobot; i ++) us[i] = [];
-		for(let l of lines){
-			if(us[l.iRobot].length == 0) us[l.iRobot].push({x: l.sx, y: l.sy});
-			us[l.iRobot].push({x: l.tx, y: l.ty});
-		}
-		let res = "";
-		for(let i = 0; i < this.nRobot; i ++){
-			res += i + ": " + us[i].map(u => `(${u.x}, ${u.y})`).join("→") + "\n";
-		}
-		return res;
-	}
-
 	this.traceLines = function(key, dirs){
 		let lines = [];
 		let k = key, k2;
@@ -211,104 +173,103 @@ let Solver = function(width, height, robots, walls){
 	}
 
 	this.timer = new StopWatch();
-	this.solve = function(onFound, onEnd){
-		let position = [];
-		for(let robot of this.robots) position.push(robot.y), position.push(robot.x);
-		this.key = this.toKey(position);
-
-		this.array = [], this.array[this.key] = 0;
-		this.kq = [this.key], this.iq = 0; // Queue.flush
-
-		this.onFound = onFound;
-		this.onEnd = onEnd;
-
-		this.best = 0;
-		this.descriptions = [];
-		this.liness = [];
-
-		console.log("(solver) searching...");
-		this.timer.start();
-		this.solveInternal();
-	}
 
 	this.isWorking = true;
 	this.stop = function(){
 		this.isWorking = false;
 	}
 
-	this.solveInternal = function(){
-		if( ! this.isWorking){
-			console.log("(solver) stopped");
-			if(this.onEnd) this.onEnd();
-			return;
-		}
-
-		while(this.iq < this.kq.length){
-			let k = this.kq[this.iq];
-			let v = this.array[k];
-			this.iq ++; // Queue.pop
-
-			if(k % this.goalMod == this.goal && ( ! this.best || this.best == v)){
-				this.best = v;
-				let traces = this.traceBacks(k);
-				let ds = traces.map(this.decodeTrace.bind(this));
-				this.success(v, ds);
-			}
-
-			if(this.best && this.best < v) break; // 幅優先探索のため
-
-			for(let i = 0; i < this.nRobot; i ++){
-				this.push(this.walkToWall(k, i, 0, 1), v + 1, k);
-				this.push(this.walkToWall(k, i, 0, -1), v + 1, k);
-				this.push(this.walkToWall(k, i, 1, 1), v + 1, k);
-				this.push(this.walkToWall(k, i, 1, -1), v + 1, k);
-			}
-
-			if(this.iq % 5000 == 0){
-				if(this.iq % 100000 == 0) console.log(`(solver) [${this.iq}] searching ${v}`);
-				setTimeout(this.solveInternal.bind(this), 1);
-				return;
-			}
-		}
-
-		this.timer.stop();
-		let ratio = Math.floor(this.timer.timeSpent / this.iq * 10000) / 100;
-		console.log([
-			"(solver)",
-			"[" + this.iq + "]",
-			(this.isAborted ? "aborted" : "done"),
-			this.timer.timeSpent + "ms",
-			"(" + ratio + ")",
-		].join(" "));
-
-		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした",
-			descriptions: ["解が見つかりませんでした"] });
-
-		this.isWorking = false;
-		if(this.onEnd) this.onEnd();
-	}
-
-	this.success = function(v, ds){
-		let summarySet = {}; // 本当はSetにする
-		for(let d1 of ds){
-			let dirs1 = this.normalize(d1);
-			let description1 = this.makeDirString(dirs1);
-			let lines = this.traceLines(this.key, dirs1).lines;
-			let lineString = this.makeLineString(lines);
-			let summary = lineString;
-			if(summary in summarySet) continue;
-			else{
-				summarySet[summary] = 1;
-				console.log(`(solver) [${this.iq}] found ${v}: ${description1}`);
-			}
-			this.descriptions.push(description1);
-			this.liness.push(lines);
-		}
-		let result = { length: v, descriptions: this.descriptions, liness: this.liness };
-		this.onFound(result);
-
-	}
-
 }
 
+Solver.prototype.solve = function(onFound, onEnd){
+	let position = [];
+	for(let robot of this.robots) position.push(robot.y), position.push(robot.x);
+	this.key = this.toKey(position);
+
+	this.array = [], this.array[this.key] = 0;
+	this.kq = [this.key], this.iq = 0; // Queue.flush
+
+	this.onFound = onFound;
+	this.onEnd = onEnd;
+
+	this.best = 0;
+	this.descriptions = [];
+	this.liness = [];
+
+	console.log("(solver) searching...");
+	this.timer.start();
+	this.solveInternal();
+}
+
+Solver.prototype.solveInternal = function(){
+	if( ! this.isWorking){
+		console.log("(solver) stopped");
+		if(this.onEnd) this.onEnd();
+		return;
+	}
+
+	while(this.iq < this.kq.length){
+		let k = this.kq[this.iq];
+		let v = this.array[k];
+		this.iq ++; // Queue.pop
+
+		if(k % this.goalMod == this.goal && ( ! this.best || this.best == v)){
+			this.best = v;
+			let traces = this.traceBacks(k);
+			let ds = traces.map(tr => this.util.decodeTrace(tr));
+			this.success(v, ds);
+		}
+
+		if(this.best && this.best < v) break; // 幅優先探索のため
+
+		for(let i = 0; i < this.nRobot; i ++){
+			this.push(this.walkToWall(k, i, 0, 1), v + 1, k);
+			this.push(this.walkToWall(k, i, 0, -1), v + 1, k);
+			this.push(this.walkToWall(k, i, 1, 1), v + 1, k);
+			this.push(this.walkToWall(k, i, 1, -1), v + 1, k);
+		}
+
+		if(this.iq % 5000 == 0){
+			if(this.iq % 100000 == 0) console.log(`(solver) [${this.iq}] searching ${v}`);
+			setTimeout(this.solveInternal.bind(this), 1);
+			return;
+		}
+	}
+
+	this.timer.stop();
+	let ratio = Math.floor(this.timer.timeSpent / this.iq * 10000) / 100;
+	console.log([
+		"(solver)",
+		"[" + this.iq + "]",
+		(this.isAborted ? "aborted" : "done"),
+		this.timer.timeSpent + "ms",
+		"(" + ratio + ")",
+	].join(" "));
+
+	if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした",
+		descriptions: ["解が見つかりませんでした"] });
+
+	this.isWorking = false;
+	if(this.onEnd) this.onEnd();
+}
+
+Solver.prototype.success = function(v, ds){
+	let summarySet = {}; // 本当はSetにする
+	for(let d1 of ds){
+		let dirs1 = this.normalize(d1);
+		let description1 = this.util.makeDirString(dirs1);
+		let lines = this.traceLines(this.key, dirs1).lines;
+		let lineString = this.util.makeLineString(lines);
+		let summary = lineString;
+		if(summary in summarySet) continue;
+		else{
+			summarySet[summary] = 1;
+			console.log(`(solver) [${this.iq}] found ${v}: ${description1}`);
+		}
+		this.descriptions.push(description1);
+		this.liness.push(lines);
+	}
+	let result = { length: v, descriptions: this.descriptions, liness: this.liness };
+	this.onFound(result);
+};
 
