@@ -101,17 +101,17 @@ let Solver = function(width, height, robots, walls){
 
 	// Queue
 	this.array = [];
-	this.kq = [], this.dq = [], this.iq = -1;
+	this.kq = [], this.iq = -1;
 	this.backs = [];
 
-	this.push = function(k, v, d, k0){
+	this.push = function(k, v, k0){
 		if(this.kq.length > 4000000){
 			this.isAborted = true;
 			return;
 		}
 		if( ! this.best){
 			if(this.array[k] === void 0 || this.array[k] > v){
-				this.array[k] = v, this.kq.push(k), this.dq.push(d);
+				this.array[k] = v, this.kq.push(k);
 			}
 		}
 		if(this.array[k] == v){
@@ -246,7 +246,7 @@ let Solver = function(width, height, robots, walls){
 		this.key = this.toKey(position);
 
 		this.array = [], this.array[this.key] = 0;
-		this.kq = [this.key], this.dq = [0], this.iq = 0; // Queue.flush
+		this.kq = [this.key], this.iq = 0; // Queue.flush
 
 		this.onFound = onFound;
 		this.onEnd = onEnd;
@@ -273,7 +273,7 @@ let Solver = function(width, height, robots, walls){
 		}
 
 		while(this.iq < this.kq.length){
-			let k = this.kq[this.iq], d = this.dq[this.iq];
+			let k = this.kq[this.iq];
 			let v = this.array[k];
 			this.iq ++; // Queue.pop
 
@@ -287,10 +287,10 @@ let Solver = function(width, height, robots, walls){
 			if(this.best && this.best < v) break; // 幅優先探索のため
 
 			for(let i = 0; i < this.nRobot; i ++){
-				this.push(this.walkToWall(k, i, 0, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 0, k);
-				this.push(this.walkToWall(k, i, 0, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 1, k);
-				this.push(this.walkToWall(k, i, 1, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 2, k);
-				this.push(this.walkToWall(k, i, 1, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 3, k);
+				this.push(this.walkToWall(k, i, 0, 1), v + 1, k);
+				this.push(this.walkToWall(k, i, 0, -1), v + 1, k);
+				this.push(this.walkToWall(k, i, 1, 1), v + 1, k);
+				this.push(this.walkToWall(k, i, 1, -1), v + 1, k);
 			}
 
 			if(this.iq % 5000 == 0){
