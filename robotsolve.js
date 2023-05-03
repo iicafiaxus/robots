@@ -281,7 +281,7 @@ let Solver = function(width, height, robots, walls){
 				this.best = v;
 				let traces = this.traceBacks(k);
 				let ds = traces.map(this.decodeTrace.bind(this));
-				this.success(v, d, ds);
+				this.success(v, ds);
 			}
 
 			if(this.best && this.best < v) break; // 幅優先探索のため
@@ -317,7 +317,7 @@ let Solver = function(width, height, robots, walls){
 		if(this.onEnd) this.onEnd();
 	}
 
-	this.success = function(v, d, ds){
+	this.success = function(v, ds){
 		let summarySet = {}; // 本当はSetにする
 		for(let d1 of ds){
 			let dirs1 = this.normalize(d1);
