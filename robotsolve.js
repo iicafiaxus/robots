@@ -39,17 +39,6 @@ let Solver = function(width, height, robots, walls){
 		}
 	}
 
-	this.isOpen = []; // isOpen[x][y][xy][dir] : (x, y) から xy 方向 dir の向きに壁がない
-	for(let i = 0; i < this.height; i ++){
-		this.isOpen.push([]);
-		for(let j = 0; j < this.width; j ++){
-			this.isOpen[i].push([[], []]);
-			this.isOpen[i][j][0][1] = (i < this.height - 1);
-			this.isOpen[i][j][0][-1] = (i > 0);
-			this.isOpen[i][j][1][1] = (j < this.width - 1);
-			this.isOpen[i][j][1][-1] = (j > 0);
-		}
-	}
 	this.walkCount = []; // walkCount[x][y][xy][dir] : 壁にぶつからずに進める歩数
 	for(let i = 0; i < this.height; i ++){
 		this.walkCount.push([]);
@@ -68,11 +57,6 @@ let Solver = function(width, height, robots, walls){
 		if(wall.type == 2) dx = -1, dy = 1;
 		if(wall.type == 3) dx = 1, dy = -1;
 		if(wall.type == 4) dx = 1, dy = 1;
-		this.isOpen[x][y][0][dx] = false;
-		this.isOpen[x][y][1][dy] = false;
-		let x2 = x + dx, y2 = y + dy;
-		if(x2 >= 0 && x2 < this.height) this.isOpen[x2][y][0][-dx] = false;
-		if(y2 >= 0 && y2 < this.width) this.isOpen[x][y2][1][-dy] = false;
 
 		let x1 = (dx > 0) ? x : (x - 1);
 		let y1 = (dy > 0) ? y : (y - 1);
