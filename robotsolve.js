@@ -152,18 +152,6 @@ let Solver = function(width, height, robots, walls){
 		return dirs;
 	}
 
-	this.decodeDirs = function(v, d){
-		let dirs = [];
-		for(let i = 0; i < v; i ++){
-			let r = d % (this.nRobot * 4);
-			let l = Math.floor(r / 4);
-			dirs.push({iRobot: l, code: r % 4});
-			d -= r;
-			d /= (this.nRobot * 4);
-		}
-		return dirs.reverse();
-	}
-
 	this.makeDirString = function(dirs){
 		let res = "", last = -1;
 		for(let s of dirs){
