@@ -1,4 +1,5 @@
 "REQUIRE robotsolveutil.js";
+"REQUIRE util/stopwatch.js";
 
 let Solver = function(width, height, robots, walls){
 
@@ -245,6 +246,7 @@ let Solver = function(width, height, robots, walls){
 		return res;
 	}
 
+	this.timer = new StopWatch();
 	this.solve = function(onFound, onEnd){
 		let position = [];
 		for(let robot of this.robots) position.push(robot.y), position.push(robot.x);
@@ -261,6 +263,7 @@ let Solver = function(width, height, robots, walls){
 		this.liness = [];
 
 		console.log("(solver) searching...");
+		this.timer.start();
 		this.solveInternal();
 	}
 
@@ -304,8 +307,16 @@ let Solver = function(width, height, robots, walls){
 				return;
 			}
 		}
-		if(this.isAborted) console.log(`(solver) [${this.iq}] aborted`);
-		else console.log(`(solver) [${this.iq}] done`);
+
+		this.timer.stop();
+		let ratio = Math.floor(this.timer.timeSpent / this.iq * 10000) / 100;
+		console.log([
+			"(solver)",
+			"[" + this.iq + "]",
+			(this.isAborted ? "aborted" : "done"),
+			this.timer.timeSpent + "ms",
+			"(" + ratio + ")",
+		].join(" "));
 
 		if( ! this.best) this.onFound({ length: 0, description: "解が見つかりませんでした",
 			descriptions: ["解が見つかりませんでした"] });
