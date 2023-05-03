@@ -338,13 +338,15 @@ let Solver = function(width, height, robots, walls){
 			let lineString = this.makeLineString(lines);
 			let summary = lineString;
 			if(summary in summarySet) continue;
-			else summarySet[summary] = 1;
+			else{
+				summarySet[summary] = 1;
+				console.log(`(solver) [${this.iq}] found ${v}: ${description1}`);
+			}
 			this.descriptions.push(description1);
 			this.liness.push(lines);
 		}
 		let result = { length: v, description, lines,
 			descriptions: this.descriptions, liness: this.liness };
-		console.log(`(solver) [${this.iq}] found ${v}: ${description}`);
 		this.onFound(result);
 
 	}
