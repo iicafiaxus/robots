@@ -45,21 +45,22 @@ let Solver = function(width, height, robots, walls){
 	this.walkCount = [];
 		// walkCount[x * width + y][d] : 壁にぶつからずに進める歩数
 		// d: { 0: x++, 1: x--, 2: y++, 3: y-- }
-	for(let i = 0; i < this.height; i ++){
-		for(let j = 0; j < this.width; j ++){
-			this.walkCount.push([this.height - 1 - i, i, this.width - 1 - j, j]);
-		}
+	for(let i = 0; i < this.height; i ++) for(let j = 0; j < this.width; j ++){
+		this.walkCount.push([
+			this.height - 1 - i,
+			i,
+			this.width - 1 - j,
+			j
+		]);
 	}
 	for(let wall of this.walls){
 		let x = wall.x, y = wall.y;
-		let dx, dy;
-		if(wall.type == 1) dx = -1, dy = -1;
-		if(wall.type == 2) dx = -1, dy = 1;
-		if(wall.type == 3) dx = 1, dy = -1;
-		if(wall.type == 4) dx = 1, dy = 1;
+		let x1, y1;
+		if(wall.type == 1) x1 = x - 1, y1 = y - 1;
+		if(wall.type == 2) x1 = x - 1, y1 = y;
+		if(wall.type == 3) x1 = x, y1 = y - 1;
+		if(wall.type == 4) x1 = x, y1 = y;
 
-		let x1 = (dx > 0) ? x : (x - 1);
-		let y1 = (dy > 0) ? y : (y - 1);
 		for(let i = 0; i < this.height; i ++){
 			let z = i * this.width + y;
 			if(i <= x1) this.walkCount[z][0] = Math.min(this.walkCount[z][0], x1 - i);
@@ -93,24 +94,6 @@ let Solver = function(width, height, robots, walls){
 	this.kq = [], this.iq = -1;
 	this.backs = [];
 
-	this.push = function(k, v, k0){
-		if(this.kq.length > 4000000){
-			this.isAborted = true;
-			return;
-		}
-		if( ! this.best){
-			if(this.array[k] === void 0 || this.array[k] > v){
-				this.array[k] = v, this.kq.push(k);
-			}
-		}
-		if(this.array[k] == v){
-			if( ! this.backs[k]) this.backs[k] = k0;
-			else{
-				if( ! Array.isArray(this.backs[k])) this.backs[k] = [this.backs[k], k0];
-				else this.backs[k].push(k0);
-			}
-		}
-	}
 
 	this.traceBacks = function(k){
 		if(k == this.key) return [[k]];
@@ -224,11 +207,22 @@ Solver.prototype.solveInternal = function(){
 
 		if(this.best && this.best < v) break; // 幅優先探索のため
 
-		for(let i = 0; i < this.nRobot; i ++){
-			this.push(this.walkToWall(k, i, 0), v + 1, k);
-			this.push(this.walkToWall(k, i, 1), v + 1, k);
-			this.push(this.walkToWall(k, i, 2), v + 1, k);
-			this.push(this.walkToWall(k, i, 3), v + 1, k);
+		if( ! this.best){ // 幅優先なのでbestが存在するときはしなくてよい
+			let v1 = v + 1; // 幅優先なので this.array[k1] > v1 となることはない
+			for(let i = 0; i < this.nRobot; i ++){
+				for(let code = 0; code <= 3; code ++){
+					let k1 = this.walkToWall(k, i, code);
+					if( ! this.array[k1]) this.array[k1] = v1, this.kq.push(k1);
+					if(this.array[k1] < v1) continue;
+					if( ! this.backs[k1]) this.backs[k1] = k;
+					else if( ! Array.isArray(this.backs[k1])) this.backs[k1] = [this.backs[k1], k];
+					else this.backs[k1].push(k);
+				}
+			}
+		}
+
+		if(this.kq.length > 4000000){
+			this.isAborted = true;
 		}
 
 		if(this.iq % 5000 == 0){
