@@ -25,18 +25,9 @@ let Solver = function(width, height, robots, walls){
 		}
 		return res;
 	}
-	this.fromKey = function(key){
-		let position = [];
-		let k = key, t;
-		for(let i = 0; i < this.nRobot; i ++){
-			t = k % this.mults[i * 2 + 1];
-			position.push(t / this.mults[i * 2]);
-			k -= t;
-			t = k % this.mults[i * 2 + 2];
-			position.push(t / this.mults[i * 2 + 1]);
-			k -= t;
-		}
-		return position;
+	this.atKey = function(key, iRobot, xy){
+		let iPosition = iRobot * 2 + 1 - xy;
+		return Math.floor((key % this.mults[iPosition + 1]) / this.mults[iPosition]);
 	}
 
 	this.goal = 0;
@@ -95,13 +86,11 @@ let Solver = function(width, height, robots, walls){
 		}
 	}
 
-	this.walkToWall = function(key, position, iRobot, xy, dir){
-		position ||= this.fromKey(key);
-		let iPosition = iRobot * 2;
-		let x = position[iPosition + 1], y = position[iPosition];
+	this.walkToWall = function(key, iRobot, xy, dir){
+		let x = this.atKey(key, iRobot, 0), y = this.atKey(key, iRobot, 1);
 		let count = this.walkCount[x][y][xy][dir];
 		for(let i = 0; i < this.nRobot; i ++){
-			let xi = position[i * 2 + 1], yi = position[i * 2];
+			let xi = this.atKey(key, i, 0), yi = this.atKey(key, i, 1);
 			if(xy == 0 && dir > 0 && xi > x && yi == y) count = Math.min(count, xi - 1 - x);
 			if(xy == 0 && dir < 0 && xi < x && yi == y) count = Math.min(count, x - 1 - xi);
 			if(xy == 1 && dir > 0 && xi == x && yi > y) count = Math.min(count, yi - 1 - y);
@@ -201,21 +190,21 @@ let Solver = function(width, height, robots, walls){
 	this.traceLines = function(key, dirs){
 		let lines = [];
 		let k = this.key, k2;
-		let p = this.fromKey(key), p2;
 		for(let dir of dirs){
-			k2 = this.walkToWall(k, p, dir.iRobot, [0, 0, 1, 1][dir.code], [1, -1, 1, -1][dir.code]);
-			p2 = this.fromKey(k2);
+			k2 = this.walkToWall(k, dir.iRobot, [0, 0, 1, 1][dir.code], [1, -1, 1, -1][dir.code]);
 			for(let iRobot = 0; iRobot < this.nRobot; iRobot ++){
-				if(p[iRobot * 2] != p2[iRobot * 2] || p[iRobot * 2 + 1] != p2[iRobot * 2 + 1]){
+				if(this.atKey(k, iRobot, 0) != this.atKey(k2, iRobot, 0) ||
+					this.atKey(k, iRobot, 1) != this.atKey(k2, iRobot, 1)){
 					lines.push({
 						iRobot,
-						sx: p[iRobot * 2 + 1], sy: p[iRobot * 2],
-						tx: p2[iRobot * 2 + 1], ty: p2[iRobot * 2]
+						sx: this.atKey(k, iRobot, 0), sy: this.atKey(k, iRobot, 1),
+						tx: this.atKey(k2, iRobot, 0), ty: this.atKey(k2, iRobot, 1),
 					});
 					break;
 				}
 			}
-			p = p2, k = k2;
+			//p = p2,
+			k = k2;
 		}
 		return { lines, key: k };
 	}
@@ -293,12 +282,11 @@ let Solver = function(width, height, robots, walls){
 
 			if(this.best && this.best < v) break; // 幅優先探索のため
 
-			let pos = this.fromKey(k);
 			for(let i = 0; i < this.nRobot; i ++){
-				this.push(this.walkToWall(k, pos, i, 0, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 0, k);
-				this.push(this.walkToWall(k, pos, i, 0, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 1, k);
-				this.push(this.walkToWall(k, pos, i, 1, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 2, k);
-				this.push(this.walkToWall(k, pos, i, 1, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 3, k);
+				this.push(this.walkToWall(k, i, 0, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 0, k);
+				this.push(this.walkToWall(k, i, 0, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 1, k);
+				this.push(this.walkToWall(k, i, 1, 1), v + 1, d * (this.nRobot * 4) + i * 4 + 2, k);
+				this.push(this.walkToWall(k, i, 1, -1), v + 1, d * (this.nRobot * 4) + i * 4 + 3, k);
 			}
 
 			if(this.iq % 5000 == 0){
