@@ -195,7 +195,6 @@ let Solver = function(width, height, robots, walls){
 					break;
 				}
 			}
-			//p = p2,
 			k = k2;
 		}
 		return { lines, key: k };
