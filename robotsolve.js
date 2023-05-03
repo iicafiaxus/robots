@@ -344,8 +344,7 @@ let Solver = function(width, height, robots, walls){
 		}
 		let result = { length: v, description, lines,
 			descriptions: this.descriptions, liness: this.liness };
-		console.log(`(solver) [${this.iq}] found`);
-		this.descriptions.map(x => console.log(`(solver) ${v}: ${x}`));
+		console.log(`(solver) [${this.iq}] found ${v}: ${description}`);
 		this.onFound(result);
 
 	}
