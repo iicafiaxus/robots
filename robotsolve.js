@@ -318,10 +318,6 @@ let Solver = function(width, height, robots, walls){
 	}
 
 	this.success = function(v, d, ds){
-		let d0 = d; //ds[0];
-		let dirs = this.normalize(this.decodeDirs(v, d0));
-		let description = this.makeDirString(dirs);
-		let lines = this.traceLines(this.key, dirs).lines;
 		let summarySet = {}; // 本当はSetにする
 		for(let d1 of ds){
 			let dirs1 = this.normalize(d1);
@@ -337,8 +333,7 @@ let Solver = function(width, height, robots, walls){
 			this.descriptions.push(description1);
 			this.liness.push(lines);
 		}
-		let result = { length: v, description, lines,
-			descriptions: this.descriptions, liness: this.liness };
+		let result = { length: v, descriptions: this.descriptions, liness: this.liness };
 		this.onFound(result);
 
 	}
