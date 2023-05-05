@@ -113,6 +113,8 @@ let encoder = new function(){
 				setWall(x, y, -1, 0), setWall(x, y, 1, 0), setWall(x, y, 0, -1), setWall(x, y, 0, 1);
 		}
 
+		let goalCount = 0;
+		let goalColor = 0;
 		for(wall of param.walls){
 			if(wall.isShade) setShade(wall.x, wall.y);
 			else{
@@ -120,13 +122,17 @@ let encoder = new function(){
 				else if(wall.type == 2) setWall(wall.x, wall.y, -1, 0), setWall(wall.x, wall.y, 0, 1);
 				else if(wall.type == 3) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, -1);
 				else if(wall.type == 4) setWall(wall.x, wall.y, 1, 0), setWall(wall.x, wall.y, 0, 1);
-				if(wall.isGoal) goals[0] = { x: x0 + wall.x, y: y0 + wall.y };
+				if(wall.isGoal){
+					goalColor = wall.goalColor || 1;
+					goals[wall.goalColor - 1] = { x: x0 + wall.x, y: y0 + wall.y };
+					goalCount += 1;
+				}
 			}
 		}
 
 		let goalCodes = goals.flatMap(g => [g.y, g.x]);
 		let robotCodes = param.robots.flatMap(r => [y0 + r.y, x0 + r.x]);
-		let whichCodes = [0, 0];
+		let whichCodes = (goalCount > 1) ? [4, 4] : [goalColor - 1, 0];
 
 		let allCodes = cellCodes.concat(goalCodes).concat(robotCodes).concat(whichCodes);
 		let allCodesQuater = this.valuesToQuater(allCodes);
