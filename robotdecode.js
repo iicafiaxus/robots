@@ -3,12 +3,17 @@ let decoder = new function(){
 		let temp = {};
 		let result = { isError: false, message: "" };
 		let usedKeyset = new Set();
+		let version = "";
 
 		let kvs =("" +  code).replaceAll(/\s/g, "").split(";");
-		if(kvs[0] != "v0"){
-			result.isError = true;
-			result.message = "unknown version: " + kvs[0];
-			return result;
+		switch(kvs[0]){
+			case "v0":
+			case "v01":
+				break;
+			default:
+				result.isError = true;
+				result.message = "unknown version: " + kvs[0];
+				return result;
 		}
 
 		let checkKeySingle = (k) => {
@@ -81,6 +86,7 @@ let decoder = new function(){
 				checkKeySingle(k);
 				if(result.isError) return result;
 				usedKeyset.add(k);
+				version = v;
 			}
 			else if(k == "z"){
 				checkKeySingle(k);
@@ -114,12 +120,18 @@ let decoder = new function(){
 
 				let points = decodePoints(v);
 				if(result.isError) return result;
-				if(points.length != 1){
-					result.isError = true;
-					result.message = "too many main robots: " + kv;
-					return result;
+
+				if(version < "01"){
+					if(points.length != 1){
+						result.isError = true;
+						result.message = "too many main robots: " + kv;
+						return result;
+					}
 				}
-				temp.mainRobot = { x: points[0].x, y: points[0].y, isMain: true, key: 0 };
+
+				temp.mainRobots = points.map((p, i) => ({
+					x: p.x, y: p.y, isMain: true
+				}));
 
 			}
 			else if(k == "q"){
@@ -129,7 +141,9 @@ let decoder = new function(){
 
 				let points = decodePoints(v);
 				if(result.isError) return result;
-				temp.otherRobots = points.map((p, i) => ({ x: p.x, y: p.y, key: i + 2 }));
+				temp.otherRobots = points.map((p, i) => ({
+					x: p.x, y: p.y
+				}));
 
 			}
 			else if(k == "g"){
@@ -137,21 +151,40 @@ let decoder = new function(){
 				if(result.isError) return result;
 				usedKeyset.add(k);
 
-				let cols = v.split(",");
-				if(cols.length != 2){
-					result.isError = true;
-					result.message = "illegal goal description: " + kv;
-					return result;
-				}
+				if(version < "01"){
 
-				let walls = decodeWall(cols[0], cols[1]);
-				if(result.isError) return result;
-				if(walls.length != 1){
-					result.isError = true;
-					result.message = "illegal goal description: " + kv;
-					return result;
+					let cols = v.split(",");
+					if(cols.length != 2){
+						result.isError = true;
+						result.message = "illegal goal description: " + kv;
+						return result;
+					}
+
+					let walls = decodeWall(cols[0], cols[1]);
+					if(result.isError) return result;
+					if(walls.length != 1){
+						result.isError = true;
+						result.message = "illegal goal description: " + kv;
+						return result;
+					}
+					temp.goalWalls = [{ ...walls[0], isGoal: true, goalColor: 1 }];
+
 				}
-				temp.goalWall = { ...walls[0], isGoal: true }
+				else{
+					let points = decodePoints(v);
+					for(let i = 0; i < points.length; i ++){
+						let point = points[i];
+						let walls = (temp.walls || []).filter(w => w.x == point.x && w.y == point.y);
+						if(walls.length == 0){
+							result.isError = true;
+							result.message = "goal must be placed in wall corner: " + kv;
+							return result;
+						}
+						walls[0].isGoal = true;
+						walls[0].goalColor = i + 1;
+					}
+					temp.goalWalls = [];
+				}
 			}
 			else if(k == "w"){
 				let cols = v.split(",");
@@ -181,12 +214,15 @@ let decoder = new function(){
 
 		result.sizeName = temp.sizeName;
 
-		result.robots = [temp.mainRobot];
-		for(let r of temp.otherRobots) result.robots.push(r);
+		result.robots = [...temp.mainRobots];
+		for(let r of temp.otherRobots || []) result.robots.push(r);
+		for(let i = 0; i < result.robots.length; i ++) result.robots[i].key = i + 1;
 
-		result.walls = [temp.goalWall];
+		result.walls = [...temp.goalWalls];
 		for(let w of temp.centerWalls) result.walls.push(w);
 		for(let w of temp.walls) result.walls.push(w);
+
+		result.goalCount = temp.mainRobots.length;
 
 		return result;
 	};

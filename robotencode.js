@@ -1,6 +1,6 @@
 let encoder = new function(){
 	this.encode = function(param){
-		let lines = ["v0"];
+		let lines = ["v01"];
 
 		let zValue = {
 			"small": "88,0",
@@ -22,14 +22,6 @@ let encoder = new function(){
 			return encodePoint(object.x, object.y);
 		}
 
-		let mainRobot = param.robots.filter(r => r.isMain)[0];
-		let rValue = encodePosition(mainRobot);
-		lines.push("r" + rValue);
-
-		let otherRobots = param.robots.filter(r => ! r.isMain);
-		let qValue = otherRobots.map(encodePosition).join("");
-		lines.push("q" + qValue);
-
 		let encodeType = function(type){
 			return {
 				"2": "3",
@@ -45,16 +37,26 @@ let encoder = new function(){
 			return dir + "," + walls.map(encodePosition).join("");
 		}
 
-		let goalWalls = param.walls.filter(w => w.isGoal);
-		let gValue = encodeWalls(goalWalls);
-		lines.push("g" + gValue);
-
-		let otherWalls = param.walls.filter(w => ! w.isGoal && ! w.isShade);
-		let wallTypes = new Set(otherWalls.map(w => w.type));
+		let walls = param.walls.filter(w => ! w.isShade);
+		let wallTypes = new Set(walls.map(w => w.type));
 		for(let type of wallTypes){
-			let wValue = encodeWalls(otherWalls.filter(w => w.type == type));
+			let wValue = encodeWalls(walls.filter(w => w.type == type));
 			lines.push("w" + wValue);
 		}
+
+		let mainRobots = param.robots.filter(r => r.isMain);
+		let rValue = mainRobots.map(encodePosition).join("");
+		lines.push("r" + rValue);
+
+		let otherRobots = param.robots.filter(r => ! r.isMain);
+		if(otherRobots.length){
+			let qValue = otherRobots.map(encodePosition).join("");
+			lines.push("q" + qValue);
+		}
+
+		let goalWalls = param.walls.filter(w => w.isGoal);
+		let gValue = goalWalls.map(encodePosition).join("");
+		lines.push("g" + gValue);
 
 		return lines.join(";");
 	};
