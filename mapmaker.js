@@ -66,7 +66,7 @@ let mapMaker = new function(){
 		for(let i = 0; i < 4; ){
 			let x = Math.floor(Math.random() * height);
 			let y = Math.floor(Math.random() * width);
-			let isMain = i == 0;
+			let isMain = i < goalCount;
 			if(isGoodRobot(x, y)) i += 1, robots.push({ key: i, x, y, isMain });
 		}
 
