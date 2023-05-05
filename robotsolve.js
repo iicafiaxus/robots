@@ -97,12 +97,16 @@ let Solver = function(width, height, robots, walls){
 	this.traceBacks = function(k){
 		if(k == this.key) return [[k]];
 		let traces = [];
+		let diffStringSet = {};
 		if( ! Array.isArray(this.backs[k])) this.backs[k] = [this.backs[k]];
 		for(let back of this.backs[k]){
 			let subs = this.traceBacks(back);
 			for(let sub of subs){
 				let x = sub.slice();
 				x.push(k);
+				let diffString = this.util.traceDiffs(x).join("/");
+				if(diffString in diffStringSet) continue;
+				diffStringSet[diffString] = 1;
 				traces.push(x);
 			}
 		}

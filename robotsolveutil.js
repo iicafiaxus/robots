@@ -49,3 +49,12 @@ RobotSolveUtil.prototype.decodeTrace = function(trace){
 	}
 	return dirs;
 }
+
+RobotSolveUtil.prototype.traceDiffs = function(trace){
+	// linesに相当する
+	let diffs = [];
+	for(let i = 0; i < trace.length - 1; i ++){
+		diffs.push(trace[i + 1] - trace[i]);
+	}
+	return diffs.sort();
+}
