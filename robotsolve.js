@@ -233,7 +233,7 @@ Solver.prototype.solveInternal = function(){
 			}
 		}
 
-		if(this.iq > 4000000){
+		if(this.kq.length > 8000000){
 			this.isAborted = true;
 			break;
 		}
