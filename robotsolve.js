@@ -34,11 +34,12 @@ let Solver = function(width, height, robots, walls){
 	}
 
 	this.goal = 0;
+	this.goalMod = 1;
 	for(let wall of this.walls){
 		if(wall.isGoal){
 			this.goal += wall.y * this.mults[wall.goalColor * 2 - 2];
 			this.goal += wall.x * this.mults[wall.goalColor * 2 - 1];
-			this.goalMod = this.mults[wall.goalColor * 2];
+			this.goalMod = Math.max(this.goalMod, this.mults[wall.goalColor * 2]);
 		}
 	}
 
