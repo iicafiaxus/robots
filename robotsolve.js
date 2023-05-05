@@ -212,7 +212,18 @@ Solver.prototype.solveInternal = function(){
 
 		if(k % this.goalMod == this.goal && ( ! this.best || this.best == v)){
 			this.best = v;
+			console.log([
+				"(solver)",
+				"[" + this.iq + "]",
+				this.best + " is the best"
+			].join(" "));
 			let traces = this.traceBacks(k);
+			console.log([
+				"(solver)",
+				"[" + this.iq + "]",
+				`${traces.length} possible`,
+				traces.length > 1 ? "solutions" : "solution"
+			].join(" "));
 			let ds = traces.map(tr => this.util.decodeTrace(tr));
 			this.success(v, ds);
 		}
