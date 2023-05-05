@@ -256,7 +256,7 @@ Solver.prototype.solveInternal = function(){
 
 		if(this.iq % 5000 == 0){
 			if(this.iq % 100000 == 0) console.log(`(solver) [${this.iq}] searching ${v}`);
-			setTimeout(this.solveInternal.bind(this), 0);
+			setTimeout(this.solveInternal.bind(this), 1);
 			return;
 		}
 	}
