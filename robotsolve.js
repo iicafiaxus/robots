@@ -94,7 +94,6 @@ let Solver = function(width, height, robots, walls){
 	this.kq = [], this.iq = -1;
 	this.backs = [];
 
-
 	this.traceBacks = function(k){
 		if(k == this.key) return [[k]];
 		let traces = [];
