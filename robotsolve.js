@@ -214,7 +214,8 @@ Solver.prototype.solveInternal = function(){
 			console.log([
 				"(solver)",
 				"[" + this.iq + "]",
-				this.best + " is the best"
+				"found",
+				this.best,
 			].join(" "));
 			let traces = this.traceBacks(k);
 			console.log([
