@@ -256,13 +256,13 @@ Solver.prototype.solveInternal = function(){
 	}
 
 	this.timer.stop();
-	let ratio = Math.floor(this.timer.timeSpent / this.iq * 10000) / 100;
+	let ratio = Math.floor(this.timer.timeSpent / this.iq * 10000) / 10;
 	console.log([
 		"(solver)",
 		"[" + this.iq + "]",
 		(this.isAborted ? "aborted" : "done"),
-		this.timer.timeSpent + "ms",
-		"(" + ratio + ")",
+		(Math.floor(this.timer.timeSpent / 100) / 10) + "s",
+		"(" + ratio + "s/1M)",
 	].join(" "));
 
 	if( ! this.best) this.onFound({ length: 0, descriptions: ["解が見つかりませんでした"] });
