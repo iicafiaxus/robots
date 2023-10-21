@@ -67,8 +67,9 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	text-align: center; vertical-align: middle; z-index: 110; }
 .board.pressed { transform: scale(99.5%); }
 .board .discarding { position: absolute; width: 100%; height: 100%;  top: 0; left: 0;
-	background: #444e; opacity: 100%; z-index: 120;
-	text-align: center; line-height: 400px; color: #ffff; }
+	opacity: 100%; z-index: 120; }
+.board .discarding-back { background: #444e; }
+.board .discarding-message { text-align: center; line-height: 400px; color: #ffff; }
 .board .discarding .material-icons { font-size: 48px; }
 
 .board.back { position: absolute; opacity: 90%; border-color: #eee; }
@@ -251,3 +252,7 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 .cell.editcell.wall3, .cell.editcell.wall4 { border-bottom-color: #850c; }
 .cell.editcell.sample { width: 24px; height: 24px; line-height: 36px;
 	background: transparent; }
+
+.all.diagonal .board { transform: rotate(-45deg) scale(0.7); margin: 0 auto; }
+.all.diagonal .robot,
+.all.diagonal .board .discarding-message { transform: rotate(45deg); }

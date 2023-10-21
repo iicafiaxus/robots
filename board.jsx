@@ -191,6 +191,8 @@ let Board = function(props){
 		}
 	}
 
+	let dragAmount = isDragging && point.y > origin.y ? point.y - origin.y : 0;
+
 	return <div className={"board" +
 		(props.isLoading ? " loading" : "") + 
 		(isPressed ? " pressed" : "") + 
@@ -198,7 +200,7 @@ let Board = function(props){
 		(props.isBack ? " back" : "")
 		}
 		style={{
-			top: (isDragging && point.y > origin.y ? point.y - origin.y : 0),
+			top: dragAmount,
 		}}
 		onMouseDown={startPress}
 		onMouseUp={stopPress}
@@ -254,8 +256,9 @@ let Board = function(props){
 		)}
 
 		{ props.isLoading ? <div className="loading-message"></div> : null }
+		{ isDiscarding ? <div className="discarding discarding-back"></div> : null }
 		{ isDiscarding ?
-			<div className="discarding">
+			<div className="discarding discarding-message">
 				<span className="material-icons">delete_forever</span>
 			</div>
 			: null

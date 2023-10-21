@@ -30,6 +30,9 @@ class Game extends React.Component {
 		let useColorful = load("useColorful") == "true";
 		save("useColorful", useColorful);
 
+		let isDiagonal = load("isDiagonal") == "true";
+		save("isDiagonal", isDiagonal);
+
 		this.state = {
 			solution: {length: "計算中", description: "計算中"},
 			isDescriptionOpen : false,
@@ -39,6 +42,7 @@ class Game extends React.Component {
 			showRobotName,
 			useTutrial,
 			useColorful,
+			isDiagonal,
 		};
 	}
 
@@ -294,7 +298,8 @@ class Game extends React.Component {
 	render(){
 		let param = this.state.params[this.state.sizeName];
 		return <div>
-			<div className={"all scalable size" + this.state.boardSize}>
+			<div className={"all scalable size" + this.state.boardSize + 
+				(this.state.isDiagonal ? " diagonal" : "")}>
 				<div className="buttons">
 
 					<MaterialButton name="input" onClick={() => this.openModal("import")} />
@@ -369,6 +374,7 @@ class Game extends React.Component {
 						isLoading={this.state.isLoading}
 						showAnswer={this.showNextAnswer.bind(this)}
 						useColorful={this.state.useColorful}
+						isDiagonal={this.state.isDiagonal}
 						resetBoard={this.resetBoard.bind(this)}
 						setIsDragging={this.setIsDragging.bind(this)}
 					/>
@@ -396,7 +402,7 @@ class Game extends React.Component {
 						<div className="buttons fullwidth" key={i}>
 							<Covered
 								title={this.state.showAnswerAlways ? "解答例" : "解説"}
-								value={description}
+								value={this.state.isDiagonal ? rotateArrows(description) : description}
 								size="fullwidth"
 								large={true}
 								isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
@@ -470,6 +476,15 @@ class Game extends React.Component {
 								items: [
 									{ value: true, caption: "カラフル" },
 									{ value: false, caption: "素朴" }
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "盤面の角度",
+								name: "isDiagonal",
+								items: [
+									{ value: false, caption: "通常" },
+									{ value: true, caption: "斜め (45度)" }
 								]
 							})}
 
@@ -603,5 +618,9 @@ let QrCode = function(props){
 	let size = props.size || 100;
 	let data = encodeURI(props.data) || location.href;
 	return <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`} alt={data} />
+}
+
+let rotateArrows = function(text){
+	return text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");
 }
 
