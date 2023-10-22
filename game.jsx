@@ -88,7 +88,8 @@ class Game extends React.Component {
 				key: ["", "●", "A", "B", "C", "D", "E", "F", "G", "H"].findIndex(x => x == cell.robotName),
 			});
 			if(cell.wallType) walls.push({
-				x: cell.x, y: cell.y, type: cell.wallType, isGoal: cell.isGoal, isShade: cell.isShade
+				x: cell.x, y: cell.y, type: cell.wallType,
+				isGoal: cell.isGoal, isShade: cell.isShade, goalColor: cell.isGoal ? 1 : 0
 			});
 		}
 		robots.sort((a, b) => a.key - b.key);
