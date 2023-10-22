@@ -64,19 +64,18 @@ class Game extends React.Component {
 			return;
 		}
 		this.setSettingValue("sizeName", importParam.sizeName);
-		this.setState({
-			importedWalls: importParam.walls,
-			importedRobots: importParam.robots,
-			importingCode: void 0
+		this.setState({ importingCode: void 0 });
+		this.resetBoard({
+			walls: importParam.walls,
+			robots: importParam.robots,
+			sizeName: importParam.sizeName,
 		});
 	}
 	importEdit(){
 		if( ! this.state.editResult) return;
-		if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
-		this.setState({
-			nextWalls: this.state.editResult.walls,
-			nextRobots: this.state.editResult.robots,
-			nextSolution: void 0,
+		this.resetBoard({
+			walls: this.state.editResult.walls,
+			robots: this.state.editResult.robots
 		});
 	}
 	updateEditResult(cells){
@@ -142,9 +141,9 @@ class Game extends React.Component {
 	}
 
 
-	resetBoard(){
+	resetBoard(placement){
 		let param = {
-			...this.state.params[this.state.sizeName],
+			...this.state.params[placement && placement.sizeName || this.state.sizeName],
 			goalCount: 1,
 		};
 		
@@ -153,17 +152,21 @@ class Game extends React.Component {
 			this.solver = null;
 		}
 
-		let walls, robots;
-		if(this.state.importedWalls && this.state.importedRobots){
-			walls = this.state.importedWalls, robots = this.state.importedRobots;
-			this.state.importedWalls = void 0, this.state.importedRobots = void 0;
+		let walls, robots, solution;
+		if(placement && placement.walls && placement.robots){
+			walls = placement.walls, robots = placement.robots;
+			solution = void 0; 
+			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 		}
 		else if(this.state.nextWalls && this.state.nextRobots){
 			walls = this.state.nextWalls, robots = this.state.nextRobots;
+			solution = this.state.nextSolution;
 		}
 		else{
 			let map = mapMaker.make(param);
 			walls = map.walls, robots = map.robots;
+			solution = void 0;
+			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 		}
 
 		this.setState({
@@ -173,21 +176,16 @@ class Game extends React.Component {
 			boardSize: param.size,
 			robots: robots,
 			walls: walls,
-			solution: {length: "…", description: "解析しています...",
+			solution: solution || {length: "…", description: "解析しています...",
 				descriptions: [], liness: [[]]},
+			nextSolution: void 0,
 			lineNumber: 0,
 			isLoading: true
 		});
 		this.closeAnswer();
 		this.closeDescription();
 
-		if(this.state.nextSolution){
-			this.setState({
-				solution: this.state.nextSolution,
-				nextSolution: null
-			});
-		}
-		else if(this.nextSolver && this.nextSolver.isWorking){
+		if(this.nextSolver && this.nextSolver.isWorking){
 			this.solver = this.nextSolver;
 			this.solver.onFound = this.setSolution.bind(this);
 			this.solver.onEnd = this.endSolving.bind(this);
@@ -547,7 +545,7 @@ class Game extends React.Component {
 							</div>
 							<div className="buttons setting-item">
 								<button onClick={() => this.closeModal() + this.importMap()}>
-									インポート (更新後有効)
+									コードを盤面に反映する
 								</button>
 							</div>
 						</div>
@@ -565,9 +563,9 @@ class Game extends React.Component {
 									update={(cells) => this.updateEditResult(cells)}
 								/>
 							</div>
-							<div className="buttons setting-item">
+							<div className="dialog-line buttons">
 								<button onClick={() => this.closeModal() + this.importEdit()}>
-									反映 (更新後有効)
+									盤面に反映する
 								</button>
 							</div>
 						</div>
