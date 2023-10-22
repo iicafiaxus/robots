@@ -158,7 +158,7 @@ class Game extends React.Component {
 			solution = void 0; 
 			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 		}
-		else if(this.state.nextWalls && this.state.nextRobots){
+		else if(this.state.nextWalls && this.state.nextRobots && ! placement.sizeName){
 			walls = this.state.nextWalls, robots = this.state.nextRobots;
 			solution = this.state.nextSolution;
 		}
@@ -273,11 +273,13 @@ class Game extends React.Component {
 	}
 
 	setSettingValue(name, value){
+		if(this.state[name] === value) return;
 		this.setState({ [name] : value });
 		save(name, value);
 		if(name == "sizeName"){
 			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 			this.setState({ nextWalls: void 0, nextRobots: void 0, nextSolution: void 0 });
+			this.resetBoard({ sizeName: value });
 		}
 	}
 
@@ -431,7 +433,7 @@ class Game extends React.Component {
 						<div className="modal setting-section">
 
 							{this.renderSettingRadios({
-								title: "サイズ (次の問題から有効)",
+								title: "サイズ (変更すると現在の盤面は破棄します)",
 								name: "sizeName",
 								items: [
 									{ value: "small", caption: "小 (8×8)" },
