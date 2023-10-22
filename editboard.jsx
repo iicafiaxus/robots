@@ -61,7 +61,7 @@ let EditBoard = function(props){
 	}
 
 	let [selectedCell, setSelectedCell] = React.useState(void 0);
-	let setSelect = function(cell){
+	let select = function(cell){
 		if(cell && selectedCell && selectedCell.key === cell.key){
 			setSelectedCell(void 0);
 			return;
@@ -71,30 +71,32 @@ let EditBoard = function(props){
 			else setSelectedCell(cell);
 		}
 	}
-	let setWallType = function(type){
-		let cell = selectedCell;
-		if(cell) cell.setWallType(type);
-		setSelectedCell(void 0);
+
+	let rotateWall = function(cell){
+		cell.setWallType([2, 0, 4, 1, 3][cell.wallType || 0] || 0); // 0: none, 1, 2, 3, 4
 		setCounter(c => c + 1);
 	}
-	let setGoal = function(){
-		let cell = selectedCell;
-		for(let c of cells) c.setIsGoal(false);
-		if(cell){
-			cell.setIsGoal(true);
+	let handleCellClick = function(cell){
+		if(cell.isShade) setSelectedCell(void 0);
+		else if(cell.robotName || cell.isGoal){
+			if(selectedCell) setSelectedCell(void 0);
+			else select(cell);
+		}
+		else if(selectedCell && selectedCell.robotName){
+			cell.setRobotName(selectedCell.robotName);
+			selectedCell.setRobotName(cell.robotName);
+			setCounter(c => c + 1);
 			setSelectedCell(void 0);
 		}
-		setCounter(c => c + 1);
-	}
-	let setRobot = function(number){
-		let cell = selectedCell;
-		let name = ["●", "A", "B", "C", "D", "E", "F", "G", "H"][number];
-		if(cell){
-			for(let c of cells) if(c.robotName === name) c.setRobotName(void 0);
-			cell.setRobotName(name);
+		else if(selectedCell && selectedCell.isGoal){
+			if(cell.wallType){
+				cell.setIsGoal(selectedCell.isGoal);
+				selectedCell.setIsGoal(cell.isGoal);
+				setCounter(c => c + 1);
+			}
+			setSelectedCell(void 0);
 		}
-		setSelectedCell(void 0);
-		setCounter(c => c + 1);
+		else rotateWall(cell);
 	}
 
 	let [counter, setCounter] = React.useState(0);
@@ -118,30 +120,9 @@ let EditBoard = function(props){
 					wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade}
 					robot={cell.robotName}
 					isSelected={selectedCell && cell.key === selectedCell.key}
-					onClick={() => setSelect(cell)}
+					onClick={() => handleCellClick(cell)}
 				/>
 			)}
-		</div>
-		<div className={"buttons" + (selectedCell ? "" : " disabled")}>
-			<EditCellButton setWallType={setWallType} wallType={0}
-			disabled={selectedCell && selectedCell.isGoal} />
-			<EditCellButton setWallType={setWallType} wallType={2} />
-			<EditCellButton setWallType={setWallType} wallType={4} />
-			<EditCellButton setWallType={setWallType} wallType={3} />
-			<EditCellButton setWallType={setWallType} wallType={1} />
-		</div>
-		<div className={"buttons" +
-			(selectedCell && ! selectedCell.robotName && ! selectedCell.isGoal ?
-			"" : " disabled")}>
-			<button onClick={() => setRobot(0)}>●</button>
-			<button onClick={() => setRobot(1)}>A</button>
-			<button onClick={() => setRobot(2)}>B</button>
-			<button onClick={() => setRobot(3)}>C</button>
-			<button onClick={() => setGoal()}
-			className={selectedCell &&
-				(! selectedCell.wallType || selectedCell.isGoal || selectedCell.robotName) &&
-					"disabled"}
-			>☆</button>
 		</div>
 	</div>
 }
