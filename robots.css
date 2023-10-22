@@ -166,9 +166,9 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 	min-width: 60px; }
 @media (hover: hover) { .buttons button.important:hover { background: #e054; } }
 
-.buttons.setting-item { flex-wrap: wrap; }
+.buttons.setting-item { flex-wrap: wrap; justify-content: flex-start; }
 .buttons.setting-item .setting-title { display: block; width: 100%; text-align: left; }
-
+.buttons.setting-item .setting-main { display: flex; justify-content: flex-start; flex-wrap: wrap; margin: 0 0 0 40px; }
 
 .buttons label > input[type=radio] { position: fixed; top: -99999px; }
 .buttons label > input[type=radio] + *{ padding: 6px 8px; margin: 2px; line-height: 36px; 
@@ -218,6 +218,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 }
 
 .modal.setting-section { padding-bottom: 30px; }
+.modal.setting-section label span { display: inline-block; min-width: 90px;  }
 
 button.material { color: #0008; padding: calc(6px - 1px); height: 36px;  width: 48px; }
 button.large { height: 60px; }
