@@ -141,9 +141,9 @@ class Game extends React.Component {
 	}
 
 
-	resetBoard(placement){
+	resetBoard(placement = {}){
 		let param = {
-			...this.state.params[placement && placement.sizeName || this.state.sizeName],
+			...this.state.params[placement.sizeName || this.state.sizeName],
 			goalCount: 1,
 		};
 		
@@ -153,7 +153,7 @@ class Game extends React.Component {
 		}
 
 		let walls, robots, solution;
-		if(placement && placement.walls && placement.robots){
+		if(placement.walls && placement.robots){
 			walls = placement.walls, robots = placement.robots;
 			solution = void 0; 
 			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
