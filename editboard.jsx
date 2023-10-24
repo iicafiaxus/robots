@@ -78,7 +78,7 @@ let EditBoard = function(props){
 	}
 	let handleCellClick = function(cell){
 		if(cell.isShade) setSelectedCell(void 0);
-		else if(cell.robotName || cell.isGoal){
+		else if(cell.isGoal){
 			if(selectedCell) setSelectedCell(void 0);
 			else select(cell);
 		}
@@ -87,6 +87,9 @@ let EditBoard = function(props){
 			selectedCell.setRobotName(cell.robotName);
 			setCounter(c => c + 1);
 			setSelectedCell(void 0);
+		}
+		else if(cell.robotName){
+			select(cell);
 		}
 		else if(selectedCell && selectedCell.isGoal){
 			if(cell.wallType){
