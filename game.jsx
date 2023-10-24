@@ -300,7 +300,8 @@ class Game extends React.Component {
 		let param = this.state.params[this.state.sizeName];
 		return <div>
 			<div className={"all scalable size" + this.state.boardSize + 
-				(this.state.isDiagonal ? " diagonal" : "")}>
+				(this.state.isDiagonal ? " diagonal" : "") + 
+				(param.isRectangular ? " rectangular" : "")}>
 				<div className="buttons">
 
 					<MaterialButton name="input" onClick={() => this.openModal("import")} />

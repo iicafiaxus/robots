@@ -256,5 +256,6 @@ button.material.large { padding: calc(18px - 1px) calc(6px - 1px); }
 	background: transparent; }
 
 .all.diagonal .board { transform: rotate(-45deg) scale(0.7); margin: 0 auto; }
+.all.diagonal.rectangular .board { transform: rotate(-45deg) scale(0.56); }
 .all.diagonal .robot,
 .all.diagonal .board .discarding-message { transform: rotate(45deg); }
