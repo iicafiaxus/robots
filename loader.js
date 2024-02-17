@@ -87,7 +87,7 @@ LoaderItem.prototype.load = async function(){
 }
 
 LoaderItem.prototype.parse = function(text){
-	let lines = text.split("\n");
+	let lines = text.split(/\r?\n/);
 	for(let line of lines){
 		let match = line.match(/^"REQUIRE (.*)";?$/);
 		if(match && match[1]){
@@ -132,5 +132,3 @@ LoaderItem.prototype.removeWait = function(){
 		this.perform();
 	}
 }
-
-
