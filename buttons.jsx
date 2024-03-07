@@ -33,7 +33,7 @@ let Covered = function(props){
 
 let SettingRadios = function(props){
 	return (
-		<div className="buttons setting-item">
+		<div className="buttons setting-item compact">
 			{props.title && <div className="setting-title">{props.title}</div>}
 			<div className="setting-main">
 				{props.prefix && <span>{props.prefix}</span>}
