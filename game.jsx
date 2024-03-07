@@ -33,6 +33,9 @@ class Game extends React.Component {
 		let isDiagonal = load("isDiagonal") == "true";
 		save("isDiagonal", isDiagonal);
 
+		let goalCount = +load("goalCount") || 1;
+		save("goalCount", goalCount);
+
 		this.state = {
 			solution: {length: "計算中", description: "計算中"},
 			isDescriptionOpen : false,
@@ -43,6 +46,7 @@ class Game extends React.Component {
 			useTutrial,
 			useColorful,
 			isDiagonal,
+			goalCount,
 		};
 	}
 
@@ -83,12 +87,13 @@ class Game extends React.Component {
 		let robots = [];
 		for(let cell of cells){
 			if(cell.robotName) robots.push({
-				x: cell.x, y: cell.y, isMain: cell.robotName==="●",
+				x: cell.x, y: cell.y, isMain: robots.length < this.state.goalCount,
 				key: ["", "●", "A", "B", "C", "D", "E", "F", "G", "H"].findIndex(x => x == cell.robotName),
 			});
 			if(cell.wallType) walls.push({
 				x: cell.x, y: cell.y, type: cell.wallType,
-				isGoal: cell.isGoal, isShade: cell.isShade, goalColor: cell.isGoal ? 1 : 0
+				isGoal: cell.isGoal, isShade: cell.isShade,
+				goalColor: cell.isGoal ? (cell.goalColor || 0) : 0
 			});
 		}
 		robots.sort((a, b) => a.key - b.key);
@@ -144,7 +149,7 @@ class Game extends React.Component {
 	resetBoard(placement = {}){
 		let param = {
 			...this.state.params[placement.sizeName || this.state.sizeName],
-			goalCount: 1,
+			goalCount: placement.goalCount || this.state.goalCount,
 		};
 		
 		if(this.solver){
@@ -158,7 +163,8 @@ class Game extends React.Component {
 			solution = void 0; 
 			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 		}
-		else if(this.state.nextWalls && this.state.nextRobots && ! placement.sizeName){
+		else if(this.state.nextWalls && this.state.nextRobots &&
+			! placement.sizeName && ! placement.goalCount){
 			walls = this.state.nextWalls, robots = this.state.nextRobots;
 			solution = this.state.nextSolution;
 		}
@@ -276,10 +282,10 @@ class Game extends React.Component {
 		if(this.state[name] === value) return;
 		this.setState({ [name] : value });
 		save(name, value);
-		if(name == "sizeName"){
+		if(name == "sizeName" || name == "goalCount"){
 			if(this.nextSolver) this.nextSolver.stop(), this.nextSolver = null;
 			this.setState({ nextWalls: void 0, nextRobots: void 0, nextSolution: void 0 });
-			this.resetBoard({ sizeName: value });
+			this.resetBoard({ [name]: value });
 		}
 	}
 
@@ -487,6 +493,16 @@ class Game extends React.Component {
 								items: [
 									{ value: false, caption: "通常" },
 									{ value: true, caption: "斜め (45度)" }
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "ゴール数 (変更すると現在の盤面は破棄します)",
+								name: "goalCount",
+								items: [
+									{ value: 1, caption: "1" },
+									{ value: 2, caption: "2 (実験的)" },
+									{ value: 4, caption: "4 (実験的!!)" },
 								]
 							})}
 

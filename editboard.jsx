@@ -50,6 +50,7 @@ let EditBoard = function(props){
 			cell.defaultWallType = wall.type;
 			cell.defaultIsGoal = wall.isGoal;
 			cell.defaultIsShade = wall.isShade;
+			cell.defaultGoalColor = wall.goalColor; // 1, 2, 3, 4, or null
 		}
 	}
 
@@ -58,6 +59,7 @@ let EditBoard = function(props){
 		[cell.wallType, cell.setWallType] = React.useState(cell.defaultWallType);
 		[cell.isGoal, cell.setIsGoal] = React.useState(cell.defaultIsGoal);
 		[cell.isShade, cell.setIsShade] = React.useState(cell.defaultIsShade);
+		[cell.goalColor, cell.setGoalColor] = React.useState(cell.defaultGoalColor);
 	}
 
 	let [selectedCell, setSelectedCell] = React.useState(void 0);
@@ -93,8 +95,8 @@ let EditBoard = function(props){
 		}
 		else if(selectedCell && selectedCell.isGoal){
 			if(cell.wallType){
-				cell.setIsGoal(selectedCell.isGoal);
-				selectedCell.setIsGoal(cell.isGoal);
+				cell.setIsGoal(selectedCell.isGoal), cell.setGoalColor(selectedCell.goalColor);
+				selectedCell.setIsGoal(cell.isGoal), selectedCell.setGoalColor(cell.goalColor);
 				setCounter(c => c + 1);
 			}
 			setSelectedCell(void 0);
