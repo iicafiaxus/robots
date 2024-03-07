@@ -437,10 +437,12 @@ class Game extends React.Component {
 				<div className="modal-front">
 
 					{this.state.modalName == "settings" &&
-						<div className="modal setting-section">
+						<div className="modal dialog setting-section">
+
+							<div className="setting-title">サイズ (変更すると現在の盤面は破棄します)</div>
 
 							{this.renderSettingRadios({
-								title: "サイズ (変更すると現在の盤面は破棄します)",
+								title: "",
 								name: "sizeName",
 								items: [
 									{ value: "small", caption: "小 (8×8)" },
@@ -451,53 +453,10 @@ class Game extends React.Component {
 								]
 							})}
 
-							{this.renderSettingRadios({
-								title: "出題形式",
-								name: "showAnswerAlways",
-								items: [
-									{ value: false, caption: "この盤面は何手？" },
-									{ value: true, caption: "最短手数の手順は？" }
-								]
-							})}
+							<div className="setting-title">ゴールの個数 (変更すると現在の盤面は破棄します)</div>
 
 							{this.renderSettingRadios({
-								title: "コマの名称",
-								name: "showRobotName",
-								items: [
-									{ value: true, caption: "つねに表示する" },
-									{ value: false, caption: "解説時のみ" },
-								]
-							})}
-
-							{this.renderSettingRadios({
-								title: "起動時の操作説明",
-								name: "useTutrial",
-								items: [
-									{ value: true, caption: "操作説明あり" },
-									{ value: false, caption: "操作説明なし" }
-								]
-							})}
-
-							{this.renderSettingRadios({
-								title: "コマの色",
-								name: "useColorful",
-								items: [
-									{ value: true, caption: "カラフル" },
-									{ value: false, caption: "素朴" }
-								]
-							})}
-
-							{this.renderSettingRadios({
-								title: "盤面の角度",
-								name: "isDiagonal",
-								items: [
-									{ value: false, caption: "通常" },
-									{ value: true, caption: "斜め (45度)" }
-								]
-							})}
-
-							{this.renderSettingRadios({
-								title: "ゴール数 (変更すると現在の盤面は破棄します)",
+								title: "",
 								name: "goalCount",
 								items: [
 									{ value: 1, caption: "1" },
@@ -506,6 +465,52 @@ class Game extends React.Component {
 								]
 							})}
 
+							<div className="setting-title">表示設定</div>
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "showAnswerAlways",
+								items: [
+									{ value: true, caption: "出題時に最短手数を表示する" },
+									{ value: false, caption: "しない" },
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "showRobotName",
+								items: [
+									{ value: true, caption: "出題時にコマの名称を表示する" },
+									{ value: false, caption: "しない" },
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "useTutrial",
+								items: [
+									{ value: true, caption: "起動時に操作説明を表示する" },
+									{ value: false, caption: "しない" }
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "useColorful",
+								items: [
+									{ value: true, caption: "コマを色分けする" },
+									{ value: false, caption: "しない" }
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "isDiagonal",
+								items: [
+									{ value: true, caption: "盤面を45度回転する" },
+									{ value: false, caption: "しない" },
+								]
+							})}
 						</div>
 					}
 

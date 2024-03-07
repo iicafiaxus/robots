@@ -170,7 +170,7 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .buttons.setting-item .setting-title { display: block; width: 100%; text-align: left; }
 .buttons.setting-item .setting-main { display: flex; justify-content: flex-start; flex-wrap: wrap; margin: 0 0 0 40px; }
 .buttons.setting-item.compact { flex-direction: row; justify-content: space-between; align-items: center; margin: 0 4px; }
-.buttons.setting-item.compact:not(:last-child) { border-bottom: 1px solid #9994; }
+.buttons.setting-item.compact:not(:first-child) { border-top: 1px solid #9994; }
 .buttons.setting-item.compact > * { width: fit-content; }
 .buttons.setting-item.compact .setting-main { justify-content: flex-end; flex-grow: 1; }
 
@@ -214,15 +214,20 @@ body { margin: 0; width: 100%; max-height: 100vh; }
 .modal-back { position: fixed; width: 100%; height: 100%; margin: 0; 
 	top: 0; left: 0; background-color: #0009; z-index: 1000; }
 .modal {
-	position: fixed; z-index: 1010; background: #ffff; border-radius: 4px;
+	position: fixed; z-index: 1010; 
 	width: min(calc(90% - 20px), calc(500px - 20px)); 
-	top: 40%; left: max(5%, calc(50% - 250px)); padding: 10px 10px 10px; 
+	top: 40%; left: max(5%, calc(50% - 250px));
 	transform: translate(0, -40%);
 	height: fit-content; max-height: 80%; overflow-y: auto; 
 }
+.modal:not(.modal-transparent), .modal-transparent > * {
+	background: #ffff; border-radius: 4px; padding: 10px 10px 10px; 
+}
+.modal-transparent { background: transparent; border: 1px solid #9994; }
+.modal-transparent > *:not(:first-child) { margin-top: 16px; }
 
-.modal.setting-section { padding-bottom: 30px; }
-.modal.setting-section label span { display: inline-block; min-width: 90px;  }
+.modal.setting-section { padding-bottom: 30px; background: #ffff; }
+.modal.setting-section label span { display: inline-block; min-width: 60px;  }
 
 button.material { color: #0008; padding: calc(6px - 1px); height: 36px;  width: 48px; }
 button.large { height: 60px; }
