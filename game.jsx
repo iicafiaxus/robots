@@ -606,7 +606,7 @@ class Game extends React.Component {
 									value={this.state.exportingCode}
 								/>
 							</div>
-							<div className="dialog-line-caption">外部ツール連携用コード</div>
+							<div className="dialog-line-caption">外部ツール連携用コード{this.state.goalCount > 1 ? " (複数ゴールは非対応です)" : ""}</div>
 							<div className="dialog-line">
 								<textarea
 									className="code"
