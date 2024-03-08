@@ -86,10 +86,10 @@ class Game extends React.Component {
 		let walls = [];
 		let robots = [];
 		for(let cell of cells){
-			if(cell.robotName) robots.push({
-				x: cell.x, y: cell.y, isMain: robots.length < this.state.goalCount,
-				key: ["", "●", "A", "B", "C", "D", "E", "F", "G", "H"].findIndex(x => x == cell.robotName),
-			});
+			if(cell.robotName){
+				const key = ["", "●", "A", "B", "C", "D", "E", "F", "G", "H"].findIndex(x => x == cell.robotName);
+				robots.push({ x: cell.x, y: cell.y, key, isMain: key <= this.state.goalCount });
+			}
 			if(cell.wallType) walls.push({
 				x: cell.x, y: cell.y, type: cell.wallType,
 				isGoal: cell.isGoal, isShade: cell.isShade,
