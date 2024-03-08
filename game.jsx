@@ -24,6 +24,9 @@ class Game extends React.Component {
 		let showRobotName = load("showRobotName") == "true";
 		save("showRobotName", showRobotName);
 
+		let showGoalName = load("showGoalName") == "true";
+		save("showGoalName", showGoalName);
+
 		let useTutrial = load("useTutrial") != "false";
 		save("useTutrial", useTutrial);
 
@@ -43,6 +46,7 @@ class Game extends React.Component {
 			sizeName,
 			showAnswerAlways,
 			showRobotName,
+			showGoalName,
 			useTutrial,
 			useColorful,
 			isDiagonal,
@@ -382,6 +386,7 @@ class Game extends React.Component {
 						isLoading={this.state.isLoading}
 						showAnswer={this.showNextAnswer.bind(this)}
 						useColorful={this.state.useColorful}
+						showsGoalName={this.state.showGoalName}
 						isDiagonal={this.state.isDiagonal}
 						resetBoard={this.resetBoard.bind(this)}
 						setIsDragging={this.setIsDragging.bind(this)}
@@ -481,6 +486,15 @@ class Game extends React.Component {
 								name: "showRobotName",
 								items: [
 									{ value: true, caption: "出題時にコマの名称を表示する" },
+									{ value: false, caption: "しない" },
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "showGoalName",
+								items: [
+									{ value: true, caption: "ゴールの名称を表示する" },
 									{ value: false, caption: "しない" },
 								]
 							})}

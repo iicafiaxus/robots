@@ -1,4 +1,6 @@
 let Cell = function(props){
+	const letter = (props.showsName && props.goalColor != null) ?
+		["", "I", "A", "B", "C", "D", "E", "F", "G", "H"][props.goalColor] : "";
 	return <div
 		className={
 			"cell" + 
@@ -13,7 +15,7 @@ let Cell = function(props){
 		{ props.wallXBack ? <WallXBack /> : null }
 		{ props.wallY ? <WallY /> : null }
 		{ props.wallYBack ? <WallYBack /> : null }
-		{ props.isGoal ? <Goal color={props.goalColor} /> : null }
+		{ props.isGoal ? <Goal color={props.goalColor} letter={letter}></Goal> : null }
 	</div>
 }
 
@@ -32,7 +34,7 @@ let Robot = function(props){
 			left: props.dy * du + "px"
 		}}
 	>
-		{props.number ? ["", "A", "B", "C", "D", "E", "F", "G", "H"][props.number] : null }
+		{props.number != null ? ["I", "A", "B", "C", "D", "E", "F", "G", "H"][props.number] : null}
 	</div>	
 }
 
@@ -104,5 +106,5 @@ let WallYBack = function(props){
 }
 
 let Goal = function(props){
-	return <div className={"goal" + " color" + props.color} />
+	return <div className={"goal" + " color" + props.color}>{props.letter}</div>
 }

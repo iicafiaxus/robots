@@ -214,7 +214,7 @@ let Board = function(props){
 		{ robots.map(_ =>
 			<Robot
 				key={_.key} x={_.x} y={_.y} isMain={_.isMain}
-				number={props.showsNumber && _.key > 1 ? (_.key - 1) : null}
+				number={props.showsNumber && (_.key > 1 || props.showsGoalName && _.key > 0) ? (_.key - 1) : null}
 				dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
 				color={props.useColorful ? _.key : null}
 			/>
@@ -225,7 +225,7 @@ let Board = function(props){
 				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
 				wallX={_.wallX} wallXBack={_.wallXBack}
 				wallY={_.wallY} wallYBack={_.wallYBack}
-				isGoal={_.isGoal} goalColor={_.goalColor}
+				isGoal={_.isGoal} goalColor={_.goalColor} showsName={props.showsGoalName}
 			/>
 		)}
 
