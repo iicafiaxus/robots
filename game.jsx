@@ -30,7 +30,7 @@ class Game extends React.Component {
 		let useTutrial = load("useTutrial") != "false";
 		save("useTutrial", useTutrial);
 
-		let useColorful = load("useColorful") == "true";
+		let useColorful = load("useColorful") != "false";
 		save("useColorful", useColorful);
 
 		let isDiagonal = load("isDiagonal") == "true";
