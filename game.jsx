@@ -379,6 +379,7 @@ class Game extends React.Component {
 						height={this.state.boardHeight}
 						scale={this.state.boardScale}
 						robots={this.state.robots} walls={this.state.walls}
+						goalCount={this.state.goalCount}
 						lines={this.state.solution.liness && 
 							this.state.solution.liness[this.state.lineNumber]}
 						showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}

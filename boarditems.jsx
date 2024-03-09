@@ -15,7 +15,7 @@ let Cell = function(props){
 		{ props.wallXBack ? <WallXBack /> : null }
 		{ props.wallY ? <WallY /> : null }
 		{ props.wallYBack ? <WallYBack /> : null }
-		{ props.isGoal ? <Goal color={props.goalColor} /> : null }
+		{ props.isGoal ? <Goal color={props.useColorful ? props.goalColor : ""} /> : null }
 		{ letter && <CellText>{letter}</CellText> }
 	</div>
 }
@@ -74,7 +74,7 @@ let TraceLine = function(props){
 	return <div
 		className={[
 			"trace",
-			props.i == "0" ? "main" : "",
+			props.isMain ? "main" : "",
 			props.color ? "color" + props.color : "",
 		].join(" ")}
 		style={{

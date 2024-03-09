@@ -92,6 +92,7 @@ let Board = function(props){
 		if(wall.isGoal){
 			cellDic[toKey(x, y)].isGoal = true;
 			cellDic[toKey(x, y)].goalColor = wall.goalColor;
+			cellDic[toKey(x, y)].useColorful = props.useColorful;
 		}
 		if(wall.isShade) cellDic[toKey(x, y)].isShade = true;
 	}
@@ -186,7 +187,7 @@ let Board = function(props){
 				iRobot: l.iRobot,
 				x: l.tx, y: l.ty,
 				dx: (l.dx || 0) + l.dtx * 0.5, dy: (l.dy || 0) + l.dty * 0.5,
-				isMain: (l.iRobot == 0)
+				isMain: (l.iRobot < props.goalCount)
 			});
 		}
 	}
@@ -225,7 +226,7 @@ let Board = function(props){
 				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
 				wallX={_.wallX} wallXBack={_.wallXBack}
 				wallY={_.wallY} wallYBack={_.wallYBack}
-				isGoal={_.isGoal} goalColor={_.goalColor} showsName={props.showsGoalName}
+				isGoal={_.isGoal} goalColor={_.goalColor} useColorful={_.useColorful} showsName={props.showsGoalName}
 			/>
 		)}
 
@@ -234,6 +235,7 @@ let Board = function(props){
 				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+				isMain={_.iRobot < props.goalCount}
 				color={props.useColorful ? _.iRobot + 1 : null}
 			/>
 		)}
@@ -243,6 +245,7 @@ let Board = function(props){
 				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
 				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
 				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
+				isMain={_.iRobot < props.goalCount}
 				color={props.useColorful ? _.iRobot + 1 : null}
 			/>
 		)}
