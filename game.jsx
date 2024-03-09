@@ -65,6 +65,17 @@ class Game extends React.Component {
 		window.removeEventListener("popstate", this.popState.bind(this));
 	}
 
+	componentDidUpdate(){
+		if(this.state.isModalOpen && document.querySelectorAll(".modal-front *:focus").length == 0){
+			for(let x of document.querySelectorAll(".modal-front *")) if(x.tabIndex >= 0) {
+				x.focus();
+				console.log(x.tagName);
+				if(x.tagName.toLowerCase() == "textarea") x.select();
+				break; 
+			}
+		}
+	}
+
 	importMap(){
 		if( ! this.state.importingCode) return;
 		let importParam = decoder.decode(this.state.importingCode);
@@ -270,8 +281,11 @@ class Game extends React.Component {
 	openModal(name){
 		history.pushState({}, "", location.href);
 		this.setState({ isModalOpen : true, modalName : name });
+		for(let x of document.querySelectorAll("*")) if(x.tabIndex >= 0) x.tabIndex = -2;
+		for(let x of document.querySelectorAll(".modal-front *")) if(x.tabIndex == -2) x.tabIndex = 0;
 	}
 	closeModal(){
+		for(let x of document.querySelectorAll("*")) if(x.tabIndex == -2) x.tabIndex = 0;
 		this.setState({ isModalOpen: false });
 		history.back();
 	}
