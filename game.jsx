@@ -27,8 +27,9 @@ class Game extends React.Component {
 		let showGoalName = load("showGoalName") == "true";
 		save("showGoalName", showGoalName);
 
-		let useTutrial = load("useTutrial") != "false";
-		save("useTutrial", useTutrial);
+		let useTutorial = (load("useTutorial") ?? load("useTutrial")) != "false";
+		save("useTutorial", useTutorial);
+		remove("useTutrial");
 
 		let useColorful = load("useColorful") != "false";
 		save("useColorful", useColorful);
@@ -47,7 +48,7 @@ class Game extends React.Component {
 			showAnswerAlways,
 			showRobotName,
 			showGoalName,
-			useTutrial,
+			useTutorial,
 			useColorful,
 			isDiagonal,
 			goalCount,
@@ -56,7 +57,7 @@ class Game extends React.Component {
 
 	componentDidMount(){
 		this.resetBoard();
-		if(this.state.useTutrial) this.openModal("tutrial");
+		if(this.state.useTutorial) this.openModal("tutorial");
 		window.addEventListener("popstate", this.popState.bind(this));
 	}
 
@@ -319,7 +320,7 @@ class Game extends React.Component {
 					<MaterialButton name="output" onClick={this.openExport.bind(this)} />
 					<div className="flex-filler" />
 					<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
-					<MaterialButton name="help" onClick={() => this.openModal("tutrial")} />
+					<MaterialButton name="help" onClick={() => this.openModal("tutorial")} />
 					<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
 
 				</div>
@@ -502,7 +503,7 @@ class Game extends React.Component {
 
 							{this.renderSettingRadios({
 								title: "",
-								name: "useTutrial",
+								name: "useTutorial",
 								items: [
 									{ value: true, caption: "起動時に操作説明を表示する" },
 									{ value: false, caption: "しない" }
@@ -546,22 +547,22 @@ class Game extends React.Component {
 						</div>
 					}
 
-					{this.state.modalName == "tutrial" &&
+					{this.state.modalName == "tutorial" &&
 						<div className="modal dialog">
 							<div className="dialog-title">タッチ操作の説明</div>
 							<div className="dialog-line-caption">盤面をタップ → 解答・解説を表示</div>
 							<div className="dialog-line image-view">
-								<img src="images/tutrial-answer.png" />
+								<img src="images/tutorial-answer.png" />
 								<span className="overlay">タップ</span>
 							</div>
 							<div className="dialog-line-caption">下にスワイプ → 現在の問題を破棄して次へ</div>
 							<div className="dialog-line image-view">
-								<img src="images/tutrial-discard.png" />
+								<img src="images/tutorial-discard.png" />
 								<span className="overlay">スワイプ (モバイルのみ)</span>
 							</div>
 
 							{this.renderSettingRadios({
-								name: "useTutrial",
+								name: "useTutorial",
 								prefix: "この操作説明を起動時に表示",
 								items: [
 									{ value: true, caption: "する" },
