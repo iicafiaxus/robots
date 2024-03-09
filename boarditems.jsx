@@ -15,7 +15,8 @@ let Cell = function(props){
 		{ props.wallXBack ? <WallXBack /> : null }
 		{ props.wallY ? <WallY /> : null }
 		{ props.wallYBack ? <WallYBack /> : null }
-		{ props.isGoal ? <Goal color={props.goalColor} letter={letter}></Goal> : null }
+		{ props.isGoal ? <Goal color={props.goalColor} /> : null }
+		{ letter && <CellText>{letter}</CellText> }
 	</div>
 }
 
@@ -106,5 +107,9 @@ let WallYBack = function(props){
 }
 
 let Goal = function(props){
-	return <div className={"goal" + " color" + props.color}>{props.letter}</div>
+	return <div className={"goal" + " color" + props.color}></div>
+}
+
+let CellText = function(props){
+	return <div className={"cell-text"}>{props.children}</div>
 }
