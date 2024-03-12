@@ -8,13 +8,13 @@ let RobotSolveUtil = function(param){
 	
 }
 
-RobotSolveUtil.prototype.makeDirString = function(dirs){
+RobotSolveUtil.prototype.makeDirString = function(dirs, names){
 	let res = "", last = -1;
 	for(let s of dirs){
 		let l = s.iRobot, r = s.code;
 		if(last != l){
 			if(last != -1) res += "　";
-			res += ["●", "A", "B", "C", "D", "E", "F", "G", "H"][l];
+			res += names[l];
 			last = l;
 		}
 		res += ["↓", "↑", "→", "←"][r];

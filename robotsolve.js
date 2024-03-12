@@ -33,10 +33,13 @@ let Solver = function(width, height, robots, walls){
 		return Math.floor((key % this.mults[iPosition + 1]) / this.mults[iPosition]);
 	}
 
+	this.names = ["I", "A", "B", "C", "D", "E", "F", "G", "H"];
+
 	this.goal = 0;
 	this.goalMod = 1;
 	for(let wall of this.walls){
 		if(wall.isGoal){
+			this.names[wall.goalColor - 1] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor - 1];
 			this.goal += wall.y * this.mults[wall.goalColor * 2 - 2];
 			this.goal += wall.x * this.mults[wall.goalColor * 2 - 1];
 			this.goalMod = Math.max(this.goalMod, this.mults[wall.goalColor * 2]);
@@ -281,7 +284,7 @@ Solver.prototype.success = function(v, ds){
 	let summarySet = {}; // 本当はSetにする
 	for(let d1 of ds){
 		let dirs1 = this.normalize(d1);
-		let description1 = this.util.makeDirString(dirs1);
+		let description1 = this.util.makeDirString(dirs1, this.names);
 		let lines = this.traceLines(this.key, dirs1).lines;
 		let lineString = this.util.makeLineString(lines);
 		let summary = lineString;

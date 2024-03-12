@@ -1,21 +1,22 @@
 let EditCell = function(props){
 	return <div
-		className={
-			"cell editcell" +
-			(props.disabled ? " disabled" : "") + 
-			(props.isSample ? " sample" : "") +
-			(props.isGoal ? " edit-goal" : "") +
-			(props.isShade ? " shade" : "") + 
-			(props.wallType ? " wall" + props.wallType : "") +
-			(props.isSelected ? " selected" : "")
-		}
+		className={[
+			"cell editcell",
+			(props.disabled ? "disabled" : ""),
+			(props.isSample ? "sample" : ""),
+			(props.isGoal ? "edit-goal" : ""),
+			(props.isShade ? "shade" : ""),
+			(props.wallType ? "wall" + props.wallType : ""),
+			(props.isSelected ? "selected" : ""),
+			(props.robot ? "edit-robot" : ""),
+		].join(" ")}
 		style={props.isSample ? null : {
 			gridRow: (props.x || 0) + 1,
 			gridColumn: (props.y || 0) + 1
 		}}
 		onClick={props.onClick}
 	>
-		{props.robot || (props.isGoal ? "☆" : "　")}
+		{props.robot || (props.isGoal ? ["", "⑴", "⑵", "⑶", "⑷", "⑸", "⑹", "⑺", "⑻", "⑼"][props.goalColor] : "　")}
 	</div>
 }
 let EditCellButton = function(props){
@@ -37,12 +38,8 @@ let EditBoard = function(props){
 			cells.push(cell);
 		}
 	}
-	
-	for(let robot of props.robots){
-		let key = robot.x + "/" + robot.y;
-		let cell = cells.find(c => c.key == key);
-		if(cell) cell.defaultRobotName = ["●", "A", "B", "C", "D", "E", "F", "G", "H"][robot.key - 1];
-	}
+
+	let names = ["I", "A", "B", "C", "D", "E", "F", "G", "H"];
 	for(let wall of props.walls){
 		let key = wall.x + "/" + wall.y;
 		let cell = cells.find(c => c.key == key);
@@ -51,7 +48,13 @@ let EditBoard = function(props){
 			cell.defaultIsGoal = wall.isGoal;
 			cell.defaultIsShade = wall.isShade;
 			cell.defaultGoalColor = wall.goalColor; // 1, 2, 3, 4, or null
+			if(wall.goalColor) names[wall.goalColor - 1] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor - 1];
 		}
+	}
+	for(let robot of props.robots){
+		let key = robot.x + "/" + robot.y;
+		let cell = cells.find(c => c.key == key);
+		if(cell) cell.defaultRobotName = names[robot.key - 1];
 	}
 
 	for(let cell of cells){
@@ -122,7 +125,7 @@ let EditBoard = function(props){
 			{ cells.map(cell =>
 				<EditCell
 					key={cell.key} x={cell.x} y={cell.y}
-					wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade}
+					wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade} goalColor={cell.goalColor}
 					robot={cell.robotName}
 					isSelected={selectedCell && cell.key === selectedCell.key}
 					onClick={() => handleCellClick(cell)}

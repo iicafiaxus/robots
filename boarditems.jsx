@@ -1,6 +1,6 @@
 let Cell = function(props){
 	const letter = (props.showsName && props.goalColor != null) ?
-		["", "I", "A", "B", "C", "D", "E", "F", "G", "H"][props.goalColor] : "";
+		["", "1", "2", "3", "4", "5", "6", "7", "8", "9"][props.goalColor] : "";
 	return <div
 		className={
 			"cell" + 
@@ -22,6 +22,9 @@ let Cell = function(props){
 
 let Robot = function(props){
 	let du = 6;
+	let name = props.number != null ? (
+		props.isMain ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"] : ["I", "A", "B", "C", "D", "E", "F", "G", "H"]
+	)[props.number] : null;
 	return <div
 		className={[
 			"robot",
@@ -35,7 +38,7 @@ let Robot = function(props){
 			left: props.dy * du + "px"
 		}}
 	>
-		{props.number != null ? ["I", "A", "B", "C", "D", "E", "F", "G", "H"][props.number] : null}
+		{name}
 	</div>	
 }
 
