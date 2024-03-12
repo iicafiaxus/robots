@@ -84,6 +84,7 @@ class Game extends React.Component {
 			return;
 		}
 		this.setSettingValue("sizeName", importParam.sizeName);
+		this.setSettingValue("goalCount", importParam.goalCount || 1);
 		this.setState({ importingCode: void 0 });
 		this.resetBoard({
 			walls: importParam.walls,
