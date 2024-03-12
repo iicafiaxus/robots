@@ -482,7 +482,7 @@ class Game extends React.Component {
 								items: [
 									{ value: 1, caption: "1" },
 									{ value: 2, caption: "2 (実験的)" },
-									{ value: 4, caption: "4 (実験的!!)" },
+									//{ value: 4, caption: "4 (実験的!!)" },
 								]
 							})}
 
