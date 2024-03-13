@@ -1,6 +1,4 @@
 let Cell = function(props){
-	const letter = (props.showsName && props.goalColor != null) ?
-		["", "1", "2", "3", "4", "5", "6", "7", "8", "9"][props.goalColor] : "";
 	return <div
 		className={
 			"cell" + 
@@ -16,15 +14,12 @@ let Cell = function(props){
 		{ props.wallY ? <WallY /> : null }
 		{ props.wallYBack ? <WallYBack /> : null }
 		{ props.isGoal ? <Goal color={props.useColorful ? props.goalColor : ""} /> : null }
-		{ letter && <CellText>{letter}</CellText> }
+		{ props.letter && <CellText>{props.letter}</CellText> }
 	</div>
 }
 
 let Robot = function(props){
 	let du = 6;
-	let name = props.number != null ? (
-		props.isMain ? ["1", "2", "3", "4", "5", "6", "7", "8", "9"] : ["I", "A", "B", "C", "D", "E", "F", "G", "H"]
-	)[props.number] : null;
 	return <div
 		className={[
 			"robot",
@@ -38,7 +33,7 @@ let Robot = function(props){
 			left: props.dy * du + "px"
 		}}
 	>
-		{name}
+		{props.name}
 	</div>	
 }
 

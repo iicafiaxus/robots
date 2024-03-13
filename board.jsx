@@ -93,12 +93,25 @@ let Board = function(props){
 			cellDic[toKey(x, y)].isGoal = true;
 			cellDic[toKey(x, y)].goalColor = wall.goalColor;
 			cellDic[toKey(x, y)].useColorful = props.useColorful;
+			cellDic[toKey(x, y)].goalName = (props.goalCount > 1 && props.showsGoalName && wall.goalColor != null) ?
+				["", "1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor] : "";
 		}
 		if(wall.isShade) cellDic[toKey(x, y)].isShade = true;
 	}
 
 	let robots = props.robots || [];
 	let nRobot = robots.length;
+
+	for(let i = 0; i < nRobot; i ++){
+		if(robots[i].isMain){
+			if(props.showsNumber && props.goalCount > 1) robots[i].name = ["1", "2", "3", "4", "5", "6", "7", "8", "9"][i];
+			else robots[i].name = "";
+		}
+		else{
+			if(props.showsNumber) robots[i].name = ["I", "A", "B", "C", "D", "E", "F", "G", "H"][i];
+			else robots[i].name = "";
+		}
+	}
 
 	let lines = props.lines || [];
 	let lineRows = [], lineColumns = [];
@@ -215,9 +228,9 @@ let Board = function(props){
 		{ robots.map(_ =>
 			<Robot
 				key={_.key} x={_.x} y={_.y} isMain={_.isMain}
-				number={props.showsNumber ? (_.key - 1) : null}
 				dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
 				color={props.useColorful ? _.key : null}
+				name={_.name}
 			/>
 		) }
 
@@ -226,7 +239,8 @@ let Board = function(props){
 				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
 				wallX={_.wallX} wallXBack={_.wallXBack}
 				wallY={_.wallY} wallYBack={_.wallYBack}
-				isGoal={_.isGoal} goalColor={_.goalColor} useColorful={_.useColorful} showsName={props.showsGoalName}
+				isGoal={_.isGoal} goalColor={_.goalColor} useColorful={_.useColorful}
+				letter={_.goalName}
 			/>
 		)}
 

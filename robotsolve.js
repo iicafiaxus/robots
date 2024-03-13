@@ -35,11 +35,15 @@ let Solver = function(width, height, robots, walls){
 
 	this.names = ["I", "A", "B", "C", "D", "E", "F", "G", "H"];
 
+	this.goalWalls = this.walls.filter(wall => wall.isGoal);
+	const mainRobotNames = this.goalWalls.length <= 1 ?
+		["●", "●", "●", "●", "●", "●", "●", "●", "●"] : ["❶", "❷", "❸", "❹", "❺", "❻", "❼", "❽", "❾"];
+	for(let wall of this.goalWalls) this.names[wall.goalColor - 1] = mainRobotNames[wall.goalColor - 1];
+
 	this.goal = 0;
 	this.goalMod = 1;
 	for(let wall of this.walls){
 		if(wall.isGoal){
-			this.names[wall.goalColor - 1] = ["1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor - 1];
 			this.goal += wall.y * this.mults[wall.goalColor * 2 - 2];
 			this.goal += wall.x * this.mults[wall.goalColor * 2 - 1];
 			this.goalMod = Math.max(this.goalMod, this.mults[wall.goalColor * 2]);
