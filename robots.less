@@ -1,10 +1,7 @@
 @import "https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&display=swap";
 * { font-family: 'BIZ UDPGothic', sans-serif; font-size: 18px; line-height: 36px; }
 html { overflow: hidden; }
-body {
-	margin: 0; width: 100%; max-height: 100vh;
-	background: @colors[body]; color: @colors[text];
-}
+body { margin: 0; width: 100%; max-height: 100vh; }
 #root { max-height: 100vh; }
 .all {
 	width: fit-content; height: max-content;
@@ -182,16 +179,14 @@ body {
 		}
 	
 		&.unimportant {
-			background: transparent;
-			border: 1px solid @colors[button-border];
+			background: transparent; border: 1px solid @colors[button];
 			@media (hover: hover) {
 				&:hover { background: @colors[button-hover]; }
 			}
 		}
 	
 		&.important {
-			background: transparent;
-			border: 1px solid @colors[button-important-border]; min-width: 60px;
+			background: transparent; border: 1px solid @colors[button-important]; min-width: 60px;
 			@media (hover: hover) {
 				&:hover { background: @colors[button-important-hover]; }
 			}

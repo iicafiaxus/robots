@@ -1,66 +1,51 @@
-:root { color-scheme: light dark; }
 @colors: {
-	body: light-dark(#ffff, #111f);
-	text: light-dark(#000f, #fffc);
-
-	board: light-dark(#ffff, #dddf);
-	board-discarding: light-dark(#444e, #ccce);
+	body: #ffff;
+	wall: #850f;
+	board: #ffff;
+	board-discarding: #444e;
 	board-discarding-text: #ffff;
 	board-border-next: #eee;
-	wall: light-dark(#850f, #630f);
 	wall-next: #eee;
 	cell-border-next: #eee8;
 	cell-shade-next: #eee8;
-	cell-border: light-dark(#eee, #1112);
-	cell-shade: repeating-linear-gradient(
-		-45deg,
-		transparent 0%,
-		transparent 7%,
-		light-dark(#8509, #6307) 7%,
-		light-dark(#8509, #6307) 10%
-	);
-	cell-shade-border: light-dark(#c949, #6309);
-	cell-text: light-dark(#0004, #0008);
-
-	robot-main: light-dark(#e05f, #d26f);
-	robot-sub: light-dark(#ab4f, #781f);
-	robot-2: light-dark(#03ef, #37ff);
-	robot-3: light-dark(#0a2f, #0a2f);
-	robot-4: light-dark(#db0f, #e80f);
-	robot-text: light-dark(#fffc, #fffc);
-	mini-main: light-dark(#e054, #d268);
-	mini-sub: light-dark(#ab48, #7818);
-	mini-2: light-dark(#03e4, #37f8);
-	mini-3: light-dark(#0a26, #0a26);
-	mini-4: light-dark(#db08, #e808);
-
-	button: light-dark(#ab44, #ab48);
+	cell-border: #eee;
+	cell-shade: repeating-linear-gradient(-45deg, transparent 0%, transparent 7%, #8509 7%, #8509 10%);
+	cell-shade-border: #c949;
+	cell-text: #0002;
+	robot-main: #e05f;
+	robot-sub: #ab4f;
+	robot-2: #03ef;
+	robot-3: #0a2f;
+	robot-4: #db0f;
+	robot-text: #fffc;
+	mini-main: #e054;
+	mini-sub: #ab48;
+	mini-2: #03e4;
+	mini-3: #0a26;
+	mini-4: #db08;
+	button: #ab44;
 	button-hover: #ab48;
-	button-border: light-dark(#ab44, #ab48);
-	button-important-border: light-dark(#e052, #d268);
+	button-important: #e052;
 	button-important-hover: #e054;
 	item-separator: #9994;
-	radio-border: light-dark(#eee, #333);
+	radio-border: #eee;
 	radio-checked: #ab44;
 	radio-checked-border: #ab4;
 	radio-checked-hover: #ab42;
 	radio-checked-hover-border: #ab42;
-
-	covered: light-dark(#e041, #d26c);
-	covered-text: light-dark(#e05c, #fffc);
-	covered-inactive-border: light-dark(#e052, #ccc8);
-	covered-inactive-text: light-dark(#e054, #cccc);
-	cover-title-inactive: light-dark(#eee, #333);
-
-	modal-back: light-dark(#0009, #fff9);
-	modal: light-dark(#ffff, #111f);
-	modal-transparent-border: light-dark(#9994, #9994);
-	button-material-text: light-dark(#0008, #fff8);
+	covered: #e041;
+	covered-text: #e05c;
+	covered-inactive-border: #e052;
+	covered-inactive-text: #e054;
+	cover-title-inactive: #eee;
+	modal-back: #0009;
+	modal: #ffff;
+	modal-transparent-border: #9994;
+	button-material-text: #0008;
 	modal-image: #d8d8d8;
-	modal-image-overlay: light-dark(#fffc, #111c);
+	modal-image-overlay: #fffc;
 	modal-image-overlay-border: #999f;
 	qrcode: #ffff;
-
 	edit: #eeef;
 	edit-border: #850c;
 	edit-text: #053f;
