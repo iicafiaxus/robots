@@ -1,17 +1,38 @@
-@colors: {
+:root {
+	color-scheme: light dark;
+}
+@media (prefers-color-scheme: light) {
+	@colors: @colors-light;
+	@main();
+}
+@media (prefers-color-scheme: dark) {
+	@colors: @colors-dark;
+	@main();
+}
+
+@colors-light: {
 	body: #ffff;
-	wall: #850f;
+	text: #000f;
+
 	board: #ffff;
 	board-discarding: #444e;
 	board-discarding-text: #ffff;
 	board-border-next: #eee;
+	wall: #850f;
 	wall-next: #eee;
 	cell-border-next: #eee8;
 	cell-shade-next: #eee8;
 	cell-border: #eee;
-	cell-shade: repeating-linear-gradient(-45deg, transparent 0%, transparent 7%, #8509 7%, #8509 10%);
+	cell-shade: repeating-linear-gradient(
+		-45deg,
+		transparent 0%,
+		transparent 7%,
+		#8509 7%,
+		#8509 10%
+	);
 	cell-shade-border: #c949;
-	cell-text: #0002;
+	cell-text: #0004;
+
 	robot-main: #e05f;
 	robot-sub: #ab4f;
 	robot-2: #03ef;
@@ -23,9 +44,11 @@
 	mini-2: #03e4;
 	mini-3: #0a26;
 	mini-4: #db08;
+
 	button: #ab44;
 	button-hover: #ab48;
-	button-important: #e052;
+	button-border: #ab44;
+	button-important-border: #e052;
 	button-important-hover: #e054;
 	item-separator: #9994;
 	radio-border: #eee;
@@ -33,11 +56,13 @@
 	radio-checked-border: #ab4;
 	radio-checked-hover: #ab42;
 	radio-checked-hover-border: #ab42;
+
 	covered: #e041;
 	covered-text: #e05c;
 	covered-inactive-border: #e052;
 	covered-inactive-text: #e054;
 	cover-title-inactive: #eee;
+
 	modal-back: #0009;
 	modal: #ffff;
 	modal-transparent-border: #9994;
@@ -46,6 +71,79 @@
 	modal-image-overlay: #fffc;
 	modal-image-overlay-border: #999f;
 	qrcode: #ffff;
+
+	edit: #eeef;
+	edit-border: #850c;
+	edit-text: #053f;
+	edit-cell: #ffff;
+	edit-selected-outline: #f306;
+	edit-selected-text: #f306;
+	edit-wall: #053c;
+	edit-shade: #8506;
+}
+
+@colors-dark: {
+	body: #111f;
+	text: #fffc;
+
+	board: #dddf;
+	board-discarding: #ccce;
+	board-discarding-text: #ffff;
+	board-border-next: #eee;
+	wall: #630f;
+	wall-next: #eee;
+	cell-border-next: #eee8;
+	cell-shade-next: #eee8;
+	cell-border: #1112;
+	cell-shade: repeating-linear-gradient(
+		-45deg,
+		transparent 0%,
+		transparent 7%,
+		#6307 7%,
+		#6307 10%
+	);
+	cell-shade-border: #6309;
+	cell-text: #0008;
+
+	robot-main: #d26f;
+	robot-sub: #781f;
+	robot-2: #37ff;
+	robot-3: #0a2f;
+	robot-4: #e80f;
+	robot-text: #fffc;
+	mini-main: #d268;
+	mini-sub: #7818;
+	mini-2: #37f8;
+	mini-3: #0a26;
+	mini-4: #e808;
+
+	button: #ab48;
+	button-hover: #ab48;
+	button-border: #ab48;
+	button-important-border: #d268;
+	button-important-hover: #e054;
+	item-separator: #9994;
+	radio-border: #333;
+	radio-checked: #ab44;
+	radio-checked-border: #ab4;
+	radio-checked-hover: #ab42;
+	radio-checked-hover-border: #ab42;
+
+	covered: #d26c;
+	covered-text: #fffc;
+	covered-inactive-border: #ccc8;
+	covered-inactive-text: #cccc;
+	cover-title-inactive: #333;
+
+	modal-back: #fff9;
+	modal: #111f;
+	modal-transparent-border: #9994;
+	button-material-text: #fff8;
+	modal-image: #d8d8d8;
+	modal-image-overlay: #111c;
+	modal-image-overlay-border: #999f;
+	qrcode: #ffff;
+
 	edit: #eeef;
 	edit-border: #850c;
 	edit-text: #053f;
