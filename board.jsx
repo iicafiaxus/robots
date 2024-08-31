@@ -1,4 +1,5 @@
 "REQUIRE boarditems.jsx";
+"REQUIRE boardcanvas.jsx";
 
 let Board = function(props){
 	let height = props.height || 16
@@ -93,8 +94,11 @@ let Board = function(props){
 			cellDic[toKey(x, y)].isGoal = true;
 			cellDic[toKey(x, y)].goalColor = wall.goalColor;
 			cellDic[toKey(x, y)].useColorful = props.useColorful;
-			cellDic[toKey(x, y)].goalName = (props.goalCount > 1 && props.showsGoalName && wall.goalColor != null) ?
-				["", "1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor] : "";
+			let goalName = (props.goalCount > 1 && props.showsGoalName && wall.goalColor != null)
+				? ["", "1", "2", "3", "4", "5", "6", "7", "8", "9"][wall.goalColor] : "";
+			cellDic[toKey(x, y)].goalName = goalName;
+			wall.goalName = goalName;
+				
 		}
 		if(wall.isShade) cellDic[toKey(x, y)].isShade = true;
 	}
@@ -197,6 +201,7 @@ let Board = function(props){
 			if(l.isWidthSide) l.dty = (l.sy < l.ty ? -2 : 2); else l.dty = 0;
 			if(l.isHeightSide) l.dtx = (l.sx < l.tx ? -2 : 2); else l.dtx = 0;
 			minirobots.push({
+				key: l.iRobot + 1,
 				iRobot: l.iRobot,
 				x: l.tx, y: l.ty,
 				dx: (l.dx || 0) + l.dtx * 0.5, dy: (l.dy || 0) + l.dty * 0.5,
@@ -225,52 +230,37 @@ let Board = function(props){
 		onTouchMove={movePress}
 		>
 
-		{ robots.map(_ =>
-			<Robot
-				key={_.key} x={_.x} y={_.y} isMain={_.isMain}
-				dx={props.showsRoute ? _.dx : 0} dy={props.showsRoute ? _.dy : 0}
-				color={props.useColorful ? _.key : null}
-				name={_.name}
-			/>
-		) }
-
-		{ cells.map(_ =>
-			<Cell
-				key={_.x+"/"+_.y} x={_.x} y={_.y} isShade={_.isShade}
-				wallX={_.wallX} wallXBack={_.wallXBack}
-				wallY={_.wallY} wallYBack={_.wallYBack}
-				isGoal={_.isGoal} goalColor={_.goalColor} useColorful={_.useColorful}
-				letter={_.goalName}
-			/>
-		)}
-
-		{ props.showsRoute && props.lines && props.lines.map((_, i) =>
-			<TraceLine
-				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
-				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
-				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
-				isMain={_.iRobot < props.goalCount}
-				color={props.useColorful ? _.iRobot + 1 : null}
-			/>
-		)}
-
-		{ props.showsRoute && minilines && minilines.map((_, i) =>
-			<TraceLine
-				key={i} i={_.iRobot} sx={_.sx} sy={_.sy} tx={_.tx} ty={_.ty}
-				dx={_.dx} dy={_.dy} dsx={_.dsx} dsy={_.dsy} dtx={_.dtx} dty={_.dty}
-				isWidthSide={_.isWidthSide} isHeightSide={_.isHeightSide}
-				isMain={_.iRobot < props.goalCount}
-				color={props.useColorful ? _.iRobot + 1 : null}
-			/>
-		)}
-
-		{ props.showsRoute && minirobots && minirobots.map((_, i) =>
-			<MiniRobot
-				key={i} i={_.iRobot} x={_.x} y={_.y} dx={_.dx} dy={_.dy}
-				isMain={_.isMain}
-				color={props.useColorful ? _.iRobot + 1 : null}
-			/>
-		)}
+		<BoardCanvas
+			width={width} height={height}
+			colors={{
+				board: "#fff", wall: "#850", cell: "#eee",
+				cellShade: "#8509", cellShadeBorder: "#c949",
+				goalText: "#0004",
+				robot: props.useColorful
+					? ["#eeef", "#e05f", "#03ef", "#0a2f", "#db0f"]
+					: [0, 1, 2, 3, 4].map(i => i <= props.goalCount ? "#e05f" : "#ab4f"),
+				robotText: "#fffc",
+				goal: props.useColorful
+					? ["#eeef", "#e054", "#03e4", "#0a26", "#db08"]
+					: [0, 1, 2, 3, 4].map(i => i <= props.goalCount ? "#e054" : "#ab48"),
+				minirobot: props.useColorful
+					? ["#eeef", "#e05f", "#03ef", "#0a2f", "#db0f"]
+					: [0, 1, 2, 3, 4].map(i => i <= props.goalCount ? "#e05f" : "#ab4f"),
+				line: props.useColorful
+					? ["#eeef", "#e054", "#03e4", "#0a26", "#db08"]
+					: [0, 1, 2, 3, 4].map(i => i <= props.goalCount ? "#e054" : "#ab48"),
+			}}
+			walls={props.walls}
+			robots={robots}
+			minirobots={minirobots}
+			routes={lineRoutes.map((x, i) => ({ key: i + 1, lines: x }))}
+			showsRoute={props.showsRoute}
+			orientation={
+				["board-landscape", "screen-landscape"].includes(props.layoutName)
+				? "transposed"
+				: "default"
+			}
+		/>
 
 		{ props.isLoading ? <div className="loading-message"></div> : null }
 		{ isDiscarding ? <div className="discarding discarding-back"></div> : null }

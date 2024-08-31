@@ -6,6 +6,7 @@
 "REQUIRE robotdecode.js";
 "REQUIRE robotencode.js";
 "REQUIRE util/storage.js";
+"REQUIRE scaling.js";
 
 class Game extends React.Component {
 
@@ -52,6 +53,8 @@ class Game extends React.Component {
 			useColorful,
 			isDiagonal,
 			goalCount,
+			layoutName: "",
+			scalingStyle: {},
 		};
 	}
 
@@ -59,10 +62,13 @@ class Game extends React.Component {
 		this.resetBoard();
 		if(this.state.useTutorial) this.openModal("tutorial");
 		window.addEventListener("popstate", this.popState.bind(this));
+		window.addEventListener("resize", this.onResize.bind(this));
+		this.onResize();
 	}
 
 	componentWillUnmount(){
 		window.removeEventListener("popstate", this.popState.bind(this));
+		window.removeEventListener("resize", this.onResize.bind(this));
 	}
 
 	componentDidUpdate(){
@@ -74,6 +80,12 @@ class Game extends React.Component {
 				break; 
 			}
 		}
+	}
+
+	onResize(){
+		const { width, height } = document.body.getBoundingClientRect()
+		const { policy, style } = scaling.calc(width, height);
+		this.setState({ layoutName: policy.name, scalingStyle: style });
 	}
 
 	importMap(){
@@ -324,132 +336,213 @@ class Game extends React.Component {
 		);
 	}
 
+	renderFunctionButtons1(){
+		return <React.Fragment>
+			<MaterialButton name="input" onClick={() => this.openModal("import")} />
+			<MaterialButton name="edit" onClick={() => this.openModal("edit")} />
+			<MaterialButton name="output" onClick={this.openExport.bind(this)} />
+		</React.Fragment>
+	}
+	renderFunctionButtons2(){
+		return <React.Fragment>
+			<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
+			<MaterialButton name="help" onClick={() => this.openModal("tutorial")} />
+			<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
+		</React.Fragment>
+	}
+	renderRefreshButton(){
+		return <MaterialLargeButton name="refresh" onClick={this.resetBoard.bind(this)} />
+	}
+	renderQuestion(){
+		return <div className="caption large">
+			{ ! this.state.isDragging &&
+				(this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？")
+			}
+		</div>
+	}
+	renderAnswerButton(){
+		return <React.Fragment>
+			<button className={"cover-title short2" +
+				(this.state.showAnswerAlways ? " disabled" : "") + 
+				(this.state.isDragging ? " inactive" : "") +
+				( ! this.state.isDragging && (
+					this.state.isAnswerOpen || this.state.showAnswerAlways
+				) ? " isOpen" : "")
+			}
+				onClick={this.toggleAnswer.bind(this)}
+			>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
+			<Covered value={this.state.solution.length}
+				size="short2"
+				large={true}
+				isOpen={! this.state.isDragging && (
+					this.state.isAnswerOpen || this.state.showAnswerAlways
+				)}
+				isActive={true}
+				onClick={this.toggleAnswer.bind(this)}
+			/>
+		</React.Fragment>
+	}
+
+	renderButtonPane(){
+		return <React.Fragment>
+			<div className="buttons">
+				{this.renderFunctionButtons1()}
+				<div className="flex-filler" />
+				{this.renderFunctionButtons2()}
+			</div>
+
+			<div className="buttons fullwidth">
+				{this.renderRefreshButton()}
+				<div className="flex-filler" />
+				{this.renderQuestion()}
+				<div className="flex-filler" />
+				{this.renderAnswerButton()}
+			</div>
+		</React.Fragment>;
+	}
+	renderButtonPaneNarrow(){
+		return <React.Fragment>
+			<div className="buttons">
+				{this.renderFunctionButtons1()}
+				<div className="flex-filler" />
+			</div>
+
+			<div className="buttons">
+				<div className="flex-filler" />
+				{this.renderFunctionButtons2()}
+			</div>
+
+			<div className="buttons fullwidth">
+				<div className="flex-filler" />
+				{this.renderQuestion()}
+				<div className="flex-filler" />
+			</div>
+
+			<div className="buttons fullwidth">
+				{this.renderRefreshButton()}
+				<div className="flex-filler" />
+				{this.renderAnswerButton()}
+			</div>
+		</React.Fragment>;
+	}
+
+	renderBoardWrapper(param){
+		return <div className="board-wrapper">
+			<Board 
+				width={param.width}
+				height={param.height}
+				scale={param.scale}
+				layoutName={this.state.layoutName}
+				robots={this.state.nextRobots || []} walls={this.state.nextWalls || []}
+				lines={[]}
+				showsNumber={false}
+				showsRoute={false}
+				isLoading={false}
+				showAnswer={null}
+				resetBoard={null}
+				setIsDragging={null}
+				isBack={true}
+			/>
+
+			<Board 
+				width={this.state.boardWidth}
+				height={this.state.boardHeight}
+				scale={this.state.boardScale}
+				layoutName={this.state.layoutName}
+				robots={this.state.robots} walls={this.state.walls}
+				goalCount={this.state.goalCount}
+				lines={this.state.solution.liness && 
+					this.state.solution.liness[this.state.lineNumber]}
+				showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
+				showsRoute={this.state.isDescriptionOpen}
+				isLoading={this.state.isLoading}
+				showAnswer={this.showNextAnswer.bind(this)}
+				useColorful={this.state.useColorful}
+				showsGoalName={this.state.showGoalName}
+				isDiagonal={this.state.isDiagonal}
+				resetBoard={this.resetBoard.bind(this)}
+				setIsDragging={this.setIsDragging.bind(this)}
+			/>
+		</div>
+	}
+
+	renderAnswerPane(){
+		return <div className="buttonset">
+			{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
+				<div className="buttons fullwidth">
+					<button className={"cover-title long" + 
+						(this.state.isDragging ? " inactive" : "")
+					}
+						onClick={this.toggleDescription.bind(this)}
+					>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+				</div>
+			}
+
+			{this.state.solution && this.state.solution.descriptions &&
+				this.state.solution.descriptions.concat(
+					this.state.isSolving ? ["解析しています…"] : []
+				).map(
+				(description, i) =>
+
+				<div className="buttons fullwidth" key={i}>
+					<Covered
+						title={this.state.showAnswerAlways ? "解答例" : "解説"}
+						value={rotateArrows(description, {
+							diagonal: !!this.state.isDiagonal,
+							transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
+						})}
+						size="fullwidth"
+						large={true}
+						isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
+						isActive={this.state.lineNumber == i}
+						onClick={
+							this.state.lineNumber == i ?
+							this.toggleDescription.bind(this) :
+							() => this.setState({ lineNumber: i })
+						}
+					/>
+				</div>
+			)}
+		</div>
+	}
+
 	render(){
 		let param = this.state.params[this.state.sizeName];
-		return <div>
-			<div className={"all scalable size" + this.state.boardSize + 
-				(this.state.isDiagonal ? " diagonal" : "") + 
-				(param.isRectangular ? " rectangular" : "")}>
-				<div className="buttons">
+		return <div className={[
+			"scalable",
+			(this.state.layoutName ? "layout-" + this.state.layoutName : "")
+		].join(" ").replaceAll(/ +/g, " ")}
+		style={this.state.scalingStyle}
+		>
+			<div
+				className={[
+					"all",
+					"size" + this.state.boardSize,
+					(this.state.isDiagonal ? "diagonal" : ""),
+					(param.isRectangular ? "rectangular" : ""),
+				].join(" ").replaceAll(/ +/g, " ")}
+			>
 
-					<MaterialButton name="input" onClick={() => this.openModal("import")} />
-					<MaterialButton name="edit" onClick={() => this.openModal("edit")} />
-					<MaterialButton name="output" onClick={this.openExport.bind(this)} />
-					<div className="flex-filler" />
-					<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
-					<MaterialButton name="help" onClick={() => this.openModal("tutorial")} />
-					<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
-
-				</div>
-
-				<div className="buttons fullwidth">
-
-					<MaterialLargeButton name="refresh" onClick={this.resetBoard.bind(this)} />
-					<div className="flex-filler" />
-
-					<div className="caption large">
-						{ ! this.state.isDragging &&
-							(this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？")
-						}
-					</div>
-
-					<div className="flex-filler" />
-
-					<button className={"cover-title short2" +
-						(this.state.showAnswerAlways ? " disabled" : "") + 
-						(this.state.isDragging ? " inactive" : "") +
-						( ! this.state.isDragging && (
-							this.state.isAnswerOpen || this.state.showAnswerAlways
-						) ? " isOpen" : "")
-					}
-						onClick={this.toggleAnswer.bind(this)}
-					>{this.state.showAnswerAlways ? "手数" : "答え"}</button>
-					<Covered value={this.state.solution.length}
-						size="short2"
-						large={true}
-						isOpen={! this.state.isDragging && (
-							this.state.isAnswerOpen || this.state.showAnswerAlways
-						)}
-						isActive={true}
-						onClick={this.toggleAnswer.bind(this)}
-					/>
-
-				</div>
-				
-				<div className="board-wrapper">
-					<Board 
-						width={param.width}
-						height={param.height}
-						scale={param.scale}
-						robots={this.state.nextRobots || []} walls={this.state.nextWalls || []}
-						lines={[]}
-						showsNumber={false}
-						showsRoute={false}
-						isLoading={false}
-						showAnswer={null}
-						resetBoard={null}
-						setIsDragging={null}
-						isBack={true}
-					/>
-
-					<Board 
-						width={this.state.boardWidth}
-						height={this.state.boardHeight}
-						scale={this.state.boardScale}
-						robots={this.state.robots} walls={this.state.walls}
-						goalCount={this.state.goalCount}
-						lines={this.state.solution.liness && 
-							this.state.solution.liness[this.state.lineNumber]}
-						showsNumber={this.state.isDescriptionOpen || this.state.showRobotName}
-						showsRoute={this.state.isDescriptionOpen}
-						isLoading={this.state.isLoading}
-						showAnswer={this.showNextAnswer.bind(this)}
-						useColorful={this.state.useColorful}
-						showsGoalName={this.state.showGoalName}
-						isDiagonal={this.state.isDiagonal}
-						resetBoard={this.resetBoard.bind(this)}
-						setIsDragging={this.setIsDragging.bind(this)}
-					/>
-				</div>
-
-
-				<div className="buttonset">
-
-					{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
-						<div className="buttons fullwidth">
-							<button className={"cover-title long" + 
-								(this.state.isDragging ? " inactive" : "")
-							}
-								onClick={this.toggleDescription.bind(this)}
-							>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+				{this.state.layoutName != "screen-landscape" && (
+					<React.Fragment>
+						<div className="main-pane">
+							{this.renderButtonPane()}
+							{this.renderBoardWrapper(param)}
+							{this.renderAnswerPane()}
 						</div>
-					}
-
-					{this.state.solution && this.state.solution.descriptions &&
-						this.state.solution.descriptions.concat(
-							this.state.isSolving ? ["解析しています…"] : []
-						).map(
-						(description, i) =>
-
-						<div className="buttons fullwidth" key={i}>
-							<Covered
-								title={this.state.showAnswerAlways ? "解答例" : "解説"}
-								value={this.state.isDiagonal ? rotateArrows(description) : description}
-								size="fullwidth"
-								large={true}
-								isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
-								isActive={this.state.lineNumber == i}
-								onClick={
-									this.state.lineNumber == i ?
-									this.toggleDescription.bind(this) :
-									() => this.setState({ lineNumber: i })
-								}
-							/>
+					</React.Fragment>
+				)}
+				{this.state.layoutName == "screen-landscape" && (
+					<React.Fragment>
+						<div className="side-pane">
+							{this.renderButtonPaneNarrow()}
+							{this.renderAnswerPane()}
 						</div>
-
-					)}
-
-				</div>
+						<div className="main-pane">
+							{this.renderBoardWrapper(param)}
+						</div>
+					</React.Fragment>
+				)}
 
 			</div>
 
@@ -676,7 +769,12 @@ let QrCode = function(props){
 	return <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`} alt={data} />
 }
 
-let rotateArrows = function(text){
-	return text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");
+let rotateArrows = function(text, param){
+	const toDiagonal = (text) => text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");
+	const toTransposed = (text) => (text).replaceAll("↖", "←").replaceAll("↗", "↓").replaceAll("↘", "→").replaceAll("↙", "↑");
+	if( ! param.diagonal && ! param.transposed) return text;
+	if(param.diagonal && ! param.transposed) return toDiagonal(text);
+	if( ! param.diagonal && param.transposed) return toTransposed(toDiagonal(text));
+	if(param.diagonal && param.transposed) return toDiagonal(toTransposed(toDiagonal(text)));
 }
 
