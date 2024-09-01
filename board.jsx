@@ -1,4 +1,3 @@
-"REQUIRE boarditems.jsx";
 "REQUIRE boardcanvas.jsx";
 
 let Board = function(props){
@@ -194,7 +193,7 @@ let Board = function(props){
 			: [0, 1, 2, 3, 4].map(i => i <= props.goalCount ? "#e054" : "#ab48")
 		),
 	};
-	
+
 	return <div
 		className={[
 			"board",
