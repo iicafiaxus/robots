@@ -22,11 +22,11 @@ const scaling = {
 	],
 
 	calc: function(width, height) {
-		const innerWidth = width - this.padding * 2;
-		const innerHeight = height - this.padding * 2;
-		const xs = this.policies.map(policy => (
-			{ policy, scale: Math.min(innerWidth / policy.width, innerHeight / policy.height) }
-		));
+		const xs = this.policies.map(policy => {
+			const widthScale = width / (policy.width + this.padding * 2);
+			const heightScale = height / (policy.height + this.padding * 2);
+			return { policy, scale: Math.min(widthScale, heightScale)}
+		});
 		xs.sort((a, b) => (b.scale - a.scale));
 		const { policy, scale } = xs[0];
 		const style = {
@@ -35,7 +35,6 @@ const scaling = {
 			width: `${innerWidth / scale}px`,
 			height: `${innerHeight / scale}px`,
 			transformOrigin: `left top`,
-			padding: `${this.padding / scale}px`,
 		};
 		return { policy, style };
 	},
