@@ -28,6 +28,7 @@ const BoardCanvas = function(props){
 	const p = (i) => 3 + i * cellSize + (i - 1) * 1;
 		// p(i) = i 番目のセルの左上の座標（ボーダーではなく中身の左上）
 
+	// 斜線部
 	const shadePatternCanvas = (() => {
 		const canvas = new OffscreenCanvas(lineWidth * 16, lineWidth * 16);
 		const context = canvas.getContext("2d");
@@ -50,6 +51,11 @@ const BoardCanvas = function(props){
 		const descent = metrics.actualBoundingBoxDescent;
 		context.fillText(text, x - width / 2, y + ascent / 2);
 	}
+	const drawName = ([x, y], size, color, text) => {
+		context.fillStyle = color;
+		context.font = `${size}px sans-serif`;
+		fillTextInCenter(x, y, text);
+	};
 
 	React.useEffect(() => {
 		if(!ref || !ref.current) return;
@@ -61,28 +67,44 @@ const BoardCanvas = function(props){
 
 		context.lineCap = "round";
 
+	}, [context]);
+
+	React.useEffect(() => {
+		if(!context) return;
+
 		// 背景
-		context.fillStyle = colors.board;
-		context.fillRect(0, 0, canvasWidth, canvasHeight);
+		const fillBackground = ([x0, y0], [x1, y1]) => {
+			context.fillStyle = colors.board;
+			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		}
+		fillBackground([0, 0], [canvasWidth, canvasHeight]);
 
 		// 島の塗り込み
+		const fillIsland = ([x0, y0], [x1, y1]) => {
+			context.fillStyle = context.createPattern(shadePatternCanvas, "repeat");
+			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		} 
 		for (let wall of walls) if (wall.isShade){
 			const [x0, y0] = transpose(
 				p(wall.x) - lineWidth * 1,
 				p(wall.y) - lineWidth * 1
 			);
-			context.fillStyle = context.createPattern(shadePatternCanvas, "repeat");
-			context.fillRect(x0, y0, cellSize, cellSize);
+			const [x1, y1] = [x0 + cellSize, y0 + cellSize];
+			fillIsland([x0, y0], [x1, y1]);
 		}
 
 		// ゴール
+		const fillGoal = ([x0, y0], [x1, y1], color) => {
+			context.fillStyle = color;
+			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		} 
 		for (let wall of walls) if (wall.isGoal){
 			const [x0, y0] = transpose(
 				p(wall.x) - lineWidth * 1,
 				p(wall.y) - lineWidth * 1
 			);
-			context.fillStyle = colors.goal[wall.goalColor];
-			context.fillRect(x0, y0, cellSize + lineWidth * 1, cellSize + lineWidth * 1);
+			const [x1, y1] = [x0 + cellSize + lineWidth * 1, y0 + cellSize + lineWidth * 1];
+			fillGoal([x0, y0], [x1, y1], colors.goal[wall.goalColor]);
 		}
 
 		// ゴール名
@@ -91,54 +113,64 @@ const BoardCanvas = function(props){
 				p(wall.x) + cellSize / 2,
 				p(wall.y) + cellSize / 2
 			);
-			context.fillStyle = colors.goalText;
-			context.font = `${cellSize * 0.35}px sans-serif`;
-			fillTextInCenter(x, y, wall.goalName);
+			drawName([x, y], cellSize * 0.35, colors.goalText, wall.goalName);
 		}
 
 		// セルの線
-		context.strokeStyle = colors.cell;
-		context.lineWidth = lineWidth * 1;
-		context.beginPath();
+		const drawGridLine = ([x0, y0], [x1, y1]) => {
+			context.strokeStyle = colors.cell;
+			context.lineWidth = lineWidth * 1;
+			context.beginPath();
+			context.moveTo(x0, y0);
+			context.lineTo(x1, y1);
+			context.stroke();
+		}
 		const [iCount, jCount] = transpose(width, height);
 		for (let i = 1; i < iCount; i ++) {
 			const [x0, y0] = [p(0) - lineWidth * 1, p(i) - lineWidth * 1];
-			context.moveTo(x0, y0);
 			const [x1, y1] = [p(jCount) - lineWidth * 1, p(i) - lineWidth * 1];
-			context.lineTo(x1, y1);
+			drawGridLine([x0, y0], [x1, y1]);
 		}
 		for (let j = 1; j < jCount; j ++) {
 			const [x0, y0] = [p(j) - lineWidth * 1, p(0) - lineWidth * 1];
-			context.moveTo(x0, y0);
 			const [x1, y1] = [p(j) - lineWidth * 1,p(iCount) - lineWidth * 1];
-			context.lineTo(x1, y1);
+			drawGridLine([x0, y0], [x1, y1]);
 		}
-		context.stroke();
 
 		// 島の線
+		const drawIsland = ([x0, y0], [x1, y1]) => {
+			context.strokeStyle = colors.cellShadeBorder;
+			context.lineWidth = lineWidth * 1;
+			context.strokeRect(x0, y0, x1 - x0, y1 - y0);
+		};
 		for (let wall of walls) if (wall.isShade){
 			const [x0, y0] = transpose(
 				p(wall.x) - lineWidth * 1,
 				p(wall.y) - lineWidth * 1
 			);
-			context.strokeStyle = colors.cellShadeBorder;
-			context.lineWidth = lineWidth * 1;
-			context.strokeRect(x0, y0, cellSize + lineWidth * 1, cellSize + lineWidth * 1);
+			const [x1, y1] = [x0 + cellSize + lineWidth * 1, y0 + cellSize + lineWidth * 1];
+			drawIsland([x0, y0], [x1, y1]);
 		}
 
 		// 外周
-		context.strokeStyle = colors.wall;
-		context.lineWidth = lineWidth * 4;
-		context.strokeRect(
-			lineWidth * 2, lineWidth * 2, canvasWidth - lineWidth * 4 + 1, canvasHeight - lineWidth * 4 + 1);
+		const drawOuterWall = ([x0, y0], [x1, y1]) => {
+			context.strokeStyle = colors.wall;
+			context.lineWidth = lineWidth * 4;
+			context.strokeRect(x0, y0, x1 - x0, y1 - y0);
+		}
+		drawOuterWall(
+			[lineWidth * 2, lineWidth * 2], 
+			[canvasWidth - lineWidth * 2 + 1, canvasHeight - lineWidth * 2 + 1]
+		);
 
 		// 壁
-		context.strokeStyle = colors.wall;
-		context.lineWidth = lineWidth * 3;
-		context.beginPath();
-		const makeWall = ([x0, y0], [x1, y1]) => {
+		const drawWall = ([x0, y0], [x1, y1]) => {
+			context.strokeStyle = colors.wall;
+			context.lineWidth = lineWidth * 3;
+			context.beginPath();
 			context.moveTo(x0, y0);
 			context.lineTo(x1, y1);
+			context.stroke();
 		};
 		for (let wall of walls) {
 			const [x0, y0] = transpose(
@@ -150,28 +182,26 @@ const BoardCanvas = function(props){
 				y0 + cellSize + lineWidth * 1
 			];
 			const [p0, [p1, p2], p3] = [[x0, y0], transpose([x0, y1], [x1, y0]), [x1, y1]];
-			if (wall.type == 1 || wall.type == 2) makeWall(p0, p1);
-			if (wall.type == 3 || wall.type == 4) makeWall(p2, p3);
-			if (wall.type == 1 || wall.type == 3) makeWall(p0, p2);
-			if (wall.type == 2 || wall.type == 4) makeWall(p1, p3);
+			if (wall.type == 1 || wall.type == 2) drawWall(p0, p1);
+			if (wall.type == 3 || wall.type == 4) drawWall(p2, p3);
+			if (wall.type == 1 || wall.type == 3) drawWall(p0, p2);
+			if (wall.type == 2 || wall.type == 4) drawWall(p1, p3);
 		}
-		context.stroke();
 
 		// ロボット
+		const drawRobot = ([x, y], r, color) => {
+			context.fillStyle = color;
+			context.beginPath();
+			context.arc(x, y, r, 0, Math.PI * 2);
+			context.fill();
+		};
 		for (let robot of robots){
 			const [x, y] = transpose(
 				p(robot.x) + cellSize / 2 + lineOffset * (showsRoute ? robot.dx : 0),
 				p(robot.y) + cellSize / 2 + lineOffset * (showsRoute ? robot.dy : 0)
 			);
-			
-			context.fillStyle = colors.robot[robot.key];
-			context.beginPath();
-			context.arc(x, y, cellSize * 0.35, 0, Math.PI * 2);
-			context.fill();
-
-			context.fillStyle = colors.robotText;
-			context.font = `${cellSize * 0.5}px sans-serif`;
-			fillTextInCenter(x, y, robot.name);
+			drawRobot([x, y], cellSize * 0.35, colors.robot[robot.key]);
+			drawName([x, y], cellSize * 0.5, colors.robotText, robot.name);
 		}
 
 		// 小ロボット
@@ -180,14 +210,23 @@ const BoardCanvas = function(props){
 				p(robot.x) + cellSize / 2 + lineOffset * robot.dx,
 				p(robot.y) + cellSize / 2 + lineOffset * robot.dy
 			);
-
-			context.fillStyle = colors.minirobot[robot.key];
-			context.beginPath();
-			context.arc(x, y, cellSize * 0.1, 0, Math.PI * 2);
-			context.fill();
+			drawRobot([x, y], cellSize * 0.1, colors.minirobot[robot.key]);
 		}
 
 		// ライン
+		const drawRoute = (lines, color) => {
+			context.strokeStyle = color;
+			context.lineWidth = lineWidth * 3;
+			context.beginPath();
+			const [x0, y0, x1, y1] = lines[0];
+			context.moveTo(x0, y0);
+			context.lineTo(x1, y1);
+			for (let [x0, y0, x1, y1] of lines.slice(1)){
+				context.lineTo(x0, y0);
+				context.lineTo(x1, y1);
+			}
+			context.stroke();
+		}
 		const calcLine = (line) => {
 			const [dsx, dsy] = [
 				isNaN(line.dx) ? line.dsx || 0 : line.dx,
@@ -211,18 +250,8 @@ const BoardCanvas = function(props){
 		}
 		if (showsRoute) for (let route of routes){
 			if ( ! route.lines.length) continue;
-			context.strokeStyle = colors.line[route.key];
-			context.lineWidth = lineWidth * 3;
-			context.beginPath();
-			const [x0, y0, x1, y1] = calcLine(route.lines[0]);
-			context.moveTo(x0, y0);
-			context.lineTo(x1, y1);
-			for (let line of route.lines.slice(1)){
-				const [x0, y0, x1, y1] = calcLine(line);
-				context.lineTo(x0, y0);
-				context.lineTo(x1, y1);
-			}
-			context.stroke();
+			const lines = route.lines.map(line => calcLine(line));
+			drawRoute(lines, colors.line[route.key]);
 		}
 
 	});
