@@ -57,6 +57,42 @@ const BoardCanvas = function(props){
 		fillTextInCenter(x, y, text);
 	};
 
+	const drawBox = ([x0, y0, z0 = 0], [x1, y1, z1 = 0], color, lineWidth) => {
+		context.strokeStyle = color;
+		context.lineWidth = lineWidth;
+		context.strokeRect(x0, y0, x1 - x0, y1 - y0);
+	};
+	const fillBox = ([x0, y0, z0 = 0], [x1, y1, z1 = 0], color) => {
+		context.fillStyle = color;
+		context.fillRect(x0, y0, x1 - x0, y1 - y0);
+	};
+	const drawLine = ([x0, y0, z0 = 0], [x1, y1, z1 = 0], color, lineWidth) => {
+		context.strokeStyle = color;
+		context.lineWidth = lineWidth;
+		context.beginPath();
+		context.moveTo(x0, y0);
+		context.lineTo(x1, y1);
+		context.stroke();
+	};
+	const drawLines = (points, color, lineWidth) => {
+		if(points.length == 0) return;
+		context.strokeStyle = color;
+		context.lineWidth = lineWidth;
+		context.beginPath();
+		const [x0, y0, z0 = 0] = points[0];
+		context.moveTo(x0, y0);
+		for (let [x1, y1, z1 = 0] of points.slice(1)){
+			context.lineTo(x1, y1);
+		}
+		context.stroke();
+	}
+	const fillCircle = ([x, y, z = 0], radius, color) => {
+		context.fillStyle = color;
+		context.beginPath();
+		context.arc(x, y, radius, 0, Math.PI * 2);
+		context.fill();
+	}
+
 	React.useEffect(() => {
 		if(!ref || !ref.current) return;
 		if(!context) setContext(ref.current.getContext("2d"));
@@ -73,16 +109,14 @@ const BoardCanvas = function(props){
 		if(!context) return;
 
 		// 背景
-		const fillBackground = ([x0, y0], [x1, y1]) => {
-			context.fillStyle = colors.board;
-			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		const fillBackground = (p0, p1) => {
+			fillBox(p0, p1, colors.board);
 		}
 		fillBackground([0, 0], [canvasWidth, canvasHeight]);
 
 		// 島の塗り込み
-		const fillIsland = ([x0, y0], [x1, y1]) => {
-			context.fillStyle = context.createPattern(shadePatternCanvas, "repeat");
-			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		const fillIsland = (p0, p1) => {
+			fillBox(p0, p1, context.createPattern(shadePatternCanvas, "repeat"));
 		} 
 		for (let wall of walls) if (wall.isShade){
 			const [x0, y0] = transpose(
@@ -94,9 +128,8 @@ const BoardCanvas = function(props){
 		}
 
 		// ゴール
-		const fillGoal = ([x0, y0], [x1, y1], color) => {
-			context.fillStyle = color;
-			context.fillRect(x0, y0, x1 - x0, y1 - y0);
+		const fillGoal = (p0, p1, color) => {
+			fillBox(p0, p1, color);
 		} 
 		for (let wall of walls) if (wall.isGoal){
 			const [x0, y0] = transpose(
@@ -117,13 +150,8 @@ const BoardCanvas = function(props){
 		}
 
 		// セルの線
-		const drawGridLine = ([x0, y0], [x1, y1]) => {
-			context.strokeStyle = colors.cell;
-			context.lineWidth = lineWidth * 1;
-			context.beginPath();
-			context.moveTo(x0, y0);
-			context.lineTo(x1, y1);
-			context.stroke();
+		const drawGridLine = (p0, p1) => {
+			drawLine(p0, p1, colors.cell, lineWidth * 1);
 		}
 		const [iCount, jCount] = transpose(width, height);
 		for (let i = 1; i < iCount; i ++) {
@@ -138,10 +166,8 @@ const BoardCanvas = function(props){
 		}
 
 		// 島の線
-		const drawIsland = ([x0, y0], [x1, y1]) => {
-			context.strokeStyle = colors.cellShadeBorder;
-			context.lineWidth = lineWidth * 1;
-			context.strokeRect(x0, y0, x1 - x0, y1 - y0);
+		const drawIsland = (p0, p1) => {
+			drawBox(p0, p1, colors.cellShadeBorder, lineWidth * 1);
 		};
 		for (let wall of walls) if (wall.isShade){
 			const [x0, y0] = transpose(
@@ -153,10 +179,8 @@ const BoardCanvas = function(props){
 		}
 
 		// 外周
-		const drawOuterWall = ([x0, y0], [x1, y1]) => {
-			context.strokeStyle = colors.wall;
-			context.lineWidth = lineWidth * 4;
-			context.strokeRect(x0, y0, x1 - x0, y1 - y0);
+		const drawOuterWall = (p0, p1) => {
+			drawBox(p0, p1, colors.wall, lineWidth * 4);
 		}
 		drawOuterWall(
 			[lineWidth * 2, lineWidth * 2], 
@@ -164,13 +188,8 @@ const BoardCanvas = function(props){
 		);
 
 		// 壁
-		const drawWall = ([x0, y0], [x1, y1]) => {
-			context.strokeStyle = colors.wall;
-			context.lineWidth = lineWidth * 3;
-			context.beginPath();
-			context.moveTo(x0, y0);
-			context.lineTo(x1, y1);
-			context.stroke();
+		const drawWall = (p0, p1) => {
+			drawLine(p0, p1, colors.wall, lineWidth * 3);
 		};
 		for (let wall of walls) {
 			const [x0, y0] = transpose(
@@ -190,10 +209,7 @@ const BoardCanvas = function(props){
 
 		// ロボット
 		const drawRobot = ([x, y], r, color) => {
-			context.fillStyle = color;
-			context.beginPath();
-			context.arc(x, y, r, 0, Math.PI * 2);
-			context.fill();
+			fillCircle([x, y], r, color);
 		};
 		for (let robot of robots){
 			const [x, y] = transpose(
@@ -215,17 +231,12 @@ const BoardCanvas = function(props){
 
 		// ライン
 		const drawRoute = (lines, color) => {
-			context.strokeStyle = color;
-			context.lineWidth = lineWidth * 3;
-			context.beginPath();
-			const [x0, y0, x1, y1] = lines[0];
-			context.moveTo(x0, y0);
-			context.lineTo(x1, y1);
-			for (let [x0, y0, x1, y1] of lines.slice(1)){
-				context.lineTo(x0, y0);
-				context.lineTo(x1, y1);
+			const points = [];
+			for (let [x0, y0, x1, y1] of lines){
+				points.push([x0, y0]);
+				points.push([x1, y1]);
 			}
-			context.stroke();
+			drawLines(points, color, lineWidth * 3);
 		}
 		const calcLine = (line) => {
 			const [dsx, dsy] = [
