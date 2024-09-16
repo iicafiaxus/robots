@@ -115,11 +115,6 @@ const BoardCanvas = function(props){
 
 		context.lineCap = "round";
 
-	}, [context]);
-
-	React.useEffect(() => {
-		if(!context) return;
-
 		// 背景
 		context.fillStyle = colors.board;
 		context.fillRect(0, 0, canvasWidth, canvasHeight);
