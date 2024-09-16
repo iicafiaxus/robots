@@ -38,6 +38,9 @@ class Game extends React.Component {
 		let isDiagonal = load("isDiagonal") == "true";
 		save("isDiagonal", isDiagonal);
 
+		let isBoard3d = load("isBoard3d") == "true";
+		save("isBoard3d", isBoard3d);
+
 		let goalCount = +load("goalCount") || 1;
 		save("goalCount", goalCount);
 
@@ -53,6 +56,7 @@ class Game extends React.Component {
 			useColorful,
 			isDiagonal,
 			goalCount,
+			isBoard3d,
 			layoutName: "",
 			scalingStyle: {},
 		};
@@ -441,6 +445,7 @@ class Game extends React.Component {
 				resetBoard={null}
 				setIsDragging={null}
 				isBack={true}
+				is3d={this.state.isBoard3d}
 			/>
 
 			<Board 
@@ -461,6 +466,7 @@ class Game extends React.Component {
 				isDiagonal={this.state.isDiagonal}
 				resetBoard={this.resetBoard.bind(this)}
 				setIsDragging={this.setIsDragging.bind(this)}
+				is3d={this.state.isBoard3d}
 			/>
 		</div>
 	}
@@ -633,6 +639,15 @@ class Game extends React.Component {
 								name: "isDiagonal",
 								items: [
 									{ value: true, caption: "盤面を45度回転する" },
+									{ value: false, caption: "しない" },
+								]
+							})}
+
+							{this.renderSettingRadios({
+								title: "",
+								name: "isBoard3d",
+								items: [
+									{ value: true, caption: "テクスチャで表示 (実験的)" },
 									{ value: false, caption: "しない" },
 								]
 							})}

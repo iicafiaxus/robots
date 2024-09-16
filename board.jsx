@@ -1,5 +1,6 @@
 "REQUIRE boardutil.js";
 "REQUIRE boardcanvas.jsx";
+"REQUIRE boardcanvas3d.jsx";
 
 let Board = function(props){
 	let height = props.height || 16
@@ -115,6 +116,20 @@ let Board = function(props){
 		),
 	};
 
+	const orientation = (
+		["board-landscape", "screen-landscape"].includes(props.layoutName)
+		? "transposed"
+		: "default"
+	);
+	const canvasProps = {
+		width, height, colors,
+		walls: props.walls,
+		robots, minirobots,
+		routes: lineRoutes.map((x, i) => ({ key: i + 1, lines: x })),
+		showsRoute: props.showsRoute,
+		orientation
+	};
+
 	return <div
 		className={[
 			"board",
@@ -133,20 +148,10 @@ let Board = function(props){
 		onTouchMove={movePress}
 	>
 
-		<BoardCanvas
-			width={width} height={height}
-			colors={colors}
-			walls={props.walls}
-			robots={robots}
-			minirobots={minirobots}
-			routes={lineRoutes.map((x, i) => ({ key: i + 1, lines: x }))}
-			showsRoute={props.showsRoute}
-			orientation={
-				["board-landscape", "screen-landscape"].includes(props.layoutName)
-				? "transposed"
-				: "default"
-			}
-		/>
+		{props.is3d
+			? <BoardCanvas3d {...canvasProps} />
+			: <BoardCanvas {...canvasProps} />
+		}
 
 		{ props.isLoading ? <div className="loading-message"></div> : null }
 		{ isDiscarding ? <div className="discarding discarding-back"></div> : null }
