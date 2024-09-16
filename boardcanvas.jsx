@@ -19,8 +19,12 @@ const BoardCanvas = function(props){
 		? (x, y) => [x, y]
 		: (x, y) => [y, x]
 	;
+	const rotate = orientation == "transposed"
+		? (x, y) => [canvasWidth - x, y]
+		: (x, y) => [y, x]
+	;
 	const project = ([x, y, z = 0]) => {
-		const [u, v] = transpose(x, y);
+		const [u, v] = rotate(x, y);
 		return [u, v];
 	}
 

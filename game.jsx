@@ -771,7 +771,7 @@ let QrCode = function(props){
 
 let rotateArrows = function(text, param){
 	const toDiagonal = (text) => text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");
-	const toTransposed = (text) => (text).replaceAll("↖", "←").replaceAll("↗", "↓").replaceAll("↘", "→").replaceAll("↙", "↑");
+	const toTransposed = (text) => (text).replaceAll("↖", "→").replaceAll("↗", "↓").replaceAll("↘", "←").replaceAll("↙", "↑");
 	if( ! param.diagonal && ! param.transposed) return text;
 	if(param.diagonal && ! param.transposed) return toDiagonal(text);
 	if( ! param.diagonal && param.transposed) return toTransposed(toDiagonal(text));
