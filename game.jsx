@@ -711,6 +711,7 @@ class Game extends React.Component {
 									robots={this.state.robots}
 									walls={this.state.walls}
 									update={(cells) => this.updateEditResult(cells)}
+									layoutName={this.state.layoutName}
 								/>
 							</div>
 							<div className="dialog-line buttons">

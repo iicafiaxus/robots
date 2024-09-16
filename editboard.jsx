@@ -113,24 +113,36 @@ let EditBoard = function(props){
 	}, [counter]);
 
 	let cellSize = Math.min(24 * 16 / props.height, 28 * 16 / props.width);
+
+	let orientation = (
+		["board-landscape", "screen-landscape"].includes(props.layoutName)
+		? "transposed"
+		: "default"
+	);
+	let [xCount, yCount] = (orientation == "transposed") ? [props.width, props.height] : [props.height, props.width]
+
 	return <div className="board-set">
 		<div
 			className="board editboard"
 			style={{
-				gridTemplateRows: `repeat(${props.height}, ${cellSize + "px"})`,
-				gridTemplateColumns: `repeat(${props.width}, ${cellSize + "px"})`,
+				gridTemplateRows: `repeat(${xCount}, ${cellSize + "px"})`,
+				gridTemplateColumns: `repeat(${yCount}, ${cellSize + "px"})`,
 				lineHeight: `${(cellSize - 6) + "px"}`,
 			}}
 		>
-			{ cells.map(cell =>
-				<EditCell
-					key={cell.key} x={cell.x} y={cell.y}
-					wallType={cell.wallType} isGoal={cell.isGoal} isShade={cell.isShade} goalColor={cell.goalColor}
+			{cells.map(cell => {
+				let [x, y] = (orientation == "transposed") ? [cell.y, yCount - 1 - cell.x] : [cell.x, cell.y];
+				let wallType = (orientation == "transposed")
+					? [0, 2, 4, 1, 3][cell.wallType]
+					: [0, 1, 2, 3, 4][cell.wallType]
+				return <EditCell
+					key={cell.key} x={x} y={y}
+					wallType={wallType} isGoal={cell.isGoal} isShade={cell.isShade} goalColor={cell.goalColor}
 					robot={cell.robotName}
 					isSelected={selectedCell && cell.key === selectedCell.key}
 					onClick={() => handleCellClick(cell)}
-				/>
-			)}
+				/>;
+			})}
 		</div>
 	</div>
 }
