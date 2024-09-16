@@ -75,7 +75,6 @@ class Game extends React.Component {
 		if(this.state.isModalOpen && document.querySelectorAll(".modal-front *:focus").length == 0){
 			for(let x of document.querySelectorAll(".modal-front *")) if(x.tabIndex >= 0) {
 				x.focus();
-				console.log(x.tagName);
 				if(x.tagName.toLowerCase() == "textarea") x.select();
 				break; 
 			}
