@@ -57,6 +57,32 @@ let mapMaker = new function(){
 			}
 		}
 
+		let isGoodWalls = function(walls){
+			let cnt00 = 0, cnt01 = 0, cnt02 = 0, cnt10 = 0, cnt11 = 0, cnt12 = 0, cnt20 = 0, cnt21 = 0, cnt22 = 0;
+			for(let wall of walls){
+				let x0 = wall.x < height / 2;
+				let x1 = wall.x >= height / 4 && wall.x < height * 3 / 4;
+				let x2 = wall.x >= height / 2;
+				let y0 = wall.y < width / 2;
+				let y1 = wall.y >= width / 4 && wall.y < width * 3 / 4;
+				let y2 = wall.y >= width / 2;
+				if(x0 && y0) cnt00 += 1;
+				if(x0 && y1) cnt01 += 1;
+				if(x0 && y1) cnt02 += 1;
+				if(x1 && y0) cnt10 += 1;
+				if(x1 && y1) cnt11 += 1;
+				if(x1 && y1) cnt12 += 1;
+				if(x2 && y0) cnt20 += 1;
+				if(x2 && y1) cnt21 += 1;
+				if(x2 && y1) cnt22 += 1;
+			}
+			let max = Math.max(cnt00, cnt01, cnt02, cnt10, cnt11, cnt12, cnt20, cnt21, cnt22);
+			let min = Math.min(cnt00, cnt01, cnt02, cnt10, cnt11, cnt12, cnt20, cnt21, cnt22);
+			if(max - min <= 2) return true;
+			else return false;
+		}
+		if( ! isGoodWalls(walls)) return this.makeMapInternal(param, totalCount + 1);
+
 		let robots = [];		
 		let isGoodRobot = function(x, y){
 			for(let wall of walls) if(x == wall.x && y == wall.y && ++cnt < cntLimit) return false;
