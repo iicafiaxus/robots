@@ -54,7 +54,9 @@ let encoder = new function(){
 			lines.push("q" + qValue);
 		}
 
-		let goalWalls = param.walls.filter(w => w.isGoal);
+		let goalWalls = param.walls
+			.filter(w => w.isGoal)
+			.sort((a, b) => a.goalColor - b.goalColor);
 		let gValue = goalWalls.map(encodePosition).join("");
 		lines.push("g" + gValue);
 
