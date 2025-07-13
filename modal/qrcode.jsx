@@ -32,5 +32,10 @@ const QrCodeModal = (props) => {
 let QrCode = function(props){
 	let size = props.size || 100;
 	let data = encodeURI(props.data) || location.href;
-	return <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`} alt={data} />
+	return <img
+		src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`}
+		width={size}
+		height={size}
+		alt={data}
+	/>;
 }
