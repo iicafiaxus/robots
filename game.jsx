@@ -323,6 +323,7 @@ class Game extends React.Component {
 	}
 
 	openModal(name){
+		history.pushState({}, "", location.href);
 		this.setState({ isModalOpen : true, modalName : name });
 		for(let x of document.querySelectorAll("*")) if(x.tabIndex >= 0) x.tabIndex = -2;
 		for(let x of document.querySelectorAll(".modal-front *")) if(x.tabIndex == -2) x.tabIndex = 0;
@@ -330,6 +331,7 @@ class Game extends React.Component {
 	closeModal(){
 		for(let x of document.querySelectorAll("*")) if(x.tabIndex == -2) x.tabIndex = 0;
 		this.setState({ isModalOpen: false });
+		history.back();
 	}
 
 	popState(e){
