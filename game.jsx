@@ -7,6 +7,12 @@
 "REQUIRE robotencode.js";
 "REQUIRE util/storage.js";
 "REQUIRE scaling.js";
+"REQUIRE modal/qrcode.jsx";
+"REQUIRE modal/tutorial.jsx";
+"REQUIRE modal/import.jsx";
+"REQUIRE modal/export.jsx";
+"REQUIRE modal/alert.jsx";
+"REQUIRE modal/edit.jsx";
 
 class Game extends React.Component {
 
@@ -583,7 +589,6 @@ class Game extends React.Component {
 
 			{this.state.isModalOpen	&&
 				<div className="modal-front">
-
 					{this.state.modalName == "settings" &&
 						<div className="modal dialog setting-section">
 
@@ -680,131 +685,18 @@ class Game extends React.Component {
 						</div>
 					}
 
-					{this.state.modalName == "qrcode" &&
-						<div className="modal dialog">
-							<div className="dialog-title">他のデバイスに共有</div>
-							<div className="dialog-line">
-								<input type="text" value={this.createShareUrl()} readOnly={true} />
-								{ !!navigator.share &&
-									<button className="material" onClick={this.sharePage.bind(this)}>
-										<span className="material-icons">share</span>
-									</button>
-								}
-							</div>
-							{this.renderSettingRadios({
-								title: "",
-								name: "shareBoard",
-								items: [
-									{ value: false, caption: "アプリを共有" },
-									{ value: true, caption: "盤面を共有" },
-								]
-							})}
-							<div className="dialog-line image-view qrcode">
-								<QrCode size="200" data={this.createShareUrl()} />
-							</div>										
-						</div>
-					}
 
-					{this.state.modalName == "tutorial" &&
-						<div className="modal dialog">
-							<div className="dialog-title">タッチ操作の説明</div>
-							<div className="dialog-line-caption">盤面をタップ → 解答・解説を表示</div>
-							<div className="dialog-line image-view">
-								<img src="images/tutorial-answer.png" />
-								<span className="overlay">タップ</span>
-							</div>
-							<div className="dialog-line-caption">下にスワイプ → 現在の問題を破棄して次へ</div>
-							<div className="dialog-line image-view">
-								<img src="images/tutorial-discard.png" />
-								<span className="overlay">スワイプ (モバイルのみ)</span>
-							</div>
+					{this.state.modalName == "qrcode" && <QrCodeModal game={this} />}
 
-							{this.renderSettingRadios({
-								name: "useTutorial",
-								prefix: "この操作説明を起動時に表示",
-								items: [
-									{ value: true, caption: "する" },
-									{ value: false, caption: "しない" }
-								]
-							})}
-						</div>
-					}
+					{this.state.modalName == "tutorial" && <TutorialModal game={this} />}
 
-					{this.state.modalName == "import" &&
-						<div className="modal dialog">
-							<div className="dialog-title">インポート</div>
-							<div className="dialog-line-caption">インポートする盤面コード</div>
-							<div className="dialog-line">
-								<textarea
-									className="code"
-									onChange={(e) => this.setState({ importingCode: e.target.value})}
-									value={this.state.importingCode}
-								/>
-							</div>
-							<div className="buttons setting-item">
-								<button onClick={() => this.closeModal() + this.importMap()}>
-									コードを盤面に反映する
-								</button>
-							</div>
-						</div>
-					}
+					{this.state.modalName == "import" && <ImportModal game={this} />}
 
-					{this.state.modalName == "edit" &&
-						<div className="modal dialog">
-							<div className="dialog-title">盤面編集</div>
-							<div className="dialog-line">
-								<EditBoard
-									width={this.state.boardWidth}
-									height={this.state.boardHeight}
-									robots={this.state.robots}
-									walls={this.state.walls}
-									update={(cells) => this.updateEditResult(cells)}
-									layoutName={this.state.layoutName}
-								/>
-							</div>
-							<div className="dialog-line buttons">
-								<button onClick={() => this.closeModal() + this.importEdit()}>
-									盤面に反映する
-								</button>
-							</div>
-						</div>
-					}
+					{this.state.modalName == "edit" && <EditModal game={this} />}
 
-					{this.state.modalName == "export" &&
-						<div className="modal dialog">
-							<div className="dialog-title">エクスポート</div>
-							<div className="dialog-line-caption">現在の盤面コード</div>
-							<div className="dialog-line">
-								<textarea
-									className="code"
-									readOnly={true}
-									value={this.state.exportingCode}
-								/>
-							</div>
-							<div className="dialog-line-caption">外部ツール連携用コード{this.state.goalCount > 1 ? " (複数ゴールは非対応です)" : ""}</div>
-							<div className="dialog-line">
-								<textarea
-									className="code"
-									readOnly={true}
-									value={this.state.foreignCode}
-								/>
-							</div>
-						</div>
-					}
+					{this.state.modalName == "export" && <ExportModal game={this} />}
 
-					{this.state.modalName == "alert" &&
-						<div className="modal dialog">
-							{this.state.alertTitle && <div className="dialog-title">{this.state.alertTitle}</div>}
-							<div className="dialog-line">
-								{this.state.alertMessage}
-							</div>
-							<div className="buttons setting-item">
-								<button onClick={() => this.closeAlert()}>
-									OK
-								</button>
-							</div>
-						</div>
-					}
+					{this.state.modalName == "alert" && <AlertModal game={this} />}
 
 				</div>
 			}
@@ -812,11 +704,7 @@ class Game extends React.Component {
 	}
 }
 
-let QrCode = function(props){
-	let size = props.size || 100;
-	let data = encodeURI(props.data) || location.href;
-	return <img src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`} alt={data} />
-}
+
 
 let rotateArrows = function(text, param){
 	const toDiagonal = (text) => text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");

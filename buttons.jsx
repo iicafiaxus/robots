@@ -42,7 +42,7 @@ let SettingRadios = function(props){
 					<input type="radio" name={props.name} value={item.value}
 						checked={props.value === item.value}
 						onChange={() => props.setValue(item.value)} />
-					<span>{item.caption}</span>
+					<span>{item.label}</span>
 				</label>
 				)}
 			</div>
