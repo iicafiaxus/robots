@@ -598,11 +598,11 @@ class Game extends React.Component {
 								title: "",
 								name: "sizeName",
 								items: [
-									{ value: "small", caption: "小 (8×8)" },
-									{ value: "medium", caption: "中 (8×12)" },
-									{ value: "large", caption: "大 (10×14)" },
-									{ value: "large2", caption: "特大 (12×16)" },
-									{ value: "large3", caption: "フルサイズ (16×16)" },
+									{ value: "small", label: "小 (8×8)" },
+									{ value: "medium", label: "中 (8×12)" },
+									{ value: "large", label: "大 (10×14)" },
+									{ value: "large2", label: "特大 (12×16)" },
+									{ value: "large3", label: "フルサイズ (16×16)" },
 								]
 							})}
 
@@ -612,9 +612,9 @@ class Game extends React.Component {
 								title: "",
 								name: "goalCount",
 								items: [
-									{ value: 1, caption: "1" },
-									{ value: 2, caption: "2 (実験的)" },
-									//{ value: 4, caption: "4 (実験的!!)" },
+									{ value: 1, label: "1" },
+									{ value: 2, label: "2 (実験的)" },
+									//{ value: 4, label: "4 (実験的!!)" },
 								]
 							})}
 
@@ -624,8 +624,8 @@ class Game extends React.Component {
 								title: "",
 								name: "showAnswerAlways",
 								items: [
-									{ value: true, caption: "出題時に最短手数を表示する" },
-									{ value: false, caption: "しない" },
+									{ value: true, label: "出題時に最短手数を表示する" },
+									{ value: false, label: "しない" },
 								]
 							})}
 
@@ -633,8 +633,8 @@ class Game extends React.Component {
 								title: "",
 								name: "showRobotName",
 								items: [
-									{ value: true, caption: "出題時にコマの名称を表示する" },
-									{ value: false, caption: "しない" },
+									{ value: true, label: "出題時にコマの名称を表示する" },
+									{ value: false, label: "しない" },
 								]
 							})}
 
@@ -642,8 +642,8 @@ class Game extends React.Component {
 								title: "",
 								name: "showGoalName",
 								items: [
-									{ value: true, caption: "ゴールの名称を表示する" },
-									{ value: false, caption: "しない" },
+									{ value: true, label: "ゴールの名称を表示する" },
+									{ value: false, label: "しない" },
 								]
 							})}
 
@@ -651,8 +651,8 @@ class Game extends React.Component {
 								title: "",
 								name: "useTutorial",
 								items: [
-									{ value: true, caption: "起動時に操作説明を表示する" },
-									{ value: false, caption: "しない" }
+									{ value: true, label: "起動時に操作説明を表示する" },
+									{ value: false, label: "しない" }
 								]
 							})}
 
@@ -660,8 +660,8 @@ class Game extends React.Component {
 								title: "",
 								name: "useColorful",
 								items: [
-									{ value: true, caption: "コマを色分けする" },
-									{ value: false, caption: "しない" }
+									{ value: true, label: "コマを色分けする" },
+									{ value: false, label: "しない" }
 								]
 							})}
 
@@ -669,8 +669,8 @@ class Game extends React.Component {
 								title: "",
 								name: "isDiagonal",
 								items: [
-									{ value: true, caption: "盤面を45度回転する" },
-									{ value: false, caption: "しない" },
+									{ value: true, label: "盤面を45度回転する" },
+									{ value: false, label: "しない" },
 								]
 							})}
 
@@ -678,8 +678,8 @@ class Game extends React.Component {
 								title: "",
 								name: "isBoard3d",
 								items: [
-									{ value: true, caption: "テクスチャで表示 (実験的)" },
-									{ value: false, caption: "しない" },
+									{ value: true, label: "テクスチャで表示 (実験的)" },
+									{ value: false, label: "しない" },
 								]
 							})}
 						</div>
