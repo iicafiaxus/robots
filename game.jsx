@@ -32,6 +32,9 @@ class Game extends React.Component {
 		save("useTutorial", useTutorial);
 		remove("useTutrial");
 
+		let shareBoard = load("shareBoard") == "true";
+		save("shareBoard", shareBoard);
+
 		let useColorful = load("useColorful") != "false";
 		save("useColorful", useColorful);
 
@@ -57,6 +60,7 @@ class Game extends React.Component {
 			isDiagonal,
 			goalCount,
 			isBoard3d,
+			shareBoard,
 			layoutName: "",
 			scalingStyle: {},
 			importingCode: props.importCode,
@@ -272,10 +276,21 @@ class Game extends React.Component {
 
 	}
 
+	createShareUrl(){
+		const code = encoder.encode({
+			sizeName: this.state.sizeName,
+			robots: this.state.robots,
+			walls: this.state.walls,
+		});
+		const baseUrl = window.location.href.split('?')[0];
+		if(this.state.shareBoard) return `${baseUrl}?code=${code}`;
+		else return baseUrl;
+	}
 	sharePage(){
+		const shareUrl = this.createShareUrl();
 		let data = {
-			url: location.href,
-			title: window.title
+			url: shareUrl,
+			title: document.title
 		};
 		navigator.share(data);
 	}
@@ -667,17 +682,25 @@ class Game extends React.Component {
 
 					{this.state.modalName == "qrcode" &&
 						<div className="modal dialog">
-							<div className="dialog-title">他のデバイスで開く</div>
+							<div className="dialog-title">他のデバイスに共有</div>
 							<div className="dialog-line">
-								<input type="text" value={location.href} readOnly={true} />
+								<input type="text" value={this.createShareUrl()} readOnly={true} />
 								{ !!navigator.share &&
 									<button className="material" onClick={this.sharePage.bind(this)}>
 										<span className="material-icons">share</span>
 									</button>
 								}
 							</div>
+							{this.renderSettingRadios({
+								title: "",
+								name: "shareBoard",
+								items: [
+									{ value: false, caption: "アプリを共有" },
+									{ value: true, caption: "盤面を共有" },
+								]
+							})}
 							<div className="dialog-line image-view qrcode">
-								<QrCode size="200" data={location.href} />
+								<QrCode size="200" data={this.createShareUrl()} />
 							</div>										
 						</div>
 					}
