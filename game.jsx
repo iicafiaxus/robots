@@ -97,6 +97,10 @@ class Game extends React.Component {
 		this.setState({ layoutName: policy.name, scalingStyle: style });
 	}
 
+	removeQueryString(){
+		const baseUrl = window.location.href.split('?')[0];
+		window.history.replaceState({}, document.title, baseUrl);
+	}
 	importMap(){
 		if( ! this.state.importingCode) return;
 		let importParam = decoder.decode(this.state.importingCode);
@@ -230,6 +234,7 @@ class Game extends React.Component {
 		});
 		this.closeAnswer();
 		this.closeDescription();
+		this.removeQueryString();
 
 		if(this.nextSolver && this.nextSolver.isWorking){
 			this.solver = this.nextSolver;
