@@ -59,12 +59,18 @@ class Game extends React.Component {
 			isBoard3d,
 			layoutName: "",
 			scalingStyle: {},
+			importingCode: props.importCode,
 		};
 	}
 
 	componentDidMount(){
+		// インポートコードがある場合は処理
+		if (this.state.importingCode) {
+			this.importMap();
+		} else {
 		this.resetBoard();
 		if(this.state.useTutorial) this.openModal("tutorial");
+		}
 		window.addEventListener("popstate", this.popState.bind(this));
 		window.addEventListener("resize", this.onResize.bind(this));
 		this.onResize();

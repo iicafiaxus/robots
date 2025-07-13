@@ -33,5 +33,9 @@ let params = {
 	dom.className = "root";
 	const root = ReactDOM.createRoot(dom);
 	document.body.appendChild(dom);
-	root.render(<Game params={params} sizeName={"medium"} />);
+
+	const urlParams = new URLSearchParams(window.location.search);
+	const importCode = urlParams.get('code');
+
+	root.render(<Game params={params} sizeName={"medium"} importCode={importCode} />);
 })();
