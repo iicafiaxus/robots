@@ -498,6 +498,7 @@ class Game extends React.Component {
 				isDiagonal={this.state.isDiagonal}
 				resetBoard={this.resetBoard.bind(this)}
 				setIsDragging={this.setIsDragging.bind(this)}
+				textAngle={this.state.isDiagonal ? Math.PI / 4 : 0}
 				is3d={this.state.isBoard3d}
 			/>
 		</div>

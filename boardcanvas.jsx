@@ -5,6 +5,7 @@ const BoardCanvas = function(props){
 		walls, robots, minirobots, routes,
 		showsRoute,
 		orientation = "normal",
+		textAngle = 0,
 		is3d = false,
 	} = props;
 
@@ -59,7 +60,11 @@ const BoardCanvas = function(props){
 		const width = metrics.width;
 		const ascent = metrics.actualBoundingBoxAscent;
 		const descent = metrics.actualBoundingBoxDescent;
-		context.fillText(text, u - width / 2, v + ascent / 2);
+		context.save();
+		context.translate(u, v);
+		context.rotate(textAngle);
+		context.fillText(text, -width / 2, ascent / 2);
+		context.restore();
 	}
 	const drawName = (point, size, color, text) => {
 		const [u, v] = project(point);

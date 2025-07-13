@@ -127,7 +127,8 @@ let Board = function(props){
 		robots, minirobots,
 		routes: lineRoutes.map((x, i) => ({ key: i + 1, lines: x })),
 		showsRoute: props.showsRoute,
-		orientation
+		orientation,
+		textAngle: props.textAngle,
 	};
 
 	return <div
