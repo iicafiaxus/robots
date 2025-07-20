@@ -19,8 +19,7 @@ class Game extends React.Component {
 	constructor(props){
 		super(props);
 		this.isContest = props.isContest;
-		console.log("isContest", this.isContest);
-
+		if(this.isContest) console.log("Contest mode.");
 
 		let sizeName = load("sizeName");
 		if( ! props.params[sizeName]){
@@ -382,16 +381,16 @@ class Game extends React.Component {
 
 	renderFunctionButtons1(){
 		return <React.Fragment>
-			{this.isContest || <MaterialButton name="input" onClick={() => this.openModal("import")} />}
-			{this.isContest || <MaterialButton name="edit" onClick={() => this.openModal("edit")} />}
-			{this.isContest || <MaterialButton name="output" onClick={this.openExport.bind(this)} />}
+			<MaterialButton name="input" onClick={() => this.openModal("import")} />
+			<MaterialButton name="edit" onClick={() => this.openModal("edit")} />
+			<MaterialButton name="output" onClick={this.openExport.bind(this)} />
 		</React.Fragment>
 	}
 	renderFunctionButtons2(){
 		return <React.Fragment>
-			{this.isContest || <MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />}
-			{this.isContest || <MaterialButton name="help" onClick={() => this.openModal("tutorial")} />}
-			{this.isContest || <MaterialButton name="settings" onClick={() => this.openModal("settings")} />}
+			<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
+			<MaterialButton name="help" onClick={() => this.openModal("tutorial")} />
+			<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
 		</React.Fragment>
 	}
 	renderRefreshButton(){
@@ -408,7 +407,7 @@ class Game extends React.Component {
 		return <div className="solution">
 			{this.isContest &&
 				this.state.userSolution.map((line, i) =>
-					<span class={"solution-item robot-" + (line.iRobot + 1)} key={i}>{this.getSolutionString([line])}</span>
+					<span className={"solution-item robot-" + (line.iRobot + 1)} key={i}>{this.getSolutionString([line])}</span>
 				)
 			}
 		</div>
@@ -438,11 +437,11 @@ class Game extends React.Component {
 
 	renderButtonPane(){
 		return <React.Fragment>
-			<div className="buttons">
+			{this.isContest || <div className="buttons">
 				{this.renderFunctionButtons1()}
 				<div className="flex-filler" />
 				{this.renderFunctionButtons2()}
-			</div>
+			</div>}
 
 			<div className="buttons fullwidth">
 				{this.renderRefreshButton()}
@@ -465,15 +464,15 @@ class Game extends React.Component {
 	}
 	renderButtonPaneNarrow(){
 		return <React.Fragment>
-			<div className="buttons">
+			{this.isContest || <div className="buttons">
 				{this.renderFunctionButtons1()}
 				<div className="flex-filler" />
-			</div>
+			</div>}
 
-			<div className="buttons">
+			{this.isContest || <div className="buttons">
 				<div className="flex-filler" />
 				{this.renderFunctionButtons2()}
-			</div>
+			</div>}
 
 			<div className="buttons fullwidth">
 				<div className="flex-filler" />
