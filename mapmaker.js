@@ -93,7 +93,7 @@ let mapMaker = new function(){
 			let x = Math.floor(Math.random() * height);
 			let y = Math.floor(Math.random() * width);
 			let isMain = i < goalCount;
-			if(isGoodRobot(x, y)) i += 1, robots.push({ key: i, x, y, isMain });
+			if(isGoodRobot(x, y)) i += 1, robots.push({ key: i, x, y, ox: x, oy: y, isMain });
 		}
 
 		if(cnt >= cntLimit) return this.makeMapInternal(param, totalCount + 1);

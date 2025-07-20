@@ -1,5 +1,7 @@
 const boardUtil = {};
-boardUtil.calc = function(robots, lines){
+boardUtil.calc = function(robots, lines, param){
+	const { showAllMinis } = param;
+
 	let lineRoutes = robots.map(_ => []);
 	for(let line of lines){
 		(lineRoutes[line.iRobot] ||= []).push(line);
@@ -77,9 +79,21 @@ boardUtil.calc = function(robots, lines){
 				iRobot: l.iRobot,
 				x: l.tx, y: l.ty,
 				dx: (l.dx || 0) + l.dtx * 0.5, dy: (l.dy || 0) + l.dty * 0.5,
+				name: robots[l.iRobot].name,
 				isMain: robots[l.iRobot].isMain
 			});
 		}
+	}
+	if(showAllMinis) for(let r of robots){
+		if(minirobots.find(m => m.key == r.key)) continue;
+		minirobots.push({
+			key: r.key,
+			iRobot: minirobots.length,
+			x: r.x, y: r.y,
+			dx: r.dx, dy: r.dy,
+			name: r.name,
+			isMain: r.isMain
+		});
 	}
 
 	return [lineRoutes, minirobots];

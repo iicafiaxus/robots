@@ -18,6 +18,9 @@ class Game extends React.Component {
 
 	constructor(props){
 		super(props);
+		this.isContest = props.isContest;
+		console.log("isContest", this.isContest);
+
 
 		let sizeName = load("sizeName");
 		if( ! props.params[sizeName]){
@@ -70,6 +73,7 @@ class Game extends React.Component {
 			layoutName: "",
 			scalingStyle: {},
 			importingCode: props.importCode,
+			userSolution: [],
 		};
 	}
 
@@ -240,46 +244,50 @@ class Game extends React.Component {
 				descriptions: [], liness: [[]]},
 			nextSolution: void 0,
 			lineNumber: 0,
-			isLoading: true
+			isLoading: true,
+			userSolution: [],
 		});
 		this.closeAnswer();
 		this.closeDescription();
 		this.removeQueryString();
 
-		if(this.nextSolver && this.nextSolver.isWorking){
-			this.solver = this.nextSolver;
-			this.solver.onFound = this.setSolution.bind(this);
-			this.solver.onEnd = this.endSolving.bind(this);
-			this.setIsSolving(this.solver.isWorking);
-			this.nextSolver = null;
-		}
-		else setTimeout(function(){
-			this.setState({ isLoading: false });
+		if( ! this.isContest){
 
-			this.solver = new Solver(
-				param.width, param.height, this.state.robots, this.state.walls
-			);
-			this.setIsSolving(true);
-			this.solver.solve(this.setSolution.bind(this), this.endSolving.bind(this));
-		}.bind(this), 0);
+			if(this.nextSolver && this.nextSolver.isWorking){
+				this.solver = this.nextSolver;
+				this.solver.onFound = this.setSolution.bind(this);
+				this.solver.onEnd = this.endSolving.bind(this);
+				this.setIsSolving(this.solver.isWorking);
+				this.nextSolver = null;
+			}
+			else setTimeout(function(){
+				this.setState({ isLoading: false });
 
-		setTimeout(function(){
-			let next = mapMaker.make(param);
-			this.setState({
-				nextWalls: next.walls, nextRobots: next.robots
-			});
-
-			setTimeout(function(){
-				if(this.nextSolver) this.nextSolver.stop();
-				this.nextSolver = new Solver(
-					param.width, param.height, this.state.nextRobots, this.state.nextWalls,
-					this.solver
+				this.solver = new Solver(
+					param.width, param.height, this.state.robots, this.state.walls
 				);
-				this.nextSolver.solve(this.setNextSolution.bind(this));
+				this.setIsSolving(true);
+				this.solver.solve(this.setSolution.bind(this), this.endSolving.bind(this));
 			}.bind(this), 0);
 
-		}.bind(this), 100);
+			setTimeout(function(){
+				let next = mapMaker.make(param);
+				this.setState({
+					nextWalls: next.walls, nextRobots: next.robots
+				});
 
+				setTimeout(function(){
+					if(this.nextSolver) this.nextSolver.stop();
+					this.nextSolver = new Solver(
+						param.width, param.height, this.state.nextRobots, this.state.nextWalls,
+						this.solver
+					);
+					this.nextSolver.solve(this.setNextSolution.bind(this));
+				}.bind(this), 0);
+
+			}.bind(this), 100);
+
+		}
 	}
 
 	createShareUrl(){
@@ -373,30 +381,39 @@ class Game extends React.Component {
 
 	renderFunctionButtons1(){
 		return <React.Fragment>
-			<MaterialButton name="input" onClick={() => this.openModal("import")} />
-			<MaterialButton name="edit" onClick={() => this.openModal("edit")} />
-			<MaterialButton name="output" onClick={this.openExport.bind(this)} />
+			{this.isContest || <MaterialButton name="input" onClick={() => this.openModal("import")} />}
+			{this.isContest || <MaterialButton name="edit" onClick={() => this.openModal("edit")} />}
+			{this.isContest || <MaterialButton name="output" onClick={this.openExport.bind(this)} />}
 		</React.Fragment>
 	}
 	renderFunctionButtons2(){
 		return <React.Fragment>
-			<MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />
-			<MaterialButton name="help" onClick={() => this.openModal("tutorial")} />
-			<MaterialButton name="settings" onClick={() => this.openModal("settings")} />
+			{this.isContest || <MaterialButton name="devices" onClick={() => this.openModal("qrcode")} />}
+			{this.isContest || <MaterialButton name="help" onClick={() => this.openModal("tutorial")} />}
+			{this.isContest || <MaterialButton name="settings" onClick={() => this.openModal("settings")} />}
 		</React.Fragment>
 	}
 	renderRefreshButton(){
-		return <MaterialLargeButton name="refresh" onClick={this.resetBoard.bind(this)} />
+		return this.isContest || <MaterialLargeButton name="refresh" onClick={this.resetBoard.bind(this)} />
 	}
 	renderQuestion(){
 		return <div className="caption large">
-			{ ! this.state.isDragging &&
+			{ ! this.isContest && ! this.state.isDragging &&
 				(this.state.showAnswerAlways ? "最短手数の手順は？" : "この盤面は何手？")
 			}
 		</div>
 	}
+	renderSolution(){
+		return <div className="solution">
+			{this.isContest &&
+				this.state.userSolution.map((line, i) =>
+					<span class={"solution-item robot-" + (line.iRobot + 1)} key={i}>{this.getSolutionString([line])}</span>
+				)
+			}
+		</div>
+	}
 	renderAnswerButton(){
-		return <React.Fragment>
+		return this.isContest || <React.Fragment>
 			<button className={"cover-title short2" +
 				(this.state.showAnswerAlways ? " disabled" : "") + 
 				(this.state.isDragging ? " inactive" : "") +
@@ -433,6 +450,16 @@ class Game extends React.Component {
 				<div className="flex-filler" />
 				{this.renderAnswerButton()}
 			</div>
+
+			<div className="buttons fullwidth">
+				{this.renderSolution()}
+				<div className="flex-filler" />
+				{this.state.userSolution?.length > 0 &&
+					<button onClick={() => this.resetRobots()}>
+						リセット
+					</button>
+				}
+			</div>
 		</React.Fragment>;
 	}
 	renderButtonPaneNarrow(){
@@ -458,12 +485,22 @@ class Game extends React.Component {
 				<div className="flex-filler" />
 				{this.renderAnswerButton()}
 			</div>
+
+			<div className="buttons fullwidth">
+				{this.renderSolution()}
+				<div className="flex-filler" />
+				{this.state.userSolution?.length > 0 &&
+					<button onClick={() => this.resetRobots()}>
+						リセット
+					</button>
+				}
+			</div>
 		</React.Fragment>;
 	}
 
 	renderBoardWrapper(param){
 		return <div className="board-wrapper">
-			<Board 
+			{this.isContest || <Board 
 				width={param.width}
 				height={param.height}
 				scale={param.scale}
@@ -478,9 +515,10 @@ class Game extends React.Component {
 				setIsDragging={null}
 				isBack={true}
 				is3d={this.state.isBoard3d}
-			/>
+			/>}
 
-			<Board 
+			{this.isContest || <Board 
+				isContest={false}
 				width={this.state.boardWidth}
 				height={this.state.boardHeight}
 				scale={this.state.boardScale}
@@ -500,48 +538,228 @@ class Game extends React.Component {
 				setIsDragging={this.setIsDragging.bind(this)}
 				textAngle={this.state.isDiagonal ? Math.PI / 4 : 0}
 				is3d={this.state.isBoard3d}
-			/>
+			/>}
+			{this.isContest && <Board
+				isContest={true}
+				width={this.state.boardWidth}
+				height={this.state.boardHeight}
+				scale={this.state.boardScale}
+				layoutName={this.state.layoutName}
+				robots={this.state.robots}
+				walls={this.state.walls}
+				goalCount={this.state.goalCount}
+				lines={this.state.userSolution || []}
+				showsNumber={true}
+				showsRoute={this.state.isDescriptionOpen}
+				isLoading={this.state.isLoading}
+				showAnswer={this.showNextAnswer.bind(this)}
+				useColorful={true}
+				showsGoalName={true}
+				isDiagonal={false}
+				resetBoard={this.resetBoard.bind(this)}
+				setIsDragging={this.setIsDragging.bind(this)}
+				textAngle={0}
+				is3d={false}
+			/>}
 		</div>
 	}
 
-	renderAnswerPane(){
-		return <div className="buttonset">
-			{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
-				<div className="buttons fullwidth">
-					<button className={"cover-title long" + 
-						(this.state.isDragging ? " inactive" : "")
-					}
-						onClick={this.toggleDescription.bind(this)}
-					>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-				</div>
+	hasWall(sx, sy, tx, ty){
+		if(sx + 1 == tx && sy == ty){
+			return !! this.state.walls.find(wall =>
+				wall.x == sx && wall.y == sy && [3, 4].includes(wall.type)
+				|| wall.x == tx && wall.y == ty && [1, 2].includes(wall.type)
+			);
+		}
+		if(sx - 1 == tx && sy == ty){
+			return !! this.state.walls.find(wall =>
+				wall.x == sx && wall.y == sy && [1, 2].includes(wall.type)
+				|| wall.x == tx && wall.y == ty && [3, 4].includes(wall.type)
+			);
+		}
+		if(sx == tx && sy + 1 == ty){
+			return !! this.state.walls.find(wall =>
+				wall.x == sx && wall.y == sy && [2, 4].includes(wall.type)
+				|| wall.x == tx && wall.y == ty && [1, 3].includes(wall.type)
+			);
+		}
+		if(sx == tx && sy - 1 == ty){
+			return !! this.state.walls.find(wall =>
+				wall.x == sx && wall.y == sy && [1, 3].includes(wall.type)
+				|| wall.x == tx && wall.y == ty && [2, 4].includes(wall.type)
+			);
+		}
+		return true;
+	}
+	
+	calcMoveSize(iRobot, dirCode){
+		const robot = this.state.robots?.[iRobot];
+		if( ! robot) return 0;
+
+		const [dx, dy] = [[1, 0], [-1, 0], [0, 1], [0, -1]][dirCode];
+		let result = 0;
+		let [tx, ty] = [robot.x, robot.y];
+		while(true){
+			if(this.hasWall(tx, ty, tx + dx, ty + dy)) break;
+			tx += dx, ty += dy;
+
+			if(tx < 0 || tx >= this.state.boardHeight) break;
+			if(ty < 0 || ty >= this.state.boardWidth) break;
+
+			if(this.state.robots?.find(robot =>
+				robot.x == tx && robot.y == ty && robot.iRobot != iRobot
+			)) break;
+
+			result++;
+		}
+		return result;
+	}
+	moveRobot(iRobot, dx, dy){
+		const robot = this.state.robots[iRobot];
+		const line = {
+			iRobot,
+			sx: robot.x, sy: robot.y,
+			tx: robot.x + dx, ty: robot.y + dy,
+		};
+		this.setState({
+			robots: this.state.robots.map((robot, i) => ({
+				...robot,
+				x: robot.x + (i == iRobot ? dx : 0),
+				y: robot.y + (i == iRobot ? dy : 0),
+			})),
+			userSolution: this.state.userSolution.concat(line),
+		});
+		
+		let isFullFilled = true;
+		let isThisTime = false;
+		for(let wall of this.state.walls){
+			if( ! wall.isGoal) continue;
+			if(wall.goalColor == robot.key){
+				isFullFilled &&= wall.x == line.tx && wall.y == line.ty;
+				isThisTime = true;
 			}
+			else{
+				const goalRobot = this.state.robots.find(robot => robot.key == wall.goalColor);
+				isFullFilled &&= wall.x == goalRobot.x && wall.y == goalRobot.y;
+			}
+		}
 
-			{this.state.solution && this.state.solution.descriptions &&
-				this.state.solution.descriptions.concat(
-					this.state.isSolving ? ["解析しています…"] : []
-				).map(
-				(description, i) =>
+		const length = this.state.userSolution.length;
+		if(length > 0 && isFullFilled && isThisTime){
+			this.openAlert(`おめでとう！ ${length} 回の移動で成功しました！`);
+		}
+	}
 
-				<div className="buttons fullwidth" key={i}>
-					<Covered
-						title={this.state.showAnswerAlways ? "解答例" : "解説"}
-						value={rotateArrows(description, {
-							diagonal: !!this.state.isDiagonal,
-							transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
-						})}
-						size="fullwidth"
-						large={true}
-						isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
-						isActive={this.state.lineNumber == i}
-						onClick={
-							this.state.lineNumber == i ?
-							this.toggleDescription.bind(this) :
-							() => this.setState({ lineNumber: i })
-						}
-					/>
+	resetRobots(){
+		this.setState({
+			robots: this.state.robots.map((robot, i) => ({
+				...robot,
+				x: robot.ox,
+				y: robot.oy,
+			})),
+			userSolution: [],
+		});
+	}
+	
+	renderMovingButton(iRobot, dirCode){
+		const moveSize = this.calcMoveSize(iRobot, dirCode);
+		const robot = this.state.robots?.[iRobot];
+		const [dx, dy] = [
+			[moveSize, 0],
+			[-moveSize, 0],
+			[0, moveSize],
+			[0, -moveSize],
+		][dirCode];
+		return <button
+			disabled={moveSize == 0}
+			onClick={() => this.moveRobot(iRobot, dx, dy)}
+		>
+			{getRobotName(robot, this.state.goalCount)}
+			{rotateArrows(["↓", "↑", "→", "←"][dirCode], {
+				diagonal: false,
+				transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
+			})}
+		</button>
+	}
+
+	getSolutionString(lines){
+		let result = "";
+		let lastName = "";
+		for(let line of lines){
+			const { iRobot, sx, sy, tx, ty } = line;
+			const name = getRobotName(
+				this.state.robots?.[iRobot],
+				this.state.goalCount
+			);
+			const dirCode = [sx < tx, sx > tx, sy < ty, sy > ty].findIndex(v => v);
+			const arrow = rotateArrows(["↓", "↑", "→", "←"][dirCode] ?? "", {
+				diagonal: false,
+				transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
+			});
+			console.log({ line, name, dirCode, arrow });
+
+			if(lastName && name != lastName) result += " " + name;
+			if( ! lastName) result += name;
+			result += arrow;
+
+			lastName = name;
+		}
+		return result;
+	}
+
+
+	renderAnswerPane(){	
+		return this.isContest
+			? <React.Fragment>
+				<div className="buttonset">
+					{this.state.robots?.map(robot =>
+						<span className="moving-button-group" key={robot.key}>
+							{[3, 0, 1, 2].map(dirCode =>
+								<React.Fragment key={robot.key + "" + dirCode}>
+									{this.renderMovingButton(robot.key - 1, dirCode)}
+								</React.Fragment>
+							)}
+						</span>
+					)}
 				</div>
-			)}
-		</div>
+			</React.Fragment>
+			: <div className="buttonset">
+				{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
+					<div className="buttons fullwidth">
+						<button className={"cover-title long" + 
+							(this.state.isDragging ? " inactive" : "")
+						}
+							onClick={this.toggleDescription.bind(this)}
+						>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
+					</div>
+				}
+
+				{this.state.solution && this.state.solution.descriptions &&
+					this.state.solution.descriptions.concat(
+						this.state.isSolving ? ["解析しています…"] : []
+					).map(
+					(description, i) =>
+
+					<div className="buttons fullwidth" key={i}>
+						<Covered
+							title={this.state.showAnswerAlways ? "解答例" : "解説"}
+							value={rotateArrows(description, {
+								diagonal: !!this.state.isDiagonal,
+								transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
+							})}
+							size="fullwidth"
+							large={true}
+							isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
+							isActive={this.state.lineNumber == i}
+							onClick={
+								this.state.lineNumber == i ?
+								this.toggleDescription.bind(this) :
+								() => this.setState({ lineNumber: i })
+							}
+						/>
+					</div>
+				)}
+			</div>
 	}
 
 	render(){
@@ -556,7 +774,7 @@ class Game extends React.Component {
 				className={[
 					"all",
 					"size" + this.state.boardSize,
-					(this.state.isDiagonal ? "diagonal" : ""),
+					(! this.isContest && this.state.isDiagonal ? "diagonal" : ""),
 					(param.isRectangular ? "rectangular" : ""),
 				].join(" ").replaceAll(/ +/g, " ")}
 			>
@@ -706,8 +924,15 @@ class Game extends React.Component {
 }
 
 
+const getRobotName = function(robot, goalCount){
+	if(goalCount == 1 && robot.isMain) return "●";
+	const names = robot.isMain
+		? ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+		: ["X", "I", "A", "B", "C", "D", "E", "F", "G", "H"];
+	return names[robot.key];
 
-let rotateArrows = function(text, param){
+}
+const rotateArrows = function(text, param){
 	const toDiagonal = (text) => text.replaceAll("↑", "↖").replaceAll("→", "↗").replaceAll("↓", "↘").replaceAll("←", "↙");
 	const toTransposed = (text) => (text).replaceAll("↖", "→").replaceAll("↗", "↓").replaceAll("↘", "←").replaceAll("↙", "↑");
 	if( ! param.diagonal && ! param.transposed) return text;

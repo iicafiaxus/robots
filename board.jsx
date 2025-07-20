@@ -3,6 +3,7 @@
 "REQUIRE boardcanvas3d.jsx";
 
 let Board = function(props){
+	let isContest = props.isContest;
 	let height = props.height || 16
 	let width = props.width || 16
 
@@ -82,16 +83,16 @@ let Board = function(props){
 	})
 
 	let lines = props.lines || [];
-	let [lineRoutes, minirobots] = boardUtil.calc(robots, lines);
+	let [lineRoutes, minirobots] = boardUtil.calc(robots, lines, { showAllMinis: isContest });
 
 	let dragAmount = isDragging && point.y > origin.y ? point.y - origin.y : 0;
 
 	const colors = {
 		board: "#fff",
-		wall: "#850",
+		wall: isContest ? "#379" : "#850",
 		cell: "#eee",
-		cellShade: "#8509",
-		cellShadeBorder: "#c949",
+		cellShade: isContest ? "#3799" : "#8509",
+		cellShadeBorder: isContest ? "#3795" : "#c949",
 		goalText: "#0004",
 		robot: (
 			props.useColorful
@@ -124,11 +125,12 @@ let Board = function(props){
 	const canvasProps = {
 		width, height, colors,
 		walls: props.walls,
-		robots, minirobots,
+		robots, minirobots: isContest ? [] : minirobots,
 		routes: lineRoutes.map((x, i) => ({ key: i + 1, lines: x })),
-		showsRoute: props.showsRoute,
+		showsRoute: isContest || props.showsRoute,
 		orientation,
 		textAngle: props.textAngle,
+		isTrace: isContest,
 	};
 
 	return <div
@@ -137,7 +139,8 @@ let Board = function(props){
 			(props.isLoading ? "loading" : ""),
 			(isPressed ? "pressed" : ""),
 			(isDragging ? "dragging" : ""),
-			(props.isBack ? "back" : "")
+			(props.isBack ? "back" : ""),
+			(isContest ? "contest" : "")
 		].join(" ").replaceAll(/ +/g, " ")}
 		style={{ top: dragAmount }}
 		onMouseDown={startPress}

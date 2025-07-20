@@ -175,6 +175,33 @@
 			color: @colors[covered-inactive-text];
 		}
 	}
+
+
+	.solution {
+		width: fit-content;
+		margin: 0 auto;
+	}
+	.solution-item {
+		display: inline-block; border: 1px solid @colors[covered-inactive-border];
+		margin: 0 2px;
+		width: 2.5em; text-align: center;
+		height: 30px; line-height: 30px;
+	}
+	.solution-item.robot-1 { border-color: @colors[robot-1]; }
+	.solution-item.robot-2 { border-color: @colors[robot-2]; }
+	.solution-item.robot-3 { border-color: @colors[robot-3]; }
+	.solution-item.robot-4 { border-color: @colors[robot-4]; }
+	.solution-item.robot-main { border-color: @colors[robot-main]; }
+
+	.moving-button-group {
+		display: inline-flex;
+		justify-content: center;
+		margin: 0 4px;
+	}
+	.moving-button-group > * {
+		flex-shrink: 1;
+		flex-grow: 1;
+	}
 	
 	.flex-filler { flex-grow: 1; }
 	

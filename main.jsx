@@ -36,6 +36,12 @@ let params = {
 
 	const urlParams = new URLSearchParams(window.location.search);
 	const importCode = urlParams.get('code');
+	const isContest = urlParams.has('contest');
 
-	root.render(<Game params={params} sizeName={"medium"} importCode={importCode} />);
+	root.render(<Game
+		params={params}
+		sizeName={"medium"}
+		importCode={importCode}
+		isContest={isContest}
+	/>);
 })();

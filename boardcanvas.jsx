@@ -7,6 +7,7 @@ const BoardCanvas = function(props){
 		orientation = "normal",
 		textAngle = 0,
 		is3d = false,
+		isTrace = false,
 	} = props;
 
 	const scaleRate = Math.sqrt(Math.min(width / 8, height / 8));
@@ -207,6 +208,16 @@ const BoardCanvas = function(props){
 			if (wall.type == 2 || wall.type == 4) drawWall(p1, p3);
 		}
 
+		// 元ロボット
+		for (let robot of robots){
+			const [x, y] = [
+				p(robot.ox) + cellSize / 2 + lineOffset * (showsRoute ? robot.dx : 0),
+				p(robot.oy) + cellSize / 2 + lineOffset * (showsRoute ? robot.dy : 0)
+			];
+			fillCircle([x, y], cellSize * 0.3, colors.line[robot.key]);
+			fillCircle([x, y], cellSize * 0.3 - lineWidth, colors.board);
+		}
+
 		// ロボット
 		for (let robot of robots){
 			const [x, y] = [
@@ -219,11 +230,17 @@ const BoardCanvas = function(props){
 
 		// 小ロボット
 		if (showsRoute) for (let robot of minirobots){
+			const offSet = isTrace
+				? { x: 0, y: 0 }
+				: { x: lineOffset * robot.dx, y: lineOffset * robot.dy }; 
 			const [x, y] = [
-				p(robot.x) + cellSize / 2 + lineOffset * robot.dx,
-				p(robot.y) + cellSize / 2 + lineOffset * robot.dy
+				p(robot.x) + cellSize / 2 + offSet.x,
+				p(robot.y) + cellSize / 2 + offSet.y
 			];
-			fillCircle([x, y], cellSize * 0.1, colors.minirobot[robot.key]);
+			isTrace
+				? fillCircle([x, y], cellSize * 0.35 - lineWidth, colors.minirobot[robot.key])
+				: fillCircle([x, y], cellSize * 0.1, colors.minirobot[robot.key]);
+			isTrace && drawName([x, y], cellSize * 0.5, colors.robotText, robot.name);
 		}
 
 		// ライン
@@ -233,7 +250,9 @@ const BoardCanvas = function(props){
 				points.push([x0, y0]);
 				points.push([x1, y1]);
 			}
-			drawLines(points, color, lineWidth * 3);
+			isTrace
+				? drawLines(points, color, lineWidth)
+				: drawLines(points, color, lineWidth * 3);
 		}
 		const calcLine = (line) => {
 			const [dsx, dsy] = [
