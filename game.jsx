@@ -697,7 +697,6 @@ class Game extends React.Component {
 				diagonal: false,
 				transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
 			});
-			console.log({ line, name, dirCode, arrow });
 
 			if(lastName && name != lastName) result += " " + name;
 			if( ! lastName) result += name;
