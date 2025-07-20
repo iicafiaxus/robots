@@ -673,6 +673,7 @@ class Game extends React.Component {
 		return <button
 			disabled={moveSize == 0}
 			onClick={() => this.moveRobot(iRobot, dx, dy)}
+			className={"moving-button robot-" + (robot.key)}
 		>
 			{getRobotName(robot, this.state.goalCount)}
 			{rotateArrows(["↓", "↑", "→", "←"][dirCode], {
@@ -712,7 +713,7 @@ class Game extends React.Component {
 			? <React.Fragment>
 				<div className="buttonset">
 					{this.state.robots?.map(robot =>
-						<span className="moving-button-group" key={robot.key}>
+						<span className="buttons moving-button-group" key={robot.key}>
 							{[3, 0, 1, 2].map(dirCode =>
 								<React.Fragment key={robot.key + "" + dirCode}>
 									{this.renderMovingButton(robot.key - 1, dirCode)}

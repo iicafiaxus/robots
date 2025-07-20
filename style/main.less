@@ -57,7 +57,6 @@
 	
 		.buttonset & {
 			padding: 0;
-			> * + * { margin-left: 0; margin-top: 2px; }
 		}
 	
 		button {
@@ -201,6 +200,32 @@
 	.moving-button-group > * {
 		flex-shrink: 1;
 		flex-grow: 1;
+	}
+	button.moving-button {
+		color: @colors[button-robot-text];
+
+		&.robot-main { background: @colors[button-robot-main]; }
+		&.robot-sub { background: @colors[button-robot-sub]; }
+		&.robot-1 { background: @colors[button-robot-1]; }
+		&.robot-2 { background: @colors[button-robot-2]; }
+		&.robot-3 { background: @colors[button-robot-3]; }
+		&.robot-4 { background: @colors[button-robot-4]; }
+
+		&:hover {
+			&.robot-main { background: @colors[button-robot-main-hover]; }
+			&.robot-sub { background: @colors[button-robot-sub-hover]; }
+			&.robot-1 { background: @colors[button-robot-1-hover]; }
+			&.robot-2 { background: @colors[button-robot-2-hover]; }
+			&.robot-3 { background: @colors[button-robot-3-hover]; }
+			&.robot-4 { background: @colors[button-robot-4-hover]; }
+		}
+
+		&[disabled], &[disabled]:hover {
+			background: @colors[button-disabled];
+			cursor: default;
+			top: 0;
+			left: 0;
+		}
 	}
 	
 	.flex-filler { flex-grow: 1; }
