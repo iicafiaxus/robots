@@ -14,13 +14,14 @@ const QrCodeModal = (props) => {
 			</div>
 			<SettingRadios
 				title=""
-				name="shareBoard"
+				name="shareType"
 				items={[
-					{ value: false, label: "アプリを共有" },
-					{ value: true, label: "盤面を共有" },
+					{ value: 0, label: "アプリを共有" },
+					{ value: 1, label: "盤面を共有" },
+					{ value: 2, label: "コンテストとして共有" },
 				]}
-				value={game.state.shareBoard}
-				setValue={v => game.setSettingValue("shareBoard", v)}
+				value={game.state.shareType}
+				setValue={v => game.setSettingValue("shareType", v)}
 			/>
 			<div className="dialog-line image-view qrcode">
 				<QrCode size="200" data={game.createShareUrl()} />
@@ -31,7 +32,7 @@ const QrCodeModal = (props) => {
 
 let QrCode = function(props){
 	let size = props.size || 100;
-	let data = encodeURI(props.data) || location.href;
+	let data = encodeURIComponent(props.data) || location.href;
 	return <img
 		src={`https://api.qrserver.com/v1/create-qr-code/?data=${data}&size=${size}x${size}`}
 		width={size}

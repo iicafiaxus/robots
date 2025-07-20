@@ -41,8 +41,8 @@ class Game extends React.Component {
 		save("useTutorial", useTutorial);
 		remove("useTutrial");
 
-		let shareBoard = load("shareBoard") == "true";
-		save("shareBoard", shareBoard);
+		let shareType = +(load("shareType") ?? 0);
+		save("shareType", shareType);
 
 		let useColorful = load("useColorful") != "false";
 		save("useColorful", useColorful);
@@ -69,7 +69,7 @@ class Game extends React.Component {
 			isDiagonal,
 			goalCount,
 			isBoard3d,
-			shareBoard,
+			shareType,
 			layoutName: "",
 			scalingStyle: {},
 			importingCode: props.importCode,
@@ -297,7 +297,8 @@ class Game extends React.Component {
 			walls: this.state.walls,
 		});
 		const baseUrl = window.location.href.split('?')[0];
-		if(this.state.shareBoard) return `${baseUrl}?code=${code}`;
+		if(this.state.shareType == 2) return `${baseUrl}?contest&code=${code}`;
+		else if(this.state.shareType == 1) return `${baseUrl}?code=${code}`;
 		else return baseUrl;
 	}
 	sharePage(){
