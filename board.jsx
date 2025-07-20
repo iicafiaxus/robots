@@ -25,6 +25,7 @@ let Board = function(props){
 	}
 
 	let movePress = function(ev){
+		if(isContest) return;
 		if( ! isPressed) return;
 		if( ! ev.buttons && ! (ev.touches && ev.touches.length)){
 			resetPress();
