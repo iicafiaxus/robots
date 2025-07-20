@@ -130,7 +130,7 @@ let decoder = new function(){
 				}
 
 				temp.mainRobots = points.map((p, i) => ({
-					x: p.x, y: p.y, isMain: true
+					x: p.x, y: p.y, ox: p.x, oy: p.y, isMain: true
 				}));
 
 			}
@@ -142,7 +142,7 @@ let decoder = new function(){
 				let points = decodePoints(v);
 				if(result.isError) return result;
 				temp.otherRobots = points.map((p, i) => ({
-					x: p.x, y: p.y
+					x: p.x, y: p.y, ox: p.x, oy: p.y,
 				}));
 
 			}
