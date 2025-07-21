@@ -34,13 +34,55 @@
 		width: fit-content;
 	}
 	
+	button {
+		line-height: unset; background: @colors[button]; border-radius: 4px;
+		min-width: 48px; min-height: 36px; cursor: pointer; user-select: none;
+		border: 1px solid transparent; 
+
+		@media (hover: hover) {
+			&:hover { background: @colors[button-hover]; position: relative; left: 0px; top: 1px; }
+		}
+		&:active { transform: scale(97.5%); }
 	
+		&.disabled {
+			background: transparent; cursor: default;
+			@media (hover: hover) {
+				&:hover { background: transparent; left: 0; top: 0; }
+			}
+		}
+	
+		&.unimportant {
+			background: transparent;
+			border: 1px solid @colors[button-border];
+			@media (hover: hover) {
+				&:hover { background: @colors[button-hover]; }
+			}
+		}
+	
+		&.important {
+			background: transparent;
+			border: 1px solid @colors[button-important-border];
+			min-width: 60px;
+			@media (hover: hover) {
+				&:hover { background: @colors[button-important-hover]; }
+			}
+		}
+
+		&.cover-title{
+			display: inline-block; width: fit-content;
+			&.short { width: 60px; }
+			&.short2 { width: 120px; }
+			&.long { flex-grow: 1; }
+			&.isOpen { display: none; }
+			&.inactive { background: @colors[cover-title-inactive]; color: transparent; }
+		}
+	}
 	
 	.buttons {
 		text-align: center; margin: 0.2em auto; padding: 0.4em 0;
 		display: flex; justify-content: space-around; max-width: 480px; flex-wrap: wrap;
 		&.fullwidth { justify-content: space-between; }
-		> * { width: fit-content; line-height: 36px; border: 1px solid transparent; }
+		> * { width: fit-content; line-height: 36px; }
 		> * + * { margin-left: 2px; }
 	
 		&.setting-item {
@@ -57,48 +99,6 @@
 	
 		.buttonset & {
 			padding: 0;
-		}
-	
-		button {
-			line-height: unset; background: @colors[button]; border-radius: 4px;
-			min-width: 48px; min-height: 36px; cursor: pointer; user-select: none;
-			@media (hover: hover) {
-				&:hover { background: @colors[button-hover]; position: relative; left: 0px; top: 1px; }
-			}
-			&:active { transform: scale(97.5%); }
-		
-			&.disabled {
-				background: transparent; cursor: default;
-				@media (hover: hover) {
-					&:hover { background: transparent; left: 0; top: 0; }
-				}
-			}
-		
-			&.unimportant {
-				background: transparent;
-				border: 1px solid @colors[button-border];
-				@media (hover: hover) {
-					&:hover { background: @colors[button-hover]; }
-				}
-			}
-		
-			&.important {
-				background: transparent;
-				border: 1px solid @colors[button-important-border];
-				min-width: 60px;
-				@media (hover: hover) {
-					&:hover { background: @colors[button-important-hover]; }
-				}
-			}
-	
-			&.cover-title{
-				display: inline-block; width: fit-content;
-				&.short { width: 60px; }
-				&.short2 { width: 120px; }
-				&.long { flex-grow: 1; }
-				&.isOpen { display: none; }
-				&.inactive { background: @colors[cover-title-inactive]; color: transparent; }
-			}
 		}
 	
 		label > input[type=radio] {
@@ -179,6 +179,7 @@
 	.solution {
 		width: fit-content;
 		margin: 0 auto;
+		text-align: left;
 	}
 	.solution-item {
 		display: inline-block; border: 1px solid @colors[covered-inactive-border];
@@ -192,16 +193,27 @@
 	.solution-item.robot-4 { border-color: @colors[robot-4]; }
 	.solution-item.robot-main { border-color: @colors[robot-main]; }
 
-	.moving-button-group {
-		display: inline-flex;
+	.moving-buttons {
+		display: flex;
 		justify-content: center;
+		align-content: start;
+		&.moving-buttons-landscape {
+			flex-wrap: wrap;
+		}
+	}
+	.moving-button-group {
+		flex-shrink: 1;
+		display: inline-flex;
+		flex-direction: column;
+		justify-content: start;
+		align-items: center;
 		margin: 0 4px;
 	}
 	.moving-button-group > * {
 		flex-shrink: 1;
-		flex-grow: 1;
 	}
 	button.moving-button {
+		min-width: 36px;
 		color: @colors[button-robot-text];
 
 		&.robot-main { background: @colors[button-robot-main]; }
@@ -226,6 +238,14 @@
 			top: 0;
 			left: 0;
 		}
+	}
+	.moving-button-caption {
+		display: inline-block;
+		width: 2em;
+		text-align: center;
+	}
+	.moving-buttons-landscape .moving-button-caption {
+		width: 1em;
 	}
 	
 	.flex-filler { flex-grow: 1; }

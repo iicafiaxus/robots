@@ -675,7 +675,6 @@ class Game extends React.Component {
 			onClick={() => this.moveRobot(iRobot, dx, dy)}
 			className={"moving-button robot-" + (robot.key)}
 		>
-			{getRobotName(robot, this.state.goalCount)}
 			{rotateArrows(["↓", "↑", "→", "←"][dirCode], {
 				diagonal: false,
 				transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
@@ -707,59 +706,77 @@ class Game extends React.Component {
 		return result;
 	}
 
+	renderMovingButtons(){
+		const isTransposed = ["board-landscape", "screen-landscape"].includes(this.state.layoutName);
+		const dirCodes = isTransposed ? [3, 0, 1, 2] : [1, 3, 2, 0];
+		return <div className="buttonset moving-buttons">
+			{this.state.robots?.map(robot => this.renderMovingButtonGroup(robot, dirCodes))}
+		</div>
+	}
+	renderMovingButtonsLandscape(){
+		const isTransposed = ["board-landscape", "screen-landscape"].includes(this.state.layoutName);
+		const dirCodes = isTransposed ? [3, 0, 1, 2] : [1, 3, 2, 0];
+		return <div className="buttonset moving-buttons moving-buttons-landscape">
+			{this.state.robots?.map(robot => this.renderMovingButtonGroup(robot, dirCodes))}
+		</div>
+	}
+	renderMovingButtonGroup(robot, dirCodes){
+		return <span className="moving-button-group" key={robot.key}>
+			<span>
+				{this.renderMovingButton(robot.key - 1, dirCodes[0])}
+			</span>
+			<span>
+				{this.renderMovingButton(robot.key - 1, dirCodes[1])}
+				<span className="moving-button-caption">
+					{getRobotName(robot, this.state.goalCount)}
+				</span>
+				{this.renderMovingButton(robot.key - 1, dirCodes[2])}
+			</span>
+			<span>
+				{this.renderMovingButton(robot.key - 1, dirCodes[3])}
+			</span>
+		</span>
+	}
+
 
 	renderAnswerPane(){	
-		return this.isContest
-			? <React.Fragment>
-				<div className="buttonset">
-					{this.state.robots?.map(robot =>
-						<span className="buttons moving-button-group" key={robot.key}>
-							{[3, 0, 1, 2].map(dirCode =>
-								<React.Fragment key={robot.key + "" + dirCode}>
-									{this.renderMovingButton(robot.key - 1, dirCode)}
-								</React.Fragment>
-							)}
-						</span>
-					)}
+		return <div className="buttonset">
+			{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
+				<div className="buttons fullwidth">
+					<button className={"cover-title long" + 
+						(this.state.isDragging ? " inactive" : "")
+					}
+						onClick={this.toggleDescription.bind(this)}
+					>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
 				</div>
-			</React.Fragment>
-			: <div className="buttonset">
-				{(this.state.isDragging || ! this.state.isDescriptionOpen) &&
-					<div className="buttons fullwidth">
-						<button className={"cover-title long" + 
-							(this.state.isDragging ? " inactive" : "")
+			}
+
+			{this.state.solution && this.state.solution.descriptions &&
+				this.state.solution.descriptions.concat(
+					this.state.isSolving ? ["解析しています…"] : []
+				).map(
+				(description, i) =>
+
+				<div className="buttons fullwidth" key={i}>
+					<Covered
+						title={this.state.showAnswerAlways ? "解答例" : "解説"}
+						value={rotateArrows(description, {
+							diagonal: !!this.state.isDiagonal,
+							transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
+						})}
+						size="fullwidth"
+						large={true}
+						isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
+						isActive={this.state.lineNumber == i}
+						onClick={
+							this.state.lineNumber == i ?
+							this.toggleDescription.bind(this) :
+							() => this.setState({ lineNumber: i })
 						}
-							onClick={this.toggleDescription.bind(this)}
-						>{this.state.showAnswerAlways ? "解答例" : "解説"}</button>
-					</div>
-				}
-
-				{this.state.solution && this.state.solution.descriptions &&
-					this.state.solution.descriptions.concat(
-						this.state.isSolving ? ["解析しています…"] : []
-					).map(
-					(description, i) =>
-
-					<div className="buttons fullwidth" key={i}>
-						<Covered
-							title={this.state.showAnswerAlways ? "解答例" : "解説"}
-							value={rotateArrows(description, {
-								diagonal: !!this.state.isDiagonal,
-								transposed: ["board-landscape", "screen-landscape"].includes(this.state.layoutName)
-							})}
-							size="fullwidth"
-							large={true}
-							isOpen={ ! this.state.isDragging && this.state.isDescriptionOpen}
-							isActive={this.state.lineNumber == i}
-							onClick={
-								this.state.lineNumber == i ?
-								this.toggleDescription.bind(this) :
-								() => this.setState({ lineNumber: i })
-							}
-						/>
-					</div>
-				)}
-			</div>
+					/>
+				</div>
+			)}
+		</div>;
 	}
 
 	render(){
@@ -784,7 +801,8 @@ class Game extends React.Component {
 						<div className="main-pane">
 							{this.renderButtonPane()}
 							{this.renderBoardWrapper(param)}
-							{this.renderAnswerPane()}
+							{this.isContest || this.renderAnswerPane()}
+							{this.isContest && this.renderMovingButtons()}
 						</div>
 					</React.Fragment>
 				)}
@@ -792,7 +810,8 @@ class Game extends React.Component {
 					<React.Fragment>
 						<div className="side-pane">
 							{this.renderButtonPaneNarrow()}
-							{this.renderAnswerPane()}
+							{this.isContest || this.renderAnswerPane()}
+							{this.isContest && this.renderMovingButtonsLandscape()}
 						</div>
 						<div className="main-pane">
 							{this.renderBoardWrapper(param)}
