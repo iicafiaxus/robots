@@ -129,8 +129,7 @@
 
 	.side-pane {
 		width: calc(220px - 16px);
-		height: 100%;
-		margin: 16px;
+		margin: 16px 16px 0;
 		display: flex;
 		flex-direction: column;
 		> * {
@@ -176,6 +175,11 @@
 	}
 
 
+	.solution-pane {
+		overflow-y: auto;
+		height: 0;
+		flex-grow: 1;
+	}
 	.solution {
 		width: fit-content;
 		margin: 0 auto;
@@ -249,6 +253,7 @@
 	}
 	
 	.flex-filler { flex-grow: 1; }
+	.flex-end { flex-grow: 1; text-align: end; }
 	
 	.modal {
 		&-back {

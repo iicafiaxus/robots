@@ -435,6 +435,20 @@ class Game extends React.Component {
 		</React.Fragment>
 	}
 
+	renderSolutionPane(){
+		return <div className="buttons fullwidth solution-pane">
+			{this.renderSolution()}
+			<div className="flex-filler" />
+			{this.state.userSolution?.length > 0 &&
+				<div className="flex-end">
+					<button onClick={() => this.resetRobots()}>
+						リセット
+					</button>
+				</div>
+			}
+		</div>
+	}
+
 	renderButtonPane(){
 		return <React.Fragment>
 			{this.isContest || <div className="buttons">
@@ -449,16 +463,6 @@ class Game extends React.Component {
 				{this.renderQuestion()}
 				<div className="flex-filler" />
 				{this.renderAnswerButton()}
-			</div>
-
-			<div className="buttons fullwidth">
-				{this.renderSolution()}
-				<div className="flex-filler" />
-				{this.state.userSolution?.length > 0 &&
-					<button onClick={() => this.resetRobots()}>
-						リセット
-					</button>
-				}
 			</div>
 		</React.Fragment>;
 	}
@@ -484,16 +488,6 @@ class Game extends React.Component {
 				{this.renderRefreshButton()}
 				<div className="flex-filler" />
 				{this.renderAnswerButton()}
-			</div>
-
-			<div className="buttons fullwidth">
-				{this.renderSolution()}
-				<div className="flex-filler" />
-				{this.state.userSolution?.length > 0 &&
-					<button onClick={() => this.resetRobots()}>
-						リセット
-					</button>
-				}
 			</div>
 		</React.Fragment>;
 	}
@@ -709,14 +703,14 @@ class Game extends React.Component {
 	renderMovingButtons(){
 		const isTransposed = ["board-landscape", "screen-landscape"].includes(this.state.layoutName);
 		const dirCodes = isTransposed ? [3, 0, 1, 2] : [1, 3, 2, 0];
-		return <div className="buttonset moving-buttons">
+		return <div className="moving-buttons">
 			{this.state.robots?.map(robot => this.renderMovingButtonGroup(robot, dirCodes))}
 		</div>
 	}
 	renderMovingButtonsLandscape(){
 		const isTransposed = ["board-landscape", "screen-landscape"].includes(this.state.layoutName);
 		const dirCodes = isTransposed ? [3, 0, 1, 2] : [1, 3, 2, 0];
-		return <div className="buttonset moving-buttons moving-buttons-landscape">
+		return <div className="moving-buttons moving-buttons-landscape">
 			{this.state.robots?.map(robot => this.renderMovingButtonGroup(robot, dirCodes))}
 		</div>
 	}
@@ -797,21 +791,33 @@ class Game extends React.Component {
 			>
 
 				{this.state.layoutName != "screen-landscape" && (
-					<React.Fragment>
-						<div className="main-pane">
-							{this.renderButtonPane()}
-							{this.renderBoardWrapper(param)}
-							{this.isContest || this.renderAnswerPane()}
-							{this.isContest && this.renderMovingButtons()}
-						</div>
-					</React.Fragment>
+					this.isContest
+					? <div className="main-pane">
+						{this.renderBoardWrapper(param)}
+						{this.renderSolutionPane()}
+						{this.renderMovingButtons()}
+					</div>
+					: <div className="main-pane">
+						{this.renderButtonPane()}
+						{this.renderBoardWrapper(param)}
+						{this.renderAnswerPane()}
+					</div>
 				)}
 				{this.state.layoutName == "screen-landscape" && (
-					<React.Fragment>
+					this.isContest
+					? <React.Fragment>
+						<div className="side-pane">
+							{this.renderSolutionPane()}
+							{this.renderMovingButtonsLandscape()}
+						</div>
+						<div className="main-pane">
+							{this.renderBoardWrapper(param)}
+						</div>
+					</React.Fragment>
+					: <React.Fragment>
 						<div className="side-pane">
 							{this.renderButtonPaneNarrow()}
-							{this.isContest || this.renderAnswerPane()}
-							{this.isContest && this.renderMovingButtonsLandscape()}
+							{this.renderAnswerPane()}
 						</div>
 						<div className="main-pane">
 							{this.renderBoardWrapper(param)}
