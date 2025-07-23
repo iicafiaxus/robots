@@ -638,7 +638,7 @@ class Game extends React.Component {
 			}
 		}
 
-		const length = this.state.userSolution.length;
+		const length = this.state.userSolution.length + 1;
 		if(length > 0 && isFullFilled && isThisTime){
 			this.openAlert(`おめでとう！ ${length} 回の移動で成功しました！`);
 		}
